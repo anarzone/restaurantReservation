@@ -97,10 +97,15 @@ class TableController extends Controller
      */
     public function destroy($id)
     {
-        $table = HallTable::find($id)->delete();
+        $message = null;
+        $table = HallTable::find($id);
 
+        if($table->status == 0){
+            $table->delete();
+            $message = 'Successfully deleted';
+        }
         return response()->json([
-            'message' => 'Successfully deleted',
+            'message' => $message,
         ]);
     }
 
@@ -113,6 +118,29 @@ class TableController extends Controller
         return response()->json([
             'status' => Response::HTTP_OK,
             'data'   => $tables
+        ]);
+    }
+
+    public function get_by_hall_id(Request $request){
+        $tables = \DB::table('tables')->where('hall_id', '=', $request->hall_id)->get();
+        return response()->json([
+            'status' => Response::HTTP_OK,
+            'data'   => $tables
+        ]);
+    }
+
+    public function change_number(Request $request){
+        $table_updated = null;
+        $table = HallTable::find($request->table_id);
+        if($table->status == 0){
+            $table_updated = \DB::table('tables')
+                ->where('id', '=', $request->table_id)
+                ->update(['table_number' => $request->table_number]);
+        }
+
+        return response()->json([
+            'status' => Response::HTTP_OK,
+            'data'   => $table_updated
         ]);
     }
 }

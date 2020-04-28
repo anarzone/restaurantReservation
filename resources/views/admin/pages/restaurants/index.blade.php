@@ -151,7 +151,7 @@
 
         $.ajax({
             type: 'POST',
-            url: '/get_tables_by_hall_id',
+            url: '/tables/get_by_hall_id',
             data: {hall_id: hall_id},
             success: function (result) {
                 if($.trim(result.data) && result.status === 200){
@@ -206,7 +206,7 @@
     $(document).on('change', '.table-number', function(){
         let new_table_number = $(this).val();
         let table_id = $(this).attr('id')
-        let url = table_id ? '/change_table_number' : '/add_new_table';
+        let url = table_id ? '/tables/change_number' : '/tables/store';
 
         $.ajax({
             type: 'POST',
@@ -215,6 +215,8 @@
             success: function(result){
                 if($.trim(result.data) && result.status === 200){
                     console.log('success')
+                }else{
+                    alert('Bu masa rezerv edilib')
                 }
             }
         })
@@ -232,6 +234,8 @@
                 success: function(result){
                     if(result.message){
                         $('.input-group[data-id="'+ table_id +'"]').remove()
+                    }else{
+                        alert('Bu masa rezerv edilib')
                     }
                 }
             })
