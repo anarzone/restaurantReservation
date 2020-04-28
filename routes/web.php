@@ -21,7 +21,7 @@ Route::prefix('ambrn-admin')->group(function (){
     Auth::routes();
 });
 
-Route::prefix('admin')->name('admin.')->group(function (){
+Route::prefix('admin')->middleware('auth')->name('admin.')->group(function (){
     Route::get('/', 'ReservationController@index')->name('dashboard');
     Route::get('reservations', 'ReservationController@index')->name('reservations.index');
     Route::get('restaurants', 'RestaurantController@index')->name('restaurants.index');
