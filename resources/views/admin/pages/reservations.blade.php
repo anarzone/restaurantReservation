@@ -214,7 +214,7 @@
     $('.reject_res').on('click', function(){
         $.ajax({
             type: 'POST',
-            url: '/update_table',
+            url: '/tables/update',
             data: {book: 0, table_id: reserved_table_id, res_id: res_id},
             success: function(result){
                 if(result.status === 200){

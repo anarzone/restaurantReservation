@@ -115,4 +115,23 @@ class TableController extends Controller
             'data'   => $tables
         ]);
     }
+
+    public function get_by_hall_id(Request $request){
+        $tables = \DB::table('tables')->where('hall_id', '=', $request->hall_id)->get();
+        return response()->json([
+            'status' => Response::HTTP_OK,
+            'data'   => $tables
+        ]);
+    }
+
+    public function change_number(Request $request){
+        $table_updated = \DB::table('tables')
+            ->where('id', '=', $request->table_id)
+            ->update(['table_number' => $request->table_number]);
+
+        return response()->json([
+            'status' => Response::HTTP_OK,
+            'data'   => $table_updated
+        ]);
+    }
 }

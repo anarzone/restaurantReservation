@@ -37,10 +37,10 @@ Route::post('/halls/store', 'HallController@store');
 // Table routes
 
 Route::post('/tables/get_by', 'TableController@get_by');
+Route::post('/tables/get_by_hall_id', 'TableController@get_by_hall_id');
 Route::post('/tables/update', 'TableController@update');
 Route::delete('/tables/destroy/{id}', 'TableController@destroy');
 Route::post('/tables/store', 'TableController@store');
-Route::post('/get_tables_by_hall_id', 'AdminController@get_tables_by_hall_id');
-Route::post('/change_table_number', 'AdminController@change_table_number');
+Route::post('/tables/change_number', 'TableController@change_number');
 
 
