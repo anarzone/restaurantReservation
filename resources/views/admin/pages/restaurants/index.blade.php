@@ -215,6 +215,8 @@
             success: function(result){
                 if($.trim(result.data) && result.status === 200){
                     console.log('success')
+                }else{
+                    alert('Bu masa rezerv edilib')
                 }
             }
         })
@@ -232,6 +234,8 @@
                 success: function(result){
                     if(result.message){
                         $('.input-group[data-id="'+ table_id +'"]').remove()
+                    }else{
+                        alert('Bu masa rezerv edilib')
                     }
                 }
             })
