@@ -31,25 +31,25 @@
                                     class="hide-menu"> Yeni zal
                                         </span></a>
                         </li>
-{{--                        <li class="sidebar-item"><a href="form-input-grid.html" class="sidebar-link"><span--}}
-{{--                                    class="hide-menu"> Yeni restoran--}}
-{{--                                        </span></a>--}}
-{{--                        </li>--}}
+                        <li class="sidebar-item"><a href="{{route('admin.restaurants.create')}}" class="sidebar-link"><span
+                                    class="hide-menu"> Yeni restoran
+                                        </span></a>
+                        </li>
                     </ul>
                 </li>
                 <li class="list-divider"></li>
                 <li class="nav-small-cap"><span class="hide-menu">İstifadəçi paneli</span></li>
 
-{{--                <li class="sidebar-item"> <a class="sidebar-link sidebar-link" href="authentication-login1.html"--}}
-{{--                                             aria-expanded="false"><i data-feather="lock" class="feather-icon"></i><span--}}
-{{--                            class="hide-menu">Login--}}
-{{--                                </span></a>--}}
-{{--                </li>--}}
-{{--                <li class="sidebar-item"> <a class="sidebar-link sidebar-link"--}}
-{{--                                             href="authentication-register1.html" aria-expanded="false"><i data-feather="lock"--}}
-{{--                                                                                                           class="feather-icon"></i><span class="hide-menu">Register--}}
-{{--                                </span></a>--}}
-{{--                </li>--}}
+                <li class="sidebar-item"> <a class="sidebar-link sidebar-link" href="{{ route('admin.users.create') }}"
+                                             aria-expanded="false"><i data-feather="user-plus" class="feather-icon"></i><span
+                            class="hide-menu">Yeni İstifadəçi Yarat
+                                </span></a>
+                </li>
+                <li class="sidebar-item"> <a class="sidebar-link sidebar-link" href="{{route('admin.users.index')}}"
+                                             aria-expanded="false"><i data-feather="users" class="feather-icon"></i><span
+                            class="hide-menu">İstifadəçilər
+                                </span></a>
+                </li>
             </ul>
         </nav>
         <!-- End Sidebar navigation -->

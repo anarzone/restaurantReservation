@@ -40,6 +40,10 @@ class HallController extends Controller
             'tables'    => 'required'
         ]);
 
+        $restaurant = Restaurant::find($request->rest_id);
+        if($restaurant->status == 0){
+            Restaurant::where('id', '=', $request->rest_id)->update(['status'=>Restaurant::AVAILABLE]);
+        }
 
         $hall_created = Hall::create([
             'name' => $request->hall_name,
