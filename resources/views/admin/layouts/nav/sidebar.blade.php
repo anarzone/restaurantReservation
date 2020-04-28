@@ -7,11 +7,11 @@
         <!-- Sidebar navigation-->
         <nav class="sidebar-nav">
             <ul id="sidebarnav">
-{{--                <li class="sidebar-item"> <a class="sidebar-link sidebar-link active" href="{{route('admin.dashboard')}}"--}}
-{{--                                             aria-expanded="false"><i data-feather="home" class="feather-icon"></i><span--}}
-{{--                            class="hide-menu">Dashboard</span></a></li>--}}
-{{--                <li class="list-divider"></li>--}}
-{{--                <li class="nav-small-cap"><span class="hide-menu">Applications</span></li>--}}
+                <li class="sidebar-item"> <a class="sidebar-link sidebar-link active" href="{{route('admin.dashboard')}}"
+                                             aria-expanded="false"><i data-feather="home" class="feather-icon"></i><span
+                            class="hide-menu">Dashboard</span></a></li>
+                <li class="list-divider"></li>
+                <li class="nav-small-cap"><span class="hide-menu">Applications</span></li>
 
                 <li class="sidebar-item"> <a class="sidebar-link" href="{{route('admin.reservations.index')}}"
                                              aria-expanded="false"><i data-feather="tag" class="feather-icon"></i><span

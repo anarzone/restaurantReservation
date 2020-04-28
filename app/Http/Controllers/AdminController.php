@@ -23,7 +23,7 @@ class AdminController extends Controller
      */
 
     public function index(Request $request){
-        return view('admin.layouts.app');
+        return view('admin.pages.reservations');
     }
 
 

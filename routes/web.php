@@ -22,7 +22,7 @@ Route::prefix('ambrn-admin')->group(function (){
 });
 
 Route::prefix('admin')->name('admin.')->group(function (){
-//    Route::get('/', 'AdminController@index')->name('dashboard');
+    Route::get('/', 'ReservationController@index')->name('dashboard');
     Route::get('reservations', 'ReservationController@index')->name('reservations.index');
     Route::get('restaurants', 'RestaurantController@index')->name('restaurants.index');
     Route::get('halls/create', 'HallController@create')->name('halls.create');
