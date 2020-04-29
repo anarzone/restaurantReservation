@@ -12,7 +12,7 @@ use Symfony\Component\Console\Helper\Table;
 class FrontController extends Controller
 {
     public function index(){
-        $data = Restaurant::select('id','name')->whereNull('deleted_at')->where('status', '=', '0')->get();
+        $data = Restaurant::select('id','name')->whereNull('deleted_at')->where('status', '=', '1')->get();
         return view('front.form', ['restaurants' => $data]);
     }
 
