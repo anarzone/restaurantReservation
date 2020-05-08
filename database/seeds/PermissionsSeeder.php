@@ -24,6 +24,7 @@ class PermissionsSeeder extends Seeder
         Group::truncate();
         \DB::table('model_has_permissions')->truncate();
         \DB::table('model_has_roles')->truncate();
+        \DB::table('user_group')->truncate();
         Schema::enableForeignKeyConstraints();
 
         // Reset cached roles and permissions
@@ -102,13 +103,13 @@ class PermissionsSeeder extends Seeder
             'group_name' => 'Super Group',
             'status' => 1
         ]);
-        $user3->groups()->attach($group1);
 
         $group2 = App\Group::create([
             'group_name' => 'Stuff',
             'status' => 1
         ]);
 
+        // assign users to groups
         $user1->groups()->attach($group1);
         $user2->groups()->attach($group1);
         $user3->groups()->attach($group1);
