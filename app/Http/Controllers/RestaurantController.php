@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Restaurant;
+use App\Table as Hall_Table;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class RestaurantController extends Controller
 {
@@ -12,20 +13,14 @@ class RestaurantController extends Controller
     * Displaying restaurants and assigned halls
      */
     public function index(){
-        $restaurants = Restaurant::whereNull('deleted_at')->where('status', '=', Restaurant::AVAILABLE)->with('halls')->get();
-        $table_total = \DB::table('tables')
-            ->groupBy('hall_id')
-            ->selectRaw('count(*) as totalTables, hall_id')
-            ->get();
 
-
-        $tables_by_hall_id = [];
-        foreach ($table_total as $table){
-            $tables_by_hall_id[$table->hall_id] = $table->totalTables;
-        }
+        $restaurants = Restaurant::whereNull('deleted_at')
+                                ->whereIn('id', Auth::user()->inGroupRestaurants())
+                                ->where('status', '=', Restaurant::AVAILABLE)
+                                ->with('halls')->get();
 
         return view('admin.pages.restaurants.index',
-            ['restaurants' => $restaurants, 'tables_by_hall_id' => $tables_by_hall_id]);
+            ['restaurants' => $restaurants]);
     }
 
     public function create(Request $request){
@@ -38,8 +33,11 @@ class RestaurantController extends Controller
            'address' => 'nullable|string'
         ]);
         $request->merge(['status'=>Restaurant::NOT_AVAILABLE]);
-        Restaurant::create($request->all());
+        $restaurant = Restaurant::create($request->all());
 
-        return back(Response::HTTP_CREATED);
+        $related_group = Auth::user()->groups[0];
+        $related_group->restaurants()->attach($restaurant->id);
+
+        return redirect()->back();
     }
 }

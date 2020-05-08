@@ -7,6 +7,7 @@ use App\Restaurant;
 use App\Table as Hall_Table;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class HallController extends Controller
 {
@@ -15,7 +16,7 @@ class HallController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update_hall_name(Request $request){
+    public function update_name(Request $request){
         $hall_updated = Hall::where('id', '=', $request->hall_id)->update(['name' => $request->hall_name]);
         return response()->json([
             'status' => Response::HTTP_OK,
@@ -27,7 +28,7 @@ class HallController extends Controller
     * Display hall create page with restaurants
      */
     public function create(){
-        $restaurants = Restaurant::whereNull('deleted_at')->with('halls')->get();
+        $restaurants = Restaurant::whereNull('deleted_at')->whereIn('id', Auth::user()->inGroupRestaurants())->with('halls')->get();
 
         return view('admin.pages.restaurants.create_hall', ['restaurants' => $restaurants]);
     }
@@ -51,17 +52,19 @@ class HallController extends Controller
         ]);
 
         foreach ($request->tables as $table){
+
             Hall_Table::create([
-                'table_number'   => $table,
+                'table_number'   => $table['table_number'],
+                'people_amount'  => $table['people_amount'],
                 'hall_id'        => $hall_created->id,
                 'restaurant_id' => $request->rest_id
             ]);
         }
 
-        $table_created = Hall_Table::all();
+        $tables_created = Hall_Table::where('hall_id', $hall_created->id)->get();
         return response()->json([
             'status' => Response::HTTP_CREATED,
-            'data'   => ['halls' => $hall_created, 'tables' => $table_created]
+            'data'   => ['halls' => $hall_created, 'tables' => $tables_created]
         ]);
     }
 }

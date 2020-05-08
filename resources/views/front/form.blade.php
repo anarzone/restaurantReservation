@@ -16,13 +16,15 @@
         <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
               integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
-        <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https:////cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     </head>
 
 <body>
 <style>
     form .error {
         color: #ff0000;
+        line-height: normal;
+        display: inline;
     }
 </style>
 <div class="container pt-1">
@@ -81,7 +83,7 @@
                             <div class="form-group row">
                                 <label class="col-lg-3 col-form-label form-control-label">Tarix</label>
                                 <div class="col-lg-9 input-group date" id="datetimepicker2" data-target-input="nearest">
-                                    <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker2"/>
+                                    <input type="text" name="reservation_date" class="form-control datetimepicker-input" data-target="#datetimepicker2"/>
                                     <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                     </div>
@@ -108,10 +110,27 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
 <script>
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    toastr.options = {
+        "preventDuplicates": true
+    }
+
+    @if(count($errors) > 0)
+        @foreach($errors->all() as $error)
+            toastr.error("{{ $error }}");
+        @endforeach
+    @endif
 
     let fd = new FormData();
+
     $('#firstname').on('change paste keyup', function () {
         fd.append('firstname', $(this).val())
     })
@@ -171,7 +190,8 @@
                     },
                     restaurants: "required",
                     halls: "required",
-                    people: "required"
+                    people: "required",
+                    // reservation_date: "required"
                 },
                 messages: {
                     firstname: {
@@ -179,8 +199,11 @@
                         minlength: jQuery.validator.format('Ən az {0} hərf daxil edilməlidir')
                     },
                     lastname:  {
-                        required: "Adınızı yazın",
+                        required: "Soyadınızı yazın",
                         minlength: jQuery.validator.format('Ən az {0} hərf daxil edilməlidir')
+                    },
+                    phone: {
+                        required: "Telefon nömrənizi qeyd edin"
                     },
                     restaurants: "Restoran seçin",
                     halls: "Zal seçin",
@@ -193,8 +216,11 @@
                         data: fd,
                         processData: false,
                         contentType: false,
-                        success: function (data) {
-                            // alert('data.message')
+                        success: function (result) {
+                            if($.trim(result.data)){
+                                toastr.success('Təşəkkür edirik, tezliklə sizinlə əlaqə saxlayacağıq', 'Qeydə alındı')
+                                document.forms[0].reset();
+                            }
                         }
                     })
                 }
@@ -202,7 +228,7 @@
         );
 
         $('#datetimepicker2').datetimepicker({
-            locale: 'az',
+            locale: 'en',
             format: 'dddd, MMMM Do YYYY, HH:mm'
         });
 
@@ -210,15 +236,9 @@
             fd.append('reservation_date',moment(e.date).format('YYYY-MM-DD HH:mm'));
         });
     });
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-
 
 </script>
-</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+</body>
 
 </html>
 <!-- end document-->

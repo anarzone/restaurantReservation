@@ -6,8 +6,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="{{asset('back/assets/images/favicon.png')}}">
-    <title>Adminmart Template - The Ultimate Multipurpose admin template</title>
+{{--    <link rel="icon" type="image/png" sizes="16x16" href="{{asset('back/assets/images/favicon.png')}}">--}}
+    <title>Amburan Admin</title>
     <!-- Custom CSS -->
     <link href="{{asset('back/assets/extra-libs/c3/c3.min.css')}}" rel="stylesheet">
     <link href="{{asset('back/assets/libs/chartist/dist/chartist.min.css')}}" rel="stylesheet">

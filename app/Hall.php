@@ -15,7 +15,11 @@ class Hall extends Model
         return $this->belongsTo(Restaurant::class);
     }
 
-    public function halls(){
+    public function tables(){
         return $this->hasMany(Table::class);
+    }
+
+    public function reservations(){
+        return $this->hasMany(Reservation::class, 'res_hall_id');
     }
 }

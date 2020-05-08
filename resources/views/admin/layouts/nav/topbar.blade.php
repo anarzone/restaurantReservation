@@ -187,7 +187,7 @@
                     <div class="dropdown-menu dropdown-menu-right user-dd animated flipInY">
 {{--                        <a class="dropdown-item" href="javascript:void(0)"><i data-feather="user"--}}
 {{--                                                                              class="svg-icon mr-2 ml-1"></i>--}}
-{{--                            My Profile</a>--}}
+{{--                            Profilim</a>--}}
 {{--                        <a class="dropdown-item" href="javascript:void(0)"><i data-feather="credit-card"--}}
 {{--                                                                              class="svg-icon mr-2 ml-1"></i>--}}
 {{--                            My Balance</a>--}}
@@ -203,7 +203,7 @@
                            onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();"><i data-feather="power"
                                                                               class="svg-icon mr-2 ml-1"></i>
-                            Logout</a>
+                            Çıxış</a>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
                         </form>

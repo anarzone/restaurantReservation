@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Group;
 use App\Hall;
 use App\Reservation;
 use App\Restaurant;
@@ -11,29 +12,36 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use phpDocumentor\Reflection\Types\Null_;
+use Spatie\Permission\Models\Permission;
 
 class AdminController extends Controller
 {
-    public function __construct()
-    {
-        return $this->middleware('auth');
-    }
-
     /**
-     * Displaying application layout
+     * Displaying dashboard page
      */
 
-    public function index(Request $request){
-        return view('admin.pages.reservations');
+    public function dashboard(){
+        $restaurants = Restaurant::whereNull('deleted_at')
+            ->whereIn('id', Auth::user()->inGroupRestaurants())
+            ->where('status', '=', Restaurant::AVAILABLE)
+            ->with('halls')->get();
+
+        return view('admin.pages.dashboard', ['restaurants' => $restaurants]);
     }
 
+//    public function index(Request $request){
+//        return view('admin.pages.reservations');
+//    }
+
     public function createUsers(){
-        return view('admin.pages.users.create');
+        $groups = Group::where('status', 1)->get();
+        return view('admin.pages.users.create', ['groups' => $groups]);
     }
 
     public function getUsers(){
-        $users = User::whereNull('deleted_at')->get();
+        $users = User::whereNull('deleted_at')->with('roles')->with('groups')->get();
         return view('admin.pages.users.index', ['users' => $users]);
     }
 
@@ -42,6 +50,16 @@ class AdminController extends Controller
         return response()->json([
             'message' => 'Success',
             'data'    => $roles
+        ]);
+    }
+
+    public function getRolesAndGroups(){
+        $roles = Role::all();
+        $groups = Group::where('status', 1)->get();
+
+        return response()->json([
+            'message' => 'Success',
+            'data'    => ['groups' => $groups, 'roles' => $roles]
         ]);
     }
 
@@ -59,7 +77,8 @@ class AdminController extends Controller
             'email' => $request->email
         ]);
 
-        $user->roles()->sync([$request->role_id]);
+        $user->groups()->sync([$request->group_id]);
+        $user->syncRoles($request->role_id);
 
         return response()->json([
             'message' => 'success',
@@ -68,13 +87,25 @@ class AdminController extends Controller
     }
 
     public function storeUser(Request $request){
-
-        $request->validate([
+        $rules = [
             'name'       => 'required|string|min:2',
             'email'      => 'required|email|unique:users',
             'password'   => 'required|min:6',
-            'role_id'    => 'required|numeric'
-        ]);
+            'role_id'    => 'required|numeric',
+            'group_id'   => 'required|numeric',
+        ];
+
+        $messages = [
+            'email.required' => 'Email vacib sahədir',
+            'name.required' => 'Ad vacib sahədir',
+            'password.required' => 'Şifrə vacib sahədir',
+            'email.unique' => 'Bu email artıq qeydiyyatdan keçib',
+            'password.min:6' => 'Şifrə ən az 6 xarakter olmalıdır',
+            'name.min:2' => 'Ad ən az 2 xarakter olmalıdır',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+        $validator->validate();
 
         $user = User::create([
             'name'      => $request->name,
@@ -83,6 +114,95 @@ class AdminController extends Controller
         ]);
 
         $user->roles()->attach($request->role_id);
+        $user->groups()->attach($request->group_id);
         return redirect()->route('admin.users.index');
     }
+
+
+
+    public function showGroups(){
+        $groups = Group::all();
+        return view('admin.pages.groups.index', ['groups' => $groups]);
+    }
+
+    public function createGroup(){
+        $restaurants = Restaurant::where('status', Restaurant::AVAILABLE)->get();
+        return view('admin.pages.groups.create', ['restaurants' => $restaurants]);
+    }
+
+    public function storeGroup(Request $request){
+        $rules = [
+            'group_name' => 'required',
+        ];
+
+        $messages = [
+            'required' => 'Qrup adını daxil etməmisiniz',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+        $validator->validate();
+
+        $group_created = Group::create([
+            'group_name' => $request->group_name
+        ]);
+
+
+
+        $group_created->restaurants()->attach($request->restaurants);
+
+        return back();
+    }
+
+    public function editGroup($group_id){
+        $group = Group::where('id', $group_id)->with('restaurants')->first();
+        $group_rest_ids = [];
+        foreach ($group->restaurants as $rest){
+            $group_rest_ids[] = $rest->id;
+        }
+        $out_group_restaurants = Restaurant::where('status', 1)->whereNotIn('id', $group_rest_ids)->get();
+
+        return view('admin.pages.groups.edit', [
+            'group' => $group,
+            'out_group_restaurants' => $out_group_restaurants
+        ]);
+    }
+
+    public function updateGroup(Request $request, Group $group){
+        $rules = [
+            'group_name' => 'required',
+        ];
+
+        $messages = [
+            'required' => 'Qrup adını daxil etməmisiniz',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+        $validator->validate();
+
+        $group->update(['group_name' => $request->group_name]);
+
+        $group->restaurants()->sync($request->restaurants);
+        return redirect()->route('admin.groups.index');
+    }
+
+    public function showRoles(){
+        $roles = Role::all();
+        return view('admin.pages.roles.index', ['roles' => $roles]);
+    }
+
+    public function createRoles(){
+        $permissions = Permission::all();
+        return view('admin.pages.roles.create', ['permissions' => $permissions]);
+    }
+
+    // will return this function when role editing activated
+//    public function editRoles($id){
+//        $rol_permission_ids = [];
+//        $role = Role::where('id', $id)->with('permissions')->first();
+//        foreach ($role->permissions as $rol){
+//            $rol_permission_ids[] = $rol->id;
+//        }
+//        $unassosiated_permissions = Permission::whereNotIn('id', $rol_permission_ids)->get();
+//        return view('admin.pages.roles.edit', ['role' => $role, 'unassosiated_permissions' => $unassosiated_permissions]);
+//    }
 }
