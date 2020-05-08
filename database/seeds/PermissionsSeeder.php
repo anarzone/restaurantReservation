@@ -1,9 +1,12 @@
 <?php
 
+use App\Group;
+use App\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
+use Illuminate\Support\Facades\Schema;
 
 class PermissionsSeeder extends Seeder
 {
@@ -14,6 +17,15 @@ class PermissionsSeeder extends Seeder
      */
     public function run()
     {
+        Schema::disableForeignKeyConstraints();
+        Permission::truncate();
+        Role::truncate();
+        User::truncate();
+        Group::truncate();
+        \DB::table('model_has_permissions')->truncate();
+        \DB::table('model_has_roles')->truncate();
+        Schema::enableForeignKeyConstraints();
+
         // Reset cached roles and permissions
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
