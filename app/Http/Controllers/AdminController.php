@@ -12,6 +12,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use phpDocumentor\Reflection\Types\Null_;
 use Spatie\Permission\Models\Permission;
@@ -31,9 +32,6 @@ class AdminController extends Controller
         return view('admin.pages.dashboard', ['restaurants' => $restaurants]);
     }
 
-//    public function index(Request $request){
-//        return view('admin.pages.reservations');
-//    }
 
     public function createUsers(){
         $groups = Group::where('status', 1)->get();
@@ -195,7 +193,48 @@ class AdminController extends Controller
         return view('admin.pages.roles.create', ['permissions' => $permissions]);
     }
 
-    // will return this function when role editing activated
+
+    public function showProfile(){
+        return view('admin.pages.users.profile', ['userdata' => Auth::user()]);
+    }
+
+    public function updateProfile(Request $request){
+        $user = Auth::user();
+        $rules = [
+            'name'  => 'required|string',
+            'email' => 'required|email|unique:users,email,'.Auth::user()->id,
+        ];
+
+        if($request->has('password') && Hash::check($request->input('password'), $user->password)){
+            $rules['password'] = 'min:6';
+            $rules['new_password'] = 'required|between:6,255';
+            $rules['new_password_confirmation'] = 'required|same:new_password|min:6';
+        }
+        $messages = [
+            'required'  => 'Bütün sahələri doldurmağınız vacibdir',
+            'email'     => 'Doğru email ünvanını daxil etməmisiniz',
+            'unique:users,email'    => 'Bu emaillə istifadəçi mövcuddur',
+            'new_password_confirmation.same' => 'Şifrənin təsdiqi yalnışdır',
+            'between' => 'Şifrə ən az 6 xarakterli olmalıdır'
+        ];
+
+        Validator::make($request->all(), $rules, $messages)->validate();
+
+        $values = [
+            'name' => $request->name,
+            'email' => $request->email,
+        ];
+        if($request->has('new_password')){
+            $values['password'] = Hash::make($request->new_password);
+        }
+
+        $user->update($values);
+
+        return redirect()->back()->with('msg', 'Məlumatlarınız uğurla yeniləndi');
+
+    }
+
+    // will return to this function when role editing activated
 //    public function editRoles($id){
 //        $rol_permission_ids = [];
 //        $role = Role::where('id', $id)->with('permissions')->first();

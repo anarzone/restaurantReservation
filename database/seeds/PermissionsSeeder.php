@@ -73,28 +73,28 @@ class PermissionsSeeder extends Seeder
         $user1 = Factory(App\User::class)->create([
             'name' => 'Super-Admin',
             'email' => 'superadmin@example.com',
-            'password' => \Illuminate\Support\Facades\Hash::make('1234')
+            'password' => \Illuminate\Support\Facades\Hash::make('123456')
         ]);
         $user1->assignRole($role1);
 
         $user2 = Factory(App\User::class)->create([
             'name' => 'Manager',
             'email' => 'manager@example.com',
-            'password' => \Illuminate\Support\Facades\Hash::make('1234')
+            'password' => \Illuminate\Support\Facades\Hash::make('123456')
         ]);
         $user2->assignRole($role2);
 
         $user3 = Factory(App\User::class)->create([
             'name' => 'Supervisor',
             'email' => 'supervisor@example.com',
-            'password' => \Illuminate\Support\Facades\Hash::make('1234')
+            'password' => \Illuminate\Support\Facades\Hash::make('123456')
         ]);
         $user3->assignRole($role3);
 
         $user4 = Factory(App\User::class)->create([
             'name' => 'Stuff',
             'email' => 'stuff@example.com',
-            'password' => \Illuminate\Support\Facades\Hash::make('1234')
+            'password' => \Illuminate\Support\Facades\Hash::make('123456')
         ]);
         $user4->assignRole($role4);
 

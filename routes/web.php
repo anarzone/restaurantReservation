@@ -31,6 +31,8 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function (){
     Route::get('halls/create', 'HallController@create')->name('halls.create');
     Route::get('users/index', 'AdminController@getUsers')->name('users.index');
     Route::get('users/create', 'AdminController@createUsers')->name('users.create');
+    Route::get('users/profile', 'AdminController@showProfile')->name('users.profile');
+    Route::post('users/profile/update', 'AdminController@updateProfile')->name('users.profile.update');
 
     // Groups
     Route::get('/groups/index', 'AdminController@showGroups')->name('groups.index');
