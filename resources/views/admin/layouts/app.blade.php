@@ -78,6 +78,7 @@
         <script src="{{asset('back/dist/js/sidebarmenu.js')}}"></script>
         <!--Custom JavaScript -->
         <script src="{{asset('back/dist/js/custom.min.js')}}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
         @yield('js')
     </body>

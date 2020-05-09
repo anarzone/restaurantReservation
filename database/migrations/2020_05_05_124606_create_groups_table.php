@@ -17,6 +17,7 @@ class CreateGroupsTable extends Migration
             $table->bigIncrements('id');
             $table->string('group_name');
             $table->boolean('status')->default(1);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

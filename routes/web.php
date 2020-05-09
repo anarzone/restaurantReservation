@@ -29,17 +29,19 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function (){
     Route::get('restaurants', 'RestaurantController@index')->name('restaurants.index');
     Route::get('restaurants/create', 'RestaurantController@create')->name('restaurants.create');
     Route::get('halls/create', 'HallController@create')->name('halls.create');
-    Route::get('users/index', 'AdminController@getUsers')->name('users.index');
-    Route::get('users/create', 'AdminController@createUsers')->name('users.create');
+
+    // Users
+    Route::get('users/index', 'UserController@index')->name('users.index');
+    Route::get('users/create', 'UserController@create')->name('users.create');
     Route::get('users/profile', 'AdminController@showProfile')->name('users.profile');
     Route::post('users/profile/update', 'AdminController@updateProfile')->name('users.profile.update');
 
     // Groups
-    Route::get('/groups/index', 'AdminController@showGroups')->name('groups.index');
-    Route::get('/groups/create', 'AdminController@createGroup')->name('groups.create');
-    Route::post('/groups/store', 'AdminController@storeGroup')->name('groups.store');
-    Route::get('/groups/{group}/edit', 'AdminController@editGroup')->name('groups.edit');
-    Route::put('/groups/{group}/update', 'AdminController@updateGroup')->name('groups.update');
+    Route::get('/groups/index', 'GroupController@index')->name('groups.index');
+    Route::get('/groups/create', 'GroupController@create')->name('groups.create');
+    Route::post('/groups/store', 'GroupController@store')->name('groups.store');
+    Route::get('/groups/{group}/edit', 'GroupController@edit')->name('groups.edit');
+    Route::put('/groups/{group}/update', 'GroupController@update')->name('groups.update');
 
     // Roles
     Route::get('/roles', 'AdminController@showRoles')->name('roles.index');
@@ -62,14 +64,17 @@ Route::middleware('auth')->group(function (){
     Route::post('/tables/store', 'TableController@store');
     Route::post('/tables/change_number', 'TableController@change_number');
 
-//    Restaurants routes
+    // Restaurants routes
     Route::post('/restaurants/store', 'RestaurantController@store')->name('restaurants.store');
 
     // Admin routes
     Route::get('/roles/all', 'AdminController@getRoles');
-    Route::post('/users/update', 'AdminController@updateUser');
-    Route::post('/users/store', 'AdminController@storeUser')->name('users.store');
     Route::get('/admin/getRolesAndGroups', 'AdminController@getRolesAndGroups');
+
+    // Users
+    Route::post('/users/update', 'UserController@update');
+    Route::post('/users/store', 'UserController@store')->name('users.store');
+    Route::delete('/users/destroy/{user}', 'UserController@destroy');
 
     // Reservation routes
     Route::post('/reservations/update', 'ReservationController@update');

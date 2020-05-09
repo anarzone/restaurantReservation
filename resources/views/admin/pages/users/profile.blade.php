@@ -1,9 +1,7 @@
 @extends('admin.layouts.app')
 
 @section('page-title', 'Profil Redaktə')
-@section('css')
-    <link rel="stylesheet" href="https:////cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
-@endsection
+
 @section('content')
     <div class="row">
         <div class="col-sm-12 col-md-10">
@@ -62,7 +60,6 @@
     </div>
 @endsection
 @section('js')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script>
         toastr.options = {
             "preventDuplicates": true,

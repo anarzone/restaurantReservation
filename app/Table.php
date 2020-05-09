@@ -3,9 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Table extends Model
 {
+    use SoftDeletes;
+
     public const TABLE_AVAILABLE = 0;
     public const TABLE_BOOKED = 1;
 

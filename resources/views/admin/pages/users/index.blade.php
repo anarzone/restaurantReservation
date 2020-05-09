@@ -91,8 +91,9 @@
                     </div>
 
                     <div class="btn-list text-center mt-4">
-                        <button class="btn btn-rounded btn-outline-success save-user" type="submit">Yadda saxla</button>
-                        <button class="btn btn-rounded btn-outline-dark" data-dismiss="modal" type="submit">Ləğv et</button>
+                        <button class="btn btn-rounded btn-outline-success save-user" type="button">Yadda saxla</button>
+                        <button class="btn btn-rounded btn-outline-dark" data-dismiss="modal" type="button">Ləğv et</button>
+                        <button class="btn btn-rounded btn-outline-danger delete-user" data-dismiss="modal" type="button">Sil</button>
                     </div>
 
                 </div>
@@ -186,6 +187,25 @@
                         if($.trim(result.data)){
                             location.reload();
                         }
+                    }
+                })
+            }
+        })
+
+        $('.delete-user').on('click', function () {
+            let accepted = confirm('Silmək istədiyinizdən əminsiniz?')
+            if(user_id && accepted){
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/users/destroy/' + user_id,
+                    success: function (result) {
+                        if($.trim(result.data)){
+                            location.reload();
+                        }
+                    },
+                    complete: function (result) {
+                        alert(result.message)
+                        taostr.error(result.message)
                     }
                 })
             }

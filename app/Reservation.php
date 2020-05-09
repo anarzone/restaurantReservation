@@ -3,10 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
 class Reservation extends Model
 {
+    use SoftDeletes;
+
     public const STATUS_PENDING = 0;
     public const STATUS_ACCEPTED = 1;
     public const STATUS_DONE = 2;
