@@ -11,17 +11,8 @@ use Illuminate\Support\Facades\Auth;
 
 class HallController extends Controller
 {
-    /**
-     * Change hall name
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function update_name(Request $request){
-        $hall_updated = Hall::where('id', '=', $request->hall_id)->update(['name' => $request->hall_name]);
-        return response()->json([
-            'status' => Response::HTTP_OK,
-            'data'   => $hall_updated
-        ]);
+    public function index(){
+        return view('admin.pages.halls.index', ['halls' => Hall::whereNull('deleted_at')->paginate(10)]);
     }
 
     /**
@@ -32,7 +23,6 @@ class HallController extends Controller
 
         return view('admin.pages.restaurants.create_hall', ['restaurants' => $restaurants]);
     }
-
 
     public function store(Request $request){
         $request->validate([
@@ -66,5 +56,28 @@ class HallController extends Controller
             'status' => Response::HTTP_CREATED,
             'data'   => ['halls' => $hall_created, 'tables' => $tables_created]
         ]);
+    }
+
+    public function edit(Hall $hall){
+        return view('admin.pages.halls.edit', ['hall' => $hall]);
+    }
+
+    public function update(Request $request, Hall $hall){
+        $request->validate([
+            'name' => 'required|string'
+        ]);
+
+        $hall->update($request->all());
+        return back()->with('message', 'Yeniləndi');
+    }
+
+    public function destroy(Hall $hall){
+        if(isset($hall->reservations[0])){
+            return response()->json([
+                'message' => 'Bu zalda aktiv rezervasiya var'
+            ], Response::HTTP_OK);
+        }
+        $hall->delete();
+        return response()->json([],Response::HTTP_NO_CONTENT);
     }
 }

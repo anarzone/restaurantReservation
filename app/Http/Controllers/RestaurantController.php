@@ -25,7 +25,7 @@ class RestaurantController extends Controller
     }
 
     public function create(Request $request){
-        return view('admin.pages.restaurants.create_restaurant');
+        return view('admin.pages.restaurants.create');
     }
 
     public function store(Request $request){

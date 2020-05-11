@@ -26,7 +26,6 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function (){
     Route::get('reservations', 'ReservationController@index')->name('reservations.index');
     Route::get('reservations/archive', 'ReservationController@showArchive')->name('reservations.archive');
     Route::post('reservations/filterByDate', 'ReservationController@filterByDate')->name('filter.date');
-    Route::get('halls/create', 'HallController@create')->name('halls.create');
 
     // Users
     Route::get('users/index', 'UserController@index')->name('users.index');
@@ -54,6 +53,14 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function (){
     Route::get('restaurants/{restaurant}/edit', 'RestaurantController@edit')->name('restaurants.edit');
     Route::put('restaurants/{restaurant}/update', 'RestaurantController@update')->name('restaurants.update');
     Route::delete('restaurants/destroy/{restaurant}', 'RestaurantController@destroy')->name('restaurants.destroy');
+
+    // Halls
+    Route::get('halls', 'HallController@index')->name('halls.index');
+    Route::get('halls/create', 'HallController@create')->name('halls.create');
+    Route::get('halls/{hall}/edit', 'HallController@edit')->name('halls.edit');
+    Route::put('halls/{hall}/update', 'HallController@update')->name('halls.update');
+    Route::delete('halls/destroy/{hall}', 'HallController@destroy')->name('halls.destroy');
+
 });
 
 // Hall routes

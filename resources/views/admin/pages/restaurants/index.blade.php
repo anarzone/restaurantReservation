@@ -53,24 +53,6 @@
     let rest_id = null;
     let table_values = {};
 
-    // save hall name
-    $('#hall_name_val').on('change', function () {
-        let new_hall_name = $(this).val();
-        $.ajax({
-            type: 'POST',
-            url: '/halls/update/name',
-            data: {hall_id: hall_id, hall_name: new_hall_name},
-            success: function(result){
-                if($.trim(result.status === 200)){
-                    $('#hall_name_val').addClass('is-valid')
-                    setTimeout(function (){
-                        $('#hall_name_val').removeClass('is-valid');
-                    }, 1500)
-                }
-            }
-        })
-    })
-
     // remove table from list
     $(document).on('click', '.delete-table', function(){
 

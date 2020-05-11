@@ -39,7 +39,7 @@
                                     class="hide-menu"> Restoranlar
                                         </span></a>
                         </li>
-                        <li class="sidebar-item"><a href="{{route('admin.restaurants.index')}}" class="sidebar-link"><span
+                        <li class="sidebar-item"><a href="{{route('admin.halls.index')}}" class="sidebar-link"><span
                                     class="hide-menu"> Zallar
                                         </span></a>
                         </li>
