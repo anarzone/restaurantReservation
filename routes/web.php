@@ -26,8 +26,6 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function (){
     Route::get('reservations', 'ReservationController@index')->name('reservations.index');
     Route::get('reservations/archive', 'ReservationController@showArchive')->name('reservations.archive');
     Route::post('reservations/filterByDate', 'ReservationController@filterByDate')->name('filter.date');
-    Route::get('restaurants', 'RestaurantController@index')->name('restaurants.index');
-    Route::get('restaurants/create', 'RestaurantController@create')->name('restaurants.create');
     Route::get('halls/create', 'HallController@create')->name('halls.create');
 
     // Users
@@ -48,6 +46,14 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function (){
     Route::get('/roles', 'AdminController@showRoles')->name('roles.index');
     Route::get('/roles/create', 'AdminController@createRoles')->name('roles.create');
     Route::get('/roles/{role}/edit', 'AdminController@editRoles')->name('roles.edit');
+
+    // Restaurants
+    Route::get('restaurants', 'RestaurantController@index')->name('restaurants.index');
+    Route::get('restaurants/create', 'RestaurantController@create')->name('restaurants.create');
+    Route::get('restaurants/all', 'RestaurantController@getList')->name('restaurants.list');
+    Route::get('restaurants/{restaurant}/edit', 'RestaurantController@edit')->name('restaurants.edit');
+    Route::put('restaurants/{restaurant}/update', 'RestaurantController@update')->name('restaurants.update');
+    Route::delete('restaurants/destroy/{restaurant}', 'RestaurantController@destroy')->name('restaurants.destroy');
 });
 
 // Hall routes

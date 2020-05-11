@@ -32,7 +32,15 @@
                             class="hide-menu">Restoran & Zal</span></a>
                     <ul aria-expanded="false" class="collapse  first-level base-level-line">
                         <li class="sidebar-item"><a href="{{route('admin.restaurants.index')}}" class="sidebar-link"><span
+                                    class="hide-menu"> Masalar
+                                        </span></a>
+                        </li>
+                        <li class="sidebar-item"><a href="{{route('admin.restaurants.list')}}" class="sidebar-link"><span
                                     class="hide-menu"> Restoranlar
+                                        </span></a>
+                        </li>
+                        <li class="sidebar-item"><a href="{{route('admin.restaurants.index')}}" class="sidebar-link"><span
+                                    class="hide-menu"> Zallar
                                         </span></a>
                         </li>
                         @hasanyrole('manager|supervisor|super-admin')
