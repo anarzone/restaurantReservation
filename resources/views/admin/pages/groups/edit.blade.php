@@ -53,7 +53,8 @@
                         @endforeach
 
                         <div class="btn-list text-center mt-4">
-                            <button class="btn btn-block btn-outline-success save-group" type="submit">Yenilə</button>
+                            <button class="btn  btn-success save-group" type="submit">Yenilə</button>
+                            <button class="btn  btn-danger delete-group" data-group-id="{{$group->id}}" type="submit">Sil</button>
                         </div>
                     </form>
                 </div>
@@ -75,6 +76,12 @@
 
 @section('js')
     <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            }
+        });
+
         $.ajax({
             type: 'GET',
             url: "/roles/all",
@@ -88,6 +95,22 @@
                         )
                     })
                 }
+            }
+        })
+
+        $('.delete-group').on('click', function (e) {
+            e.preventDefault();
+            let group_id = $(this).data('group-id')
+            let ok = confirm('Silmək istədiyinizdən əminsiniz?')
+
+            if(ok && group_id){
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/admin/groups/destroy/' + group_id,
+                    success: function () {
+                        window.location.href = '/admin/groups/index';
+                    }
+                })
             }
         })
     </script>

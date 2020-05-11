@@ -5,13 +5,14 @@ namespace App\Http\Controllers;
 use App\Group;
 use App\Restaurant;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 
 class GroupController extends Controller
 {
     public function index()
     {
-        $groups = Group::all();
+        $groups = Group::whereNull('deleted_at')->get();
         return view('admin.pages.groups.index', ['groups' => $groups]);
     }
 
@@ -75,4 +76,14 @@ class GroupController extends Controller
         return redirect()->route('admin.groups.index');
     }
 
+    public function destroy(Group $group){
+        $group->restaurants()->detach();
+        $group->users()->detach();
+
+        $group->delete();
+
+        return response()->json([
+           'message' => 'Success',
+        ], Response::HTTP_NO_CONTENT);
+    }
 }

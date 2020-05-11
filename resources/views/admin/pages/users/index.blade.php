@@ -33,8 +33,8 @@
                                             data-user-id="{{$user->id}}"
                                             data-user-name="{{$user->name}}"
                                             data-user-email="{{$user->email}}"
-                                            data-role-id="{{ $user->roles ? $user->roles[0]->id : 0}}"
-                                            data-group-id="{{ $user->groups ? $user->groups[0]->id : 0 }}"
+                                            data-role-id="{{ isset($user->roles[0]) ? $user->roles[0]->id : 0}}"
+                                            data-group-id="{{ isset($user->groups[0]) ? $user->groups[0]->id : 0 }}"
                                         >
                                             Redaktə et
                                         </a>
@@ -139,6 +139,9 @@
                 url: "/admin/getRolesAndGroups",
                 success: function (result) {
                     if($.trim(result.data)){
+                        // $('#roles').append('' +
+                        //     '<option>--Rol seçin--</option>'
+                        // )
                         $.each(result.data.roles, function(key, val){
                             let val_with_selected = val.id === role_id ? 'value="'+ val.id + '" selected' : 'value="' + val.id + '"';
                             $('#roles').append('' +
@@ -149,6 +152,9 @@
                             )
                         })
 
+                        $('#groups').append('' +
+                            '<option>-- Qrup seçin --</option>'
+                        )
                         $.each(result.data.groups, function(key, val){
                             let val_with_selected = val.id === group_id ? 'value="'+ val.id + '" selected' : 'value="' + val.id + '"';
                             $('#groups').append('' +

@@ -42,7 +42,7 @@ class AdminController extends Controller
 
     public function getRolesAndGroups(){
         $roles = Role::all();
-        $groups = Group::where('status', 1)->get();
+        $groups = Group::whereNull('deleted_at')->where('status', 1)->get();
 
         return response()->json([
             'message' => 'Success',

@@ -42,6 +42,7 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function (){
     Route::post('/groups/store', 'GroupController@store')->name('groups.store');
     Route::get('/groups/{group}/edit', 'GroupController@edit')->name('groups.edit');
     Route::put('/groups/{group}/update', 'GroupController@update')->name('groups.update');
+    Route::delete('/groups/destroy/{group}', 'GroupController@destroy')->name('groups.destroy');
 
     // Roles
     Route::get('/roles', 'AdminController@showRoles')->name('roles.index');
