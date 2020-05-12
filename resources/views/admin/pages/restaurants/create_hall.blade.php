@@ -162,7 +162,7 @@
             console.log(hall_tables);
         })
 
-        // save table_number changes
+        // save people amount changes
         $(document).on('change', '.people-amount', function(){
             let people_amount = $(this).val();
             if(people_amount && $.isNumeric(people_amount)){

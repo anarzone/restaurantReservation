@@ -24,6 +24,9 @@
 
                             </select>
                         </div>
+                        <div class="col-sm-4 text-right">
+                            <button class="btn btn-success add-table" disabled>+ Masa əlavə et</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -52,33 +55,8 @@
     let hall_name = null;
     let rest_id = null;
     let table_values = {};
-
-    // remove table from list
-    $(document).on('click', '.delete-table', function(){
-
-        let table_id = $(this).attr('id')
-        if(table_id){
-            $.ajax({
-                type: 'DELETE',
-                url: '/tables/destroy/'+table_id,
-                data: {table_id: table_id},
-                success: function(result){
-                    if(result.message){
-                        $('.input-group[data-id="'+ table_id +'"]').remove()
-                    }else{
-                        alert('Bu masa rezerv edilib')
-                    }
-                }
-            })
-        }else{
-            $(this).parent('div').parent('div').remove()
-        }
-
-    })
-
-    $('.save-changes').on('click', function(){
-        location.reload();
-    })
+    let new_table_values = {};
+    let counter = 0;
 
     $('#restaurants').on('change', function () {
         rest_id = $(this).val();
@@ -118,7 +96,7 @@
                     if($.trim(result.data)){
                         let tables = $('#tables');
                         let html = '';
-                        html += '<div class="row">';
+                        html += '<div class="row table-rows">';
                         $.each(result.data, function(key, val){
                             let bgColorStatus = val.status === 0 ? 'bg-success' : 'bg-danger';
                             html += `
@@ -138,10 +116,12 @@
                             if(val.status === 0){
                                 html += `
                                         <span class="badge badge-warning"><i class="fas fa-pen"></i> Redaktə</span>
-                                        <span class="badge badge-light"><i class="fas fa-remove"></i> Sil</span>
                                         `;
                             }
                             html += `
+                                            </button>
+                                            <button class="btn btn-sm delete-table" data-table-id="${val.id}">
+                                                <span class="badge badge-light">Sil</span>
                                             </button>
                                         </div>
                                     </div>
@@ -156,7 +136,14 @@
         }
     })
 
-    $(document).on('click', '.edit-table', function () {
+    $(document).on('change', '#halls, #restaurants', function(){
+        if(hall_id && rest_id){
+            $('.add-table').removeAttr('disabled');
+        }
+    })
+
+    $(document).on('click', '.edit-table', function (e) {
+        e.stopPropagation();
         let table_id  = $(this).data('id')
         let table_number = $(this).data('number')
         let people_amount = $(this).data('amount')
@@ -186,17 +173,24 @@
     // get table number
     $(document).on('change', '.table-number', function(){
         let table_id = $(this).data('table-id')
-
-        table_values[table_id].current_number = parseInt($(this).val());
+        let table_counter = $(this).parent('div').parent('div').data('counter')
+        if(table_id){
+            table_values[table_id].current_number = parseInt($(this).val());
+        }else{
+            new_table_values[table_counter].number = parseInt($(this).val());
+        }
     })
 
     // get people amount
     $(document).on('change', '.people-amount', function(){
         let table_id = $(this).data('table-id')
-
-        table_values[table_id].current_amount = parseInt($(this).val());
+        let table_counter = $(this).parent('div').parent('div').data('counter')
+        if(table_id){
+            table_values[table_id].current_amount = parseInt($(this).val());
+        }else{
+            new_table_values[table_counter].people_amount = parseInt($(this).val());
+        }
     })
-
 
     $(document).on('click', '.cancel-table', function () {
         let inputPlace = $(this).closest('div.card');
@@ -215,7 +209,10 @@
                         data-number ="${table_number}"
                         data-amount ="${people_amount}"
                     >
-                        <span class="badge badge-warning"><i class="fas fa-pen"></i> Edit</span>
+                        <span class="badge badge-warning"><i class="fas fa-pen"></i> Redaktə</span>
+                    </button>
+                    <button class="btn btn-sm edit-table" data-id="${table_id}">
+                        <span class="badge badge-light">Sil</span>
                     </button>
                 </div>
             `;
@@ -224,18 +221,22 @@
         inputPlace.html(html);
     })
 
-
     $(document).on('click', '.save-table', function () {
         let inputPlace = $(this).closest('div.card');
         let table_id = $(this).data('table-id');
-        let table_number = table_values[table_id].current_number
-        let people_amount = table_values[table_id].current_amount
+        let new_table_counter = $(this).parent().parent().data('counter')
+
+        let table_number  = table_id ? table_values[table_id].current_number : new_table_values[new_table_counter].number
+        let people_amount = table_id ? table_values[table_id].current_amount : new_table_values[new_table_counter].people_amount
+
         let html = '';
+        let url = table_id ? '/tables/change_number' : '/tables/store'
+        let data = table_id ? {table_id, table_number, people_amount} : {rest_id, hall_id, table_number, people_amount}
 
         $.ajax({
             type: 'POST',
-            url: '/tables/change_number',
-            data: {table_id, table_number, people_amount},
+            url: url,
+            data: data,
             success: function (result) {
                 if($.trim(result.data)){
                     console.log(result.data)
@@ -247,21 +248,81 @@
                         </div>
                         <div class="card-footer text-right">
                             <button class="btn btn-sm edit-table"
-                                data-id="${table_id}"
+                                data-id="${table_id ?? result.data.id}"
                                 data-number ="${table_number}"
                                 data-amount ="${people_amount}"
                             >
-                                <span class="badge badge-warning"><i class="fas fa-pen"></i> Edit</span>
+                                <span class="badge badge-warning"><i class="fas fa-pen"></i> Redaktə et</span>
+                            </button>
+                            <button class="btn btn-sm delete-table" data-table-id="${table_id ?? result.data.id}">
+                                <span class="badge badge-light">Sil</span>
                             </button>
                         </div>
                     `;
 
                     html += '</div';
+                    inputPlace.removeClass('bg-secondary')
+                    inputPlace.addClass('bg-success')
+                    inputPlace.addClass('text-light')
                     inputPlace.html(html);
                 }
             }
         })
 
+    })
+
+    // remove table from list
+    $(document).on('click', '.delete-table', function(e){
+        e.stopPropagation();
+        let new_table_counter = $(this).data('counter')
+        let parentDiv = $(this).parent('div').parent('div').parent('div');
+
+        if (new_table_counter && new_table_values[new_table_counter]){
+            delete new_table_values[new_table_counter];
+            console.log(new_table_values)
+        }
+
+        let table_id = $(this).data('table-id')
+        if(table_id && confirm('Silmək istədiyinizdən əminsiniz?')){
+            $.ajax({
+                type: 'DELETE',
+                url: '/tables/destroy/'+table_id,
+                data: {table_id: table_id},
+                success: function(result){
+                    if(result.message){
+                        console.log(parentDiv)
+                        parentDiv.remove()
+                    }else{
+                        alert('Bu masa rezerv edilib')
+                    }
+                }
+            })
+        }else if(new_table_counter){
+            parentDiv.remove()
+        }
+    })
+
+    $('.add-table').on('click', function(){
+        counter++;
+        new_table_values[counter] = {
+            'number': '',
+            'people_amount': ''
+        };
+        let html = `
+            <div class="col-sm-3">
+                <div class="card mt-4 bg-secondary table-properties" data-counter="${counter}">
+                    <div class="card-body text-center input-properties">
+                        <input class="form-control form-control-sm table-number" placeholder="masa nömrəsi">
+                        <input class="form-control form-control-sm mt-3 people-amount" placeholder="tutum">
+                    </div>
+                    <div class="card-footer text-center">
+                        <button type="button" class="btn btn-primary btn-sm save-table"><i class="fas fa-save"> Saxla</i></button>
+                        <button type="button" class="btn btn-danger btn-sm delete-table" data-counter="${counter}">Sil</i></button>
+                    </div>
+                </div>
+            </div>
+        `
+        $('.table-rows').append(html)
     })
 </script>
 

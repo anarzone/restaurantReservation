@@ -150,6 +150,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script>
     $.ajaxSetup({
         headers: {
@@ -265,19 +266,37 @@
     $('.reservation-done').on('click', function () {
         let reservation_id = $(this).data('reservation-id')
         let table_id = $(this).data('table-id')
-
-        if(reservation_id && table_id){
-            $.ajax({
-                type: 'POST',
-                url:  '/reservations/status/update',
-                data: {status: 'done', reservation_id, table_id},
-                success: function (result) {
-                    if($.trim(result.data)){
-                        location.reload()
+        Swal.fire({
+                title: "Arxivə göndərilsin?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Göndər!",
+                cancelButtonText: 'Imtina et',
+                closeOnConfirm: false
+        }, function (confirmed) {
+                if(confirmed && table_id && done) return
+                $.ajax({
+                    type: 'POST',
+                    url:  '/reservations/status/update',
+                    data: {status: 'done', reservation_id, table_id},
+                    success: function (result) {
+                        if($.trim(result.data)){
+                            location.reload()
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Xəta baş verdi!',
+                        })
                     }
-                }
-            })
-        }
+                })
+            }
+        )
+        // let done = confirm('Arxivə göndərilsin?')
+
     })
 </script>
 @endsection

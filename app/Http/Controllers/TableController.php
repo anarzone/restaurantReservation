@@ -24,12 +24,14 @@ class TableController extends Controller
         $request->validate([
             'table_number'   => 'required|numeric',
             'hall_id'        => 'required|numeric',
-            'rest_id'  => 'required|numeric',
+            'rest_id'        => 'required|numeric',
+            'people_amount'  => 'required|integer'
         ]);
 
         $table_created =
             HallTable::create([
                 'table_number'  => $request->table_number,
+                'people_amount'  => $request->people_amount,
                 'hall_id'       => $request->hall_id,
                 'restaurant_id' => $request->rest_id
             ]);
