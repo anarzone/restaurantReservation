@@ -98,7 +98,7 @@
                         let html = '';
                         html += '<div class="row table-rows">';
                         $.each(result.data, function(key, val){
-                            let bgColorStatus = val.status === 0 ? 'bg-success' : 'bg-danger';
+                            let bgColorStatus = parseInt(val.status) === 0 ? 'bg-success' : 'bg-danger';
                             html += `
                                 <div class="col-sm-3">
                                     <div class="card mt-4 ${bgColorStatus} text-light table-properties">
@@ -108,7 +108,7 @@
                                         </div>
                                         <div class="card-footer text-right">
                                     `
-                            if(val.status === 0){
+                            if(parseInt(val.status) === 0){
                                 html += `<button class="btn btn-sm edit-table"
                                                 data-id="${val.id}"
                                                 data-number ="${val.table_number}"

@@ -36,16 +36,16 @@
                             </div>
                         </div>
                         <div class="col-8">
-                            <form class="form-inline row" action="{{route('admin.filter.date')}}" method="POST">
-                                @csrf
+                            <form class="form-inline row" action="{{route('admin.filter.date')}}">
+{{--                                @csrf--}}
                                 <div class="mb-2 mr-sm-2 input-group date col-xs-4" id="datetimepicker" data-target-input="nearest">
-                                    <input type="text" name="date_from" value="{{old('date_from')}}" class="form-control datetimepicker-input" data-target="#datetimepicker"/>
+                                    <input type="text" name="date_from" value="{{request('date_from')}}" class="form-control datetimepicker-input" data-target="#datetimepicker"/>
                                     <div class="input-group-append" data-target="#datetimepicker" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                     </div>
                                 </div>
                                 <div class="mb-2 mr-sm-2 input-group date col-xs-4" id="datetimepicker2" data-target-input="nearest">
-                                    <input type="text" name="date_to" value="{{old('date_to')}}" class="form-control datetimepicker-input" data-target="#datetimepicker2"/>
+                                    <input type="text" name="date_to" value="{{request('date_to')}}" class="form-control datetimepicker-input" data-target="#datetimepicker2"/>
                                     <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                     </div>
@@ -117,7 +117,7 @@
         </div>
         <div class="col-4"></div>
         <div class="col-6">
-            {{$reservations->links()}}
+            {{$reservations->appends(['date_from'=> request('date_from'), 'date_to' => request('date_to')])->links()}}
         </div>
     </div>
     <!--  Modal content for the above example -->
@@ -181,7 +181,7 @@
                         html += '<div class="row">';
                         $.each(result.data, function(key, val){
                             let bgColorStatus = '';
-                            if(val.status === table_status && val.id === reserved_table_id) {
+                            if(parseInt(val.status) === parseInt(table_status) && parseInt(val.id) === parseInt(reserved_table_id)) {
                                     bgColorStatus = 'bg-danger'
                             }else if(val.status === 1) {
                                 bgColorStatus = 'bg-secondary'

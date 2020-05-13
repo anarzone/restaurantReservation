@@ -22,10 +22,14 @@ class ReservationController extends Controller
     {
         $reservation = app(Reservation::class)->newQuery();
         if ($request->has('status')){
+            $request->validate(['status' => 'integer']);
             $reservation->where('reservations.status', $request->status);
         };
 
-        $result = $reservation->where('status', '!=', Reservation::STATUS_DONE)->with('halls')->with('restaurants')->with('table')->paginate(10);
+        $result = $reservation->where('status', '!=', Reservation::STATUS_DONE)
+                              ->with('halls')
+                              ->with('restaurants')
+                              ->with('table')->paginate(10)->appends('status', $request->status);
 
         return view('admin.pages.reservations', ['reservations' => $result ]);
     }
@@ -84,12 +88,24 @@ class ReservationController extends Controller
 
         $from = Carbon::create($request->date_from);
         $to = Carbon::create($request->date_to);
-        $result = Reservation::with('halls')
-                            ->with('restaurants')
-                            ->with('table')
-                            ->whereBetween('datetime', [$from->toDateTimeString(), $to->toDateTimeString()])
-                            ->paginate(10);
-        return view('admin.pages.reservations', ['reservations' => $result ]);
+        $result = '';
+
+        if($request->has('archive')){
+            $result = Reservation::where('status', Reservation::STATUS_DONE)
+                                ->with('halls')
+                                ->with('restaurants')
+                                ->with('table')
+                                ->whereBetween('datetime', [$from->toDateTimeString(), $to->toDateTimeString()])
+                                ->paginate(10);
+            return view('admin.pages.reservations_archive', ['reservations' => $result ]);
+        }else{
+            $result = Reservation::with('halls')
+                                ->with('restaurants')
+                                ->with('table')
+                                ->whereBetween('datetime', [$from->toDateTimeString(), $to->toDateTimeString()])
+                                ->paginate(10);
+            return view('admin.pages.reservations', ['reservations' => $result ]);
+        }
     }
 
     public function updateStatus(Request $request){
