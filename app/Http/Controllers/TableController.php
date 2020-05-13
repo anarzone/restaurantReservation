@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Hall;
 use App\Reservation;
-use App\Table;
-use App\Table as Hall_Table;
 use App\Table as HallTable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -26,12 +24,14 @@ class TableController extends Controller
         $request->validate([
             'table_number'   => 'required|numeric',
             'hall_id'        => 'required|numeric',
-            'rest_id'  => 'required|numeric',
+            'rest_id'        => 'required|numeric',
+            'people_amount'  => 'required|integer'
         ]);
 
         $table_created =
-            Hall_Table::create([
+            HallTable::create([
                 'table_number'  => $request->table_number,
+                'people_amount'  => $request->people_amount,
                 'hall_id'       => $request->hall_id,
                 'restaurant_id' => $request->rest_id
             ]);
@@ -57,8 +57,7 @@ class TableController extends Controller
             $reservation_status = Reservation::STATUS_ACCEPTED;
 
             if($request->res_table_id){
-                \DB::table('tables')
-                    ->where('id', '=', $request->res_table_id)
+                HallTable::where('id', '=', $request->res_table_id)
                     ->update(['status' => Hall::TABLE_AVAILABLE]);
             }
 
@@ -68,12 +67,10 @@ class TableController extends Controller
 
         }
 
-
-        $table_update = \DB::table('tables')
-            ->where('id', '=', $request->table_id)
+        $table_update = HallTable::where('id', $request->table_id)
             ->update(['status' => $table_status]);
 
-        $reservation_update = Reservation::where('id', '=', $request->res_id)
+        $reservation_update = Reservation::where('id', $request->res_id)
             ->update([
                 'status'   => $reservation_status,
                 'table_id' => $reservation_status == Reservation::STATUS_REJECTED ? null : $request->table_id
@@ -92,7 +89,7 @@ class TableController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param Table $table
+     * @param $id
      * @return JsonResponse
      */
     public function destroy($id)
@@ -109,20 +106,8 @@ class TableController extends Controller
         ]);
     }
 
-    public function get_by(Request $request){
-        $tables =   \DB::table('tables')
-            ->where('hall_id', '=', $request->hall_id)
-            ->where('restaurant_id', '=', $request->rest_id)
-            ->where('status', '=', Hall::TABLE_AVAILABLE)
-            ->get();
-        return response()->json([
-            'status' => Response::HTTP_OK,
-            'data'   => $tables
-        ]);
-    }
-
-    public function get_by_hall_id(Request $request){
-        $tables = \DB::table('tables')->where('hall_id', '=', $request->hall_id)->get();
+    public function get_by_hall_id(Request $request, $hall_id){
+        $tables = HallTable::where('hall_id', $hall_id)->orderBy('status', 'asc')->get();
         return response()->json([
             'status' => Response::HTTP_OK,
             'data'   => $tables
@@ -130,13 +115,16 @@ class TableController extends Controller
     }
 
     public function change_number(Request $request){
+        $request->validate([
+           'table_number' => 'required|numeric',
+           'people_amount' => 'required|numeric'
+        ]);
         $table_updated = null;
         $table = HallTable::find($request->table_id);
-        if($table->status == 0){
-            $table_updated = \DB::table('tables')
-                ->where('id', '=', $request->table_id)
-                ->update(['table_number' => $request->table_number]);
-        }
+
+        $table_updated = HallTable::where('id', $request->table_id)
+            ->update(['table_number' => $request->table_number, 'people_amount' => $request->people_amount]);
+
 
         return response()->json([
             'status' => Response::HTTP_OK,

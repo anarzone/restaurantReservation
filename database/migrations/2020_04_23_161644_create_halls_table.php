@@ -18,6 +18,7 @@ class CreateHallsTable extends Migration
             $table->string('name');
             $table->bigInteger('restaurant_id')->unsigned();
             $table->foreign('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

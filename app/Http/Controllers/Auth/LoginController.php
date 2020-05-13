@@ -30,6 +30,11 @@ class LoginController extends Controller
         return redirect('/ambrn-admin/login');
     }
 
+    public function showLoginForm(Request $request)
+    {
+        return view('admin.auth.login');
+    }
+
     /**
      * Where to redirect users after login.
      *

@@ -17,6 +17,7 @@ class CreateRestaurantsTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('address')->nullable();
+            $table->integer('status');
             $table->softDeletes();
             $table->timestamps();
         });

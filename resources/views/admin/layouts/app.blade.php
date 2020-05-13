@@ -27,6 +27,7 @@
                     <div class="page-breadcrumb">
                         <div class="row">
                             <div class="col-7 align-self-center">
+                                <h4 class="page-title text-truncate text-dark font-weight-medium mb-1">@yield('page-title')</h4>
                                 <div class="d-flex align-items-center">
                                     <nav aria-label="breadcrumb">
                                         <ol class="breadcrumb m-0 p-0">
@@ -75,8 +76,13 @@
         <script src="{{asset('back/dist/js/feather.min.js')}}"></script>
         <script src="{{asset('back/assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js')}}"></script>
         <script src="{{asset('back/dist/js/sidebarmenu.js')}}"></script>
+
+        <!-- global libraries -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
         <!--Custom JavaScript -->
         <script src="{{asset('back/dist/js/custom.min.js')}}"></script>
+        <script src="{{asset('back/dist/js/dry_functions.js')}}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
         @yield('js')
     </body>
