@@ -81,7 +81,7 @@
         let hall_tables = {};
         let counter = 0;
 
-        // save hall name
+        // get hall name
         $('#hall_name_val').on('change', function () {
             hall_name = $(this).val();
             if(!hall_name){
@@ -103,16 +103,14 @@
 
         $('.save-hall').on('click', function () {
             if(hall_name && rest_id && !$.isEmptyObject(hall_tables)){
-                let tables = $.map(hall_tables, function(value, index){
-                    return [value];
-                })
+                filterTables(hall_tables);
+
                 $.ajax({
                     type: 'POST',
                     url: '/halls/store',
-                    data: {rest_id: rest_id, hall_name: hall_name, tables: tables},
+                    data: {rest_id: rest_id, hall_name: hall_name, tables: hall_tables},
                     success: function(result){
-                        if($.trim(result.status === 200)){
-                            console.log(result.data)
+                        if($.trim(result.data)){
                             location.reload();
                         }
                     }
@@ -123,22 +121,33 @@
         // add new table to hall
         $('#add_table').on('click', function(){
             counter++;
-            hall_tables[counter] = '';
-            $('#table_list_inputs').prepend('' +
-                '<div class="input-group mt-2" data-id="'+ counter +'">' +
-                ' <input type="text" class="form-control table-number"' +
-                'data-id="'+ counter +'"' +
-                '  placeholder="masa nömrəsi">' +
-                ' <div class="input-group-append">' +
-                '    <button class="btn btn-outline-danger btn-rounded btn-sm delete_table" type="button">-</button>' +
-                '</div></div>'
+
+            hall_tables[counter] = {};
+            $('#table_list_inputs').append('' +
+                '<div class="row mt-2" data-id="'+ counter +'">' +
+                    '<div class="col-sm-2 mt-1"><span>Say</span></div>' +
+                    '<div class="col-sm-3">' +
+                        '<input type="text" class="form-control people-amount" placeholder="adam sayi"' +
+                        ' data-id="'+ counter +'" required>' +
+                    '</div>' +
+                    '<div class="col-sm-2 mt-1"><span>No.</span></div>' +
+                    '<div class="col-sm-3">' +
+                        ' <input type="text" class="form-control table-number" placeholder="masa nömrəsi"' +
+                        ' data-id="'+ counter +'" required>' +
+                    '</div>' +
+                    '<div class="col-sm-2">' +
+                        '<button class="btn btn-sm btn-outline-danger mt-1 delete-table"> Sil </button>' +
+                    '</div>' +
+                '</div>'
             )
         })
 
         // remove table from list
-        $(document).on('click', '.delete_table', function(){
+        $(document).on('click', '.delete-table', function(){
             let table_id = $(this).attr('data-id')
-            delete hall_tables[counter];
+            if (hall_tables[counter]){
+                delete hall_tables[counter];
+            }
             $(this).parent('div').parent('div').remove()
             console.log(hall_tables);
             counter--;
@@ -148,11 +157,28 @@
         $(document).on('change', '.table-number', function(){
             let new_table_number = $(this).val();
             if(new_table_number && $.isNumeric(new_table_number)){
-                hall_tables[counter] = new_table_number
+                hall_tables[counter]['table_number'] = new_table_number;
             }
+            console.log(hall_tables);
+        })
+
+        // save people amount changes
+        $(document).on('change', '.people-amount', function(){
+            let people_amount = $(this).val();
+            if(people_amount && $.isNumeric(people_amount)){
+                hall_tables[counter]['people_amount'] = people_amount;
+            }
+            console.log(hall_tables);
 
         })
 
-
+        function filterTables(tables){
+            for (let [key, val] of Object.entries(tables)){
+                if(val.people_amount === undefined || val.table_number === undefined){
+                    delete tables[key]
+                }
+                console.log(`${val.people_amount}, ${val.table_number}`);
+            }
+        }
     </script>
 @endsection

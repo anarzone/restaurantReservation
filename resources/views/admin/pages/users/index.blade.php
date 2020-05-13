@@ -33,7 +33,8 @@
                                             data-user-id="{{$user->id}}"
                                             data-user-name="{{$user->name}}"
                                             data-user-email="{{$user->email}}"
-                                            data-role-id="{{ $user->roles[0]->id }}"
+                                            data-role-id="{{ isset($user->roles[0]) ? $user->roles[0]->id : 0}}"
+                                            data-group-id="{{ isset($user->groups[0]) ? $user->groups[0]->id : 0 }}"
                                         >
                                             Redaktə et
                                         </a>
@@ -65,7 +66,7 @@
                     <div class="form-group row">
                         <label for="name" class="col-sm-2 col-form-label">Ad</label>
                         <div class="col-sm-10">
-                            <input type="email" class="form-control" id="name" placeholder="istifadəçi adı">
+                            <input type="text" class="form-control" id="name" placeholder="istifadəçi adı">
                         </div>
                     </div>
                     <div class="form-group row">
@@ -75,16 +76,24 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="name" class="col-sm-2 col-form-label">Rollar</label>
+                        <label for="name" class="col-sm-2 col-form-label">Rol</label>
                         <div class="col-sm-10">
                             <select class="custom-select mr-sm-2 form-control" id="roles">
                             </select>
                         </div>
                     </div>
+                    <div class="form-group row">
+                        <label for="name" class="col-sm-2 col-form-label">Qrup</label>
+                        <div class="col-sm-10">
+                            <select class="custom-select mr-sm-2 form-control" id="groups">
+                            </select>
+                        </div>
+                    </div>
 
                     <div class="btn-list text-center mt-4">
-                        <button class="btn btn-rounded btn-outline-success save-user" type="submit">Yadda saxla</button>
-                        <button class="btn btn-rounded btn-outline-dark" data-dismiss="modal" type="submit">Ləğv et</button>
+                        <button class="btn btn-rounded btn-outline-success save-user" type="button">Yadda saxla</button>
+                        <button class="btn btn-rounded btn-outline-dark" data-dismiss="modal" type="button">Ləğv et</button>
+                        <button class="btn btn-rounded btn-outline-danger delete-user" data-dismiss="modal" type="button">Sil</button>
                     </div>
 
                 </div>
@@ -109,30 +118,49 @@
         let user_id = null;
         let name = null;
         let role_id = null;
+        let group_id = null;
         let email = null;
 
         $('.editUserInfo').on('click',function(event){
             $('#roles').empty();
+            $('#groups').empty();
 
             user_id = $(this).data('user-id');
             name = $(this).data('user-name');
             email = $(this).data('user-email');
             role_id = $(this).data('role-id');
+            group_id = $(this).data('group-id');
 
             $('#name').attr('value', name);
             $('#email').attr('value', email);
 
             $.ajax({
                 type: 'GET',
-                url: "/roles/all",
+                url: "/admin/getRolesAndGroups",
                 success: function (result) {
                     if($.trim(result.data)){
-                        $.each(result.data, function(key, val){
+                        // $('#roles').append('' +
+                        //     '<option>--Rol seçin--</option>'
+                        // )
+                        $.each(result.data.roles, function(key, val){
                             let val_with_selected = val.id === role_id ? 'value="'+ val.id + '" selected' : 'value="' + val.id + '"';
                             $('#roles').append('' +
                                 '<option ' +
                                 val_with_selected +
                                 '>'+ val.name +
+                                '</option>'
+                            )
+                        })
+
+                        $('#groups').append('' +
+                            '<option>-- Qrup seçin --</option>'
+                        )
+                        $.each(result.data.groups, function(key, val){
+                            let val_with_selected = val.id === group_id ? 'value="'+ val.id + '" selected' : 'value="' + val.id + '"';
+                            $('#groups').append('' +
+                                '<option ' +
+                                val_with_selected +
+                                '>'+ val.group_name +
                                 '</option>'
                             )
                         })
@@ -151,18 +179,42 @@
         $('#roles').on('change', function () {
             role_id = $(this).val();
         })
+        $('#groups').on('change', function () {
+            group_id = $(this).val();
+        })
 
         $('.save-user').on('click', function () {
-            $.ajax({
-                type: 'POST',
-                url: '/users/update/',
-                data: {user_id: user_id, role_id: role_id, name: name, email: email},
-                success: function (result) {
-                    if($.trim(result.data)){
-                        location.reload();
+            if(user_id && email){
+                $.ajax({
+                    type: 'POST',
+                    url: '/users/update/',
+                    data: {user_id, role_id, group_id, name, email},
+                    success: function (result) {
+                        if($.trim(result.data)){
+                            location.reload();
+                        }
                     }
-                }
-            })
+                })
+            }
+        })
+
+        $('.delete-user').on('click', function () {
+            let accepted = confirm('Silmək istədiyinizdən əminsiniz?')
+            if(user_id && accepted){
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/users/destroy/' + user_id,
+                    success: function (result) {
+                        if($.trim(result.data)){
+                            location.reload();
+                        }
+                    },
+                    complete: function (result) {
+                        alert(result.message)
+                        taostr.error(result.message)
+                    }
+                })
+            }
         })
 
     </script>

@@ -1,128 +1,45 @@
 @extends('admin.layouts.app')
 @section('css')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ=" crossorigin="anonymous" />
 @endsection
 
 @section('content')
     <div class="row">
-        <div class="col-xl-12">
+        <div class="col-sm-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title mb-3">Restoranlar və Zallar</h4>
                     <div class="row">
-                        <div class="col-sm-3 mb-2 mb-sm-0">
-                            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist"
-                                 aria-orientation="vertical">
-                                @foreach($restaurants as $res)
-                                    <a class="nav-link" id="v-pills-{{$res->id}}-tab" data-toggle="pill"
-                                       href="#v-pills-{{$res->id}}" role="tab" aria-controls="v-pills-{{$res->id}}"
-                                       aria-selected="true">
-                                        <i class="mdi mdi-home-variant d-lg-none d-block mr-1"></i>
-                                        <span class="d-none d-lg-block">{{$res->name}}</span>
-                                    </a>
+                        <div class="col-sm-4">
+                            <label class="mr-sm-2">Restoran</label>
+                            <select class="custom-select mr-sm-2 " id="restaurants">
+                                <option disabled selected> -- Restoran seç</option>
+                                @foreach($restaurants as $rest)
+                                    <option value="{{$rest->id}}">{{$rest->name}}</option>
                                 @endforeach
-                            </div>
-                        </div> <!-- end col-->
+                            </select>
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="mr-sm-2">Zal</label>
+                            <select class="custom-select mr-sm-2" id="halls">
 
-                        <div class="col-sm-9">
-                            <div class="tab-content" id="v-pills-tabContent">
-                                @foreach($restaurants as $res)
-                                    <div class="tab-pane fade" id="v-pills-{{$res->id}}" role="tabpanel"
-                                         aria-labelledby="v-pills-{{$res->id}}-tab">
-                                        <div class="col-lg-12">
-                                            <div class="card">
-                                                <div class="table-responsive">
-                                                        <table class="table">
-                                                            <thead class="bg-primary text-white">
-                                                            <tr>
-                                                                <th>#</th>
-                                                                <th>Ad</th>
-                                                                <th>Masa sayı</th>
-                                                                <th>Əməliyyat</th>
-                                                            </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                            @foreach($res->halls as $hall)
-                                                                <tr>
-                                                                    <td>{{$hall->id}}</td>
-                                                                    <td>{{$hall->name}}</td>
-                                                                    <td>{{$tables_by_hall_id[$hall->id]}}</td>
-                                                                    <td>
-                                                                        <button
-                                                                            class="btn btn-rounded btn-sm btn-outline-success hall_details"
-                                                                            type="submit"
-                                                                            data-hall-id="{{ $hall->id }}"
-                                                                            data-rest-id="{{ $res->id }}"
-                                                                            data-hall-name="{{ $hall->name }}"
-                                                                            data-toggle="modal"
-                                                                            data-target="#bs-example-modal-lg"
-                                                                        >
-                                                                            Ətraflı</button>
-                                                                    </td>
-                                                                </tr>
-                                                            @endforeach
-                                                            </tbody>
-                                                        </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div> <!-- end tab-content-->
-                        </div> <!-- end col-->
+                            </select>
+                        </div>
+                        <div class="col-sm-4 text-right">
+                            <button class="btn btn-success add-table" disabled>+ Masa əlavə et</button>
+                        </div>
                     </div>
-                    <!-- end row-->
-                </div> <!-- end card-body-->
-            </div> <!-- end card-->
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body" id="tables">
+
+                </div>
+            </div>
         </div>
     </div>
 
-    <!--  Modal content for the above example -->
-    <div class="modal fade" id="bs-example-modal-lg" tabindex="-1" role="dialog"
-         aria-labelledby="myLargeModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="myLargeModalLabel"></h4>
-                    <button type="button" class="btn btn-sm btn-outline-success save-changes" data-dismiss="modal"
-                            aria-hidden="true">Yadda Saxla</button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-lg-5">
-                            <div class="grid-container">
-                                <div class="form-group row">
-                                    <label for="hall_name_val" class="col-sm-2 col-form-label">Ad</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" id="hall_name_val" class="form-control" placeholder="">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-7">
-                            <div class="grid-container text-center" id="table_container">
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <h3>Masalar</h3>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <button class="btn btn-sm btn-rounded btn-outline-success" id="add_table">+ Yeni</button>
-                                    </div>
-                                </div>
-                                <div class="grid-container mt-3" id="table_list_container">
-                                    <div class="row">
-                                        <div class="col-sm-2"></div>
-                                        <div class="col-sm-8" id="table_list_inputs">
-                                        </div>
-                                        <div class="col-sm-2"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
 @endsection
 @section('js')
 
@@ -137,116 +54,275 @@
     let hall_id = null;
     let hall_name = null;
     let rest_id = null;
+    let table_values = {};
+    let new_table_values = {};
+    let counter = 0;
 
-    // modal click actions
-    $('.hall_details').on('click', function(){
-        hall_id = $(this).attr('data-hall-id');
-        hall_name = $(this).attr('data-hall-name');
-        rest_id = $(this).attr('data-rest-id');
-
-        $('#hall_name_val').val(hall_name)
-
-
-        // show & hide hall tables
-
-        $.ajax({
-            type: 'POST',
-            url: '/tables/get_by_hall_id',
-            data: {hall_id: hall_id},
-            success: function (result) {
-                if($.trim(result.data) && result.status === 200){
-                    $.each(result.data, function (key, val) {
-                        $('#table_list_inputs').append('' +
-                            '<div class="input-group mt-2" data-id="'+ val.id +'">' +
-                            ' <input type="text" class="form-control table-number" value="'+ val.table_number +'" id="'+ val.id +'"' +
-                            '  placeholder="masa nömrəsi">' +
-                            ' <div class="input-group-append">' +
-                            '    <button class="btn btn-outline-danger btn-rounded btn-sm delete_table" id="'+ val.id +'" type="button">-</button>' +
-                            '</div></div>'
-                        )
-                    })
+    $('#restaurants').on('change', function () {
+        rest_id = $(this).val();
+        if(rest_id){
+            $.ajax({
+                type: 'GET',
+                url: '/getHallsByRestId/' + rest_id,
+                dataType: "json",
+                success: function (result) {
+                    if(result.data){
+                        $('#halls').empty().focus();
+                        $('#halls').append('<option disabled selected value> -- Zal seçin -- </option>');
+                        $.each(result.data, function(key, val){
+                            $('#halls').append(
+                                '<option value="'+ val.id + '"> ' + val.name + '</option>'
+                            );
+                        });
+                    }else{
+                        $('#halls').empty();
+                    }
                 }
-            }
-        })
+            })
+        }else{
+            $('#halls').empty();
+        }
     })
 
+    $('#halls').on('change', function () {
+        $('#tables').empty()
+        hall_id = $(this).val();
+        if(hall_id){
+            $.ajax({
+                type: 'GET',
+                url:  '/tables/get_by_hall_id/' + hall_id,
+                dataType: 'json',
+                success: function (result) {
+                    if($.trim(result.data)){
+                        let tables = $('#tables');
+                        let html = '';
+                        html += '<div class="row table-rows">';
+                        $.each(result.data, function(key, val){
+                            let bgColorStatus = val.status === 0 ? 'bg-success' : 'bg-danger';
+                            html += `
+                                <div class="col-sm-3">
+                                    <div class="card mt-4 ${bgColorStatus} text-light table-properties">
+                                        <div class="card-body text-center input-properties">
+                                            <h4>Masa:    ${val.table_number}</h4>
+                                            <h4>Tutum: ${val.people_amount}</h4>
+                                        </div>
+                                        <div class="card-footer text-right">
+                                    `
+                            if(val.status === 0){
+                                html += `<button class="btn btn-sm edit-table"
+                                                data-id="${val.id}"
+                                                data-number ="${val.table_number}"
+                                                data-amount ="${val.people_amount}"
+                                            >
+                                            <span class="badge badge-warning"><i class="fas fa-pen"></i> Redaktə</span>
+                                        </button>
+                                        <button class="btn btn-sm delete-table" data-table-id="${val.id}">
+                                            <span class="badge badge-light">Sil</span>
+                                        </button>
+                                        `;
+                            }
+                            html += `
+                                        </div>
+                                    </div>
+                                </div>`
 
-    // save hall name
-    $('#hall_name_val').on('change', function () {
-        let new_hall_name = $(this).val();
-        $.ajax({
-            type: 'POST',
-            url: '/halls/update/name',
-            data: {hall_id: hall_id, hall_name: new_hall_name},
-            success: function(result){
-                if($.trim(result.status === 200)){
-                    $('#hall_name_val').addClass('is-valid')
-                    setTimeout(function (){
-                        $('#hall_name_val').removeClass('is-valid');
-                    }, 1500)
+                            })
+                        html += '</div';
+                        tables.append(html)
+                    }
                 }
-            }
-        })
+            })
+        }
     })
 
-    // add new table to hall
-    $('#add_table').on('click', function(){
-        $('#table_list_inputs').prepend('' +
-            '<div class="input-group mt-2">' +
-            ' <input type="text" class="form-control table-number"' +
-            '  placeholder="masa nömrəsi">' +
-            ' <div class="input-group-append">' +
-            '    <button class="btn btn-outline-danger btn-rounded btn-sm delete_table" type="button">-</button>' +
-            '</div></div>'
-        )
+    // activate add table button
+    $(document).on('change', '#halls, #restaurants', function(){
+        if(hall_id && rest_id){
+            $('.add-table').removeAttr('disabled');
+        }
     })
 
+    $(document).on('click', '.edit-table', function (e) {
+        e.stopPropagation();
+        let table_id  = $(this).data('id')
+        let table_number = $(this).data('number')
+        let people_amount = $(this).data('amount')
+        let inputPlace = $(this).closest('.card').find('.input-properties');
+        let footer = $(this).parent();
 
-    // save table_number changes
+        table_values[table_id] = {
+            'prev_number': table_number,
+            'prev_amount': people_amount,
+            'current_number': table_number,
+            'current_amount': people_amount
+        }
+
+        let inputsHtml = `
+            <input class="form-control form-control-sm table-number" data-table-id="${table_id}" value="${table_number}" placeholder="masa nömrəsi">
+            <input class="form-control form-control-sm mt-3 people-amount" data-table-id="${table_id}" value="${people_amount}" placeholder="adam sayı">
+        `
+        inputPlace.html(inputsHtml)
+
+        let footerHtml = `
+            <button type="button" class="btn btn-primary btn-sm save-table" data-table-id="${table_id}"><i class="fas fa-save"> Saxla</i></button>
+            <button type="button" class="btn btn-secondary btn-sm cancel-table" data-table-id="${table_id}"><i class="fas fa-window-close"> İmtina</i></button>
+        `;
+        footer.html(footerHtml)
+    })
+
+    // get table number
     $(document).on('change', '.table-number', function(){
-        let new_table_number = $(this).val();
-        let table_id = $(this).attr('id')
-        let url = table_id ? '/tables/change_number' : '/tables/store';
+        let table_id = $(this).data('table-id')
+        let table_counter = $(this).parent('div').parent('div').data('counter')
+        if(table_id){
+            table_values[table_id].current_number = parseInt($(this).val());
+        }else{
+            new_table_values[table_counter].number = parseInt($(this).val());
+        }
+    })
+
+    // get people amount
+    $(document).on('change', '.people-amount', function(){
+        let table_id = $(this).data('table-id')
+        let table_counter = $(this).parent('div').parent('div').data('counter')
+        if(table_id){
+            table_values[table_id].current_amount = parseInt($(this).val());
+        }else{
+            new_table_values[table_counter].people_amount = parseInt($(this).val());
+        }
+    })
+
+    $(document).on('click', '.cancel-table', function () {
+        let inputPlace = $(this).closest('div.card');
+        let table_id = $(this).data('table-id');
+        let table_number = table_values[table_id].prev_number
+        let people_amount = table_values[table_id].prev_amount
+        let html = '';
+        html += `
+                <div class="card-body text-center input-properties">
+                    <h4>Masa:    ${table_number}</h4>
+                    <h4>Adam sayı: ${people_amount}</h4>
+                </div>
+                <div class="card-footer text-right">
+                    <button class="btn btn-sm edit-table"
+                        data-id="${table_id}"
+                        data-number ="${table_number}"
+                        data-amount ="${people_amount}"
+                    >
+                        <span class="badge badge-warning"><i class="fas fa-pen"></i> Redaktə</span>
+                    </button>
+                    <button class="btn btn-sm edit-table" data-id="${table_id}">
+                        <span class="badge badge-light">Sil</span>
+                    </button>
+                </div>
+            `;
+
+        html += '</div';
+        inputPlace.html(html);
+    })
+
+    $(document).on('click', '.save-table', function () {
+        let inputPlace = $(this).closest('div.card');
+        let table_id = $(this).data('table-id');
+        let new_table_counter = $(this).parent().parent().data('counter')
+
+        let table_number  = table_id ? table_values[table_id].current_number : new_table_values[new_table_counter].number
+        let people_amount = table_id ? table_values[table_id].current_amount : new_table_values[new_table_counter].people_amount
+
+        let html = '';
+        let url = table_id ? '/tables/change_number' : '/tables/store'
+        let data = table_id ? {table_id, table_number, people_amount} : {rest_id, hall_id, table_number, people_amount}
 
         $.ajax({
             type: 'POST',
             url: url,
-            data: {table_id: table_id, table_number: new_table_number, rest_id: rest_id, hall_id: hall_id},
-            success: function(result){
-                if($.trim(result.data) && result.status === 200){
-                    console.log('success')
-                }else{
-                    alert('Bu masa rezerv edilib')
+            data: data,
+            success: function (result) {
+                if($.trim(result.data)){
+                    console.log(result.data)
+
+                    html += `
+                        <div class="card-body text-center input-properties">
+                            <h4>Masa:    ${table_number}</h4>
+                            <h4>Adam sayı: ${people_amount}</h4>
+                        </div>
+                        <div class="card-footer text-right">
+                            <button class="btn btn-sm edit-table"
+                                data-id="${table_id ?? result.data.id}"
+                                data-number ="${table_number}"
+                                data-amount ="${people_amount}"
+                            >
+                                <span class="badge badge-warning"><i class="fas fa-pen"></i> Redaktə et</span>
+                            </button>
+                            <button class="btn btn-sm delete-table" data-table-id="${table_id ?? result.data.id}">
+                                <span class="badge badge-light">Sil</span>
+                            </button>
+                        </div>
+                    `;
+
+                    html += '</div';
+                    inputPlace.removeClass('bg-secondary')
+                    inputPlace.addClass('bg-success')
+                    inputPlace.addClass('text-light')
+                    inputPlace.html(html);
                 }
             }
         })
+
     })
 
     // remove table from list
-    $(document).on('click', '.delete_table', function(){
+    $(document).on('click', '.delete-table', function(e){
+        e.stopPropagation();
+        let new_table_counter = $(this).data('counter')
+        let parentDiv = $(this).parent('div').parent('div').parent('div');
 
-        let table_id = $(this).attr('id')
-        if(table_id){
+        if (new_table_counter && new_table_values[new_table_counter]){
+            delete new_table_values[new_table_counter];
+            console.log(new_table_values)
+        }
+
+        let table_id = $(this).data('table-id')
+        if(table_id && confirm('Silmək istədiyinizdən əminsiniz?')){
             $.ajax({
                 type: 'DELETE',
                 url: '/tables/destroy/'+table_id,
                 data: {table_id: table_id},
                 success: function(result){
                     if(result.message){
-                        $('.input-group[data-id="'+ table_id +'"]').remove()
+                        console.log(parentDiv)
+                        parentDiv.remove()
                     }else{
                         alert('Bu masa rezerv edilib')
                     }
                 }
             })
-        }else{
-            $(this).parent('div').parent('div').remove()
+        }else if(new_table_counter){
+            parentDiv.remove()
         }
-
     })
 
-    $('.save-changes').on('click', function(){
-        location.reload();
+    $('.add-table').on('click', function(){
+        counter++;
+        new_table_values[counter] = {
+            'number': '',
+            'people_amount': ''
+        };
+        let html = `
+            <div class="col-sm-3">
+                <div class="card mt-4 bg-secondary table-properties" data-counter="${counter}">
+                    <div class="card-body text-center input-properties">
+                        <input class="form-control form-control-sm table-number" placeholder="masa nömrəsi">
+                        <input class="form-control form-control-sm mt-3 people-amount" placeholder="tutum">
+                    </div>
+                    <div class="card-footer text-center">
+                        <button type="button" class="btn btn-primary btn-sm save-table"><i class="fas fa-save"> Saxla</i></button>
+                        <button type="button" class="btn btn-danger btn-sm delete-table" data-counter="${counter}">Sil</i></button>
+                    </div>
+                </div>
+            </div>
+        `
+        $('.table-rows').append(html)
     })
 </script>
 

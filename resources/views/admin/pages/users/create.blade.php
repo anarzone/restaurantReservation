@@ -38,6 +38,16 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label for="group_id" class="col-sm-2 col-form-label">Qrup</label>
+                            <div class="col-sm-10">
+                                <select class="custom-select mr-sm-2 form-control" name="group_id" id="groups">
+                                    @foreach($groups as $group)
+                                        <option value="{{$group->id}}">{{$group->group_name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
 
                         <div class="btn-list text-center mt-4">
                             <button class="btn btn-block btn-outline-success save-user" type="submit">Yarat</button>
@@ -45,6 +55,17 @@
                     </form>
                 </div>
             </div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            @if($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
         </div>
     </div>
 @endsection

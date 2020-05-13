@@ -11,7 +11,7 @@
             <!-- ============================================================== -->
             <div class="navbar-brand">
                 <!-- Logo icon -->
-                <a href="index.html">
+                <a href="/admin">
                     <b class="logo-icon">
                         <!-- Dark Logo icon -->
 {{--                        <img src="assets/images/logo-icon.png" alt="homepage" class="dark-logo" />--}}
@@ -185,9 +185,9 @@
                                                                       class="svg-icon"></i></span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right user-dd animated flipInY">
-{{--                        <a class="dropdown-item" href="javascript:void(0)"><i data-feather="user"--}}
-{{--                                                                              class="svg-icon mr-2 ml-1"></i>--}}
-{{--                            My Profile</a>--}}
+                        <a class="dropdown-item" href="{{route('admin.users.profile')}}"><i data-feather="user"
+                                                                              class="svg-icon mr-2 ml-1"></i>
+                            Profil</a>
 {{--                        <a class="dropdown-item" href="javascript:void(0)"><i data-feather="credit-card"--}}
 {{--                                                                              class="svg-icon mr-2 ml-1"></i>--}}
 {{--                            My Balance</a>--}}
@@ -203,7 +203,7 @@
                            onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();"><i data-feather="power"
                                                                               class="svg-icon mr-2 ml-1"></i>
-                            Logout</a>
+                            Çıxış</a>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
                         </form>

@@ -18,11 +18,14 @@ class CreateReservationsTable extends Migration
             $table->string('res_firstname');
             $table->string('res_lastname');
             $table->string('res_phone');
+            $table->string('res_people');
+            $table->bigInteger('table_id')->nullable();
             $table->bigInteger('res_restaurant_id')->unsigned();
             $table->bigInteger('res_hall_id')->unsigned();
             $table->foreign('res_restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');
             $table->dateTime('datetime');
             $table->integer('status');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
