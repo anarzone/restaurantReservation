@@ -107,22 +107,21 @@
                                             <h4>Tutum: ${val.people_amount}</h4>
                                         </div>
                                         <div class="card-footer text-right">
-                                            <button class="btn btn-sm edit-table"
+                                    `
+                            if(val.status === 0){
+                                html += `<button class="btn btn-sm edit-table"
                                                 data-id="${val.id}"
                                                 data-number ="${val.table_number}"
                                                 data-amount ="${val.people_amount}"
                                             >
-                                    `
-                            if(val.status === 0){
-                                html += `
-                                        <span class="badge badge-warning"><i class="fas fa-pen"></i> Redaktə</span>
+                                            <span class="badge badge-warning"><i class="fas fa-pen"></i> Redaktə</span>
+                                        </button>
+                                        <button class="btn btn-sm delete-table" data-table-id="${val.id}">
+                                            <span class="badge badge-light">Sil</span>
+                                        </button>
                                         `;
                             }
                             html += `
-                                            </button>
-                                            <button class="btn btn-sm delete-table" data-table-id="${val.id}">
-                                                <span class="badge badge-light">Sil</span>
-                                            </button>
                                         </div>
                                     </div>
                                 </div>`
@@ -136,6 +135,7 @@
         }
     })
 
+    // activate add table button
     $(document).on('change', '#halls, #restaurants', function(){
         if(hall_id && rest_id){
             $('.add-table').removeAttr('disabled');

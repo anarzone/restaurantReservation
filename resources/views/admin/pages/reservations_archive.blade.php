@@ -5,7 +5,7 @@
           integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
 @endsection
-@section('page-title', 'Rezervasiyalar Arxiv')
+@section('page-title', 'Rezervasiyalar arxivi')
 @section('content')
     <!-- basic table -->
     @if ($errors->any())

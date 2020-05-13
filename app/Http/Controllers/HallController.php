@@ -12,7 +12,11 @@ use Illuminate\Support\Facades\Auth;
 class HallController extends Controller
 {
     public function index(){
-        return view('admin.pages.halls.index', ['halls' => Hall::whereNull('deleted_at')->paginate(10)]);
+        return view('admin.pages.halls.index', [
+            'halls' => Hall::with('reservations')
+                            ->whereNull('deleted_at')
+                            ->paginate(10)
+        ]);
     }
 
     /**
@@ -58,8 +62,8 @@ class HallController extends Controller
         ]);
     }
 
-    public function edit(Hall $hall){
-        return view('admin.pages.halls.edit', ['hall' => $hall]);
+    public function edit(Request $request, Hall $hall){
+        return view('admin.pages.halls.edit', ['hall' => $hall, 'has_reservation' => $request->has_reservation]);
     }
 
     public function update(Request $request, Hall $hall){
@@ -77,7 +81,10 @@ class HallController extends Controller
                 'message' => 'Bu zalda aktiv rezervasiya var'
             ], Response::HTTP_OK);
         }
+        $rest = Restaurant::where('id', $hall->restaurant_id)->with('halls')->first();
+        if(!isset($rest->halls[0])) $rest->update(['status' => Restaurant::NOT_AVAILABLE]);
         $hall->delete();
+
         return response()->json([],Response::HTTP_NO_CONTENT);
     }
 }

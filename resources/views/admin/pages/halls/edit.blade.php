@@ -16,7 +16,9 @@
                         </div>
                         <div class="form-group text-center">
                             <button class="btn btn-success">Yenilə</button>
-                            <button class="btn btn-danger hall-delete" data-hall-id="{{$hall->id}}">Sil</button>
+                            @if(!$has_reservation)
+                                <button class="btn btn-danger hall-delete" data-hall-id="{{$hall->id}}">Sil</button>
+                            @endif
                         </div>
                     </form>
                 </div>
@@ -44,22 +46,8 @@
 
         $('.hall-delete').on('click', function (e) {
             e.preventDefault();
-            let delete_ok = confirm('Silmək istədiyinizdən əminsiniz?')
             let hall_id = $(this).data('hall-id');
-            let status = $(this).data('rest-status');
-            if(delete_ok && hall_id){
-                $.ajax({
-                    type: 'DELETE',
-                    url:  '/admin/halls/destroy/' + hall_id,
-                    success: function (result) {
-                        if(result && $.trim(result.message)){
-                            toastr.error(result.message)
-                        }else{
-                            window.location.href = '/admin/halls'
-                        }
-                    }
-                })
-            }
+            deleteEl({}, '/admin/halls/destroy/' + hall_id, 'Silmək istədiyinizdən əminsiniz?', '/admin/halls')
         })
     </script>
 @endsection

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Reservation;
-use App\Table;
 use App\Table as HallTable;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -51,13 +50,13 @@ class ReservationController extends Controller
             Reservation::where('id', $reservation_id)
                 ->update(['table_id' => $table_id, 'status' => Reservation::STATUS_ACCEPTED]);
 
-            HallTable::where('id', $request->table_id)->update(['status' => Table::TABLE_BOOKED]);
+            HallTable::where('id', $request->table_id)->update(['status' => HallTable::TABLE_BOOKED]);
 
         }elseif ($reserved_table_id && $reserved_table_id != $table_id){
             Reservation::where('id', $reservation_id)
                 ->update(['table_id' => $table_id]);
-            HallTable::where('id', $reserved_table_id)->update(['status' => Table::TABLE_AVAILABLE]);
-            HallTable::where('id', $table_id)->update(['status' => Table::TABLE_BOOKED]);
+            HallTable::where('id', $reserved_table_id)->update(['status' => HallTable::TABLE_AVAILABLE]);
+            HallTable::where('id', $table_id)->update(['status' => HallTable::TABLE_BOOKED]);
         }
 
         $reservation_affected = Reservation::find($request->reservation_id);
@@ -96,19 +95,16 @@ class ReservationController extends Controller
     public function updateStatus(Request $request){
         $request->validate([
            'reservation_id' => 'required|integer',
-           'table_id' => 'required|integer'
         ]);
 
-        $reservation_status = 0;
-        $table_status = 0;
-
-        if($request->status === 'done'){
-            $reservation_status = Reservation::STATUS_DONE;
-            $table_status = Table::TABLE_AVAILABLE;
+        if($request->table_id){
+            $request->validate([
+                'table_id' => 'required|integer',
+            ]);
+            HallTable::where('id', $request->table_id)->update(['status' => HallTable::TABLE_AVAILABLE]);
+            Reservation::find($request->reservation_id)->update(['status' => Reservation::STATUS_DONE]);
         }
 
-        Reservation::find($request->reservation_id)->update(['status' => $reservation_status]);
-        Table::find($request->table_id)->update(['status' => $table_status]);
 
         return response()->json([
             'message' => 'Success',

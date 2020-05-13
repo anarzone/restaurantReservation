@@ -5,8 +5,13 @@
         <div class="col-8">
             <div class="list-goup">
                 @foreach($halls as $hall)
-                    <a href="{{route('admin.halls.edit', $hall->id)}}">
-                        <li class="list-group-item list-group-item-success">
+                    <a href="{{route('admin.halls.edit', [
+                                'hall' => $hall->id,
+                                'has_reservation' => isset($hall->reservations[0]) ? 1:0
+                            ])}}
+                    ">
+
+                        <li class="list-group-item {{ isset($hall->reservations[0]) ? 'list-group-item-success': 'list-group-item-secondary'}}">
                             {{$hall->name}}
                         </li>
                     </a>

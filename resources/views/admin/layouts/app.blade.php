@@ -76,8 +76,12 @@
         <script src="{{asset('back/dist/js/feather.min.js')}}"></script>
         <script src="{{asset('back/assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js')}}"></script>
         <script src="{{asset('back/dist/js/sidebarmenu.js')}}"></script>
+
+        <!-- global libraries -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
         <!--Custom JavaScript -->
         <script src="{{asset('back/dist/js/custom.min.js')}}"></script>
+        <script src="{{asset('back/dist/js/dry_functions.js')}}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
         @yield('js')

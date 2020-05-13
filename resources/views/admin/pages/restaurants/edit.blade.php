@@ -53,23 +53,9 @@
 
         $('.rest-delete').on('click', function (e) {
             e.preventDefault();
-            let delete_ok = confirm('Silmək istədiyinizdən əminsiniz?')
             let rest_id = $(this).data('rest-id');
             let status = $(this).data('rest-status');
-            if(delete_ok && rest_id){
-                $.ajax({
-                    type: 'DELETE',
-                    url:  '/admin/restaurants/destroy/' + rest_id,
-                    data: {status},
-                    success: function (result) {
-                        if(result && $.trim(result.message)){
-                            toastr.error(result.message)
-                        }else{
-                            window.location.href = '/admin/restaurants/all'
-                        }
-                    }
-                })
-            }
+            deleteEl({status}, '/admin/restaurants/destroy/' + rest_id, 'Silmək istədiyinizdən əminsiniz?', '/admin/restaurants/all')
         })
     </script>
 @endsection

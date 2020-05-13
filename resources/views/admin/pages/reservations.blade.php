@@ -69,7 +69,7 @@
                         <th scope="col">Əməliyyat</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody style='font-family: "Roboto", "Arial", "Helvetica Neue", sans-serif'>
                         @foreach($reservations as $res)
                             @if($res->restaurants)
                                 @switch($res->status)
@@ -104,7 +104,7 @@
                                             <button class="btn btn-sm btn-warning reservation-done"
                                                 data-reservation-id = "{{$res->id}}"
                                                 data-table-id = "{{$res->table ? $res->table->id : null}}"
-                                            >Tamamla</button>
+                                            ><i class="fas fa-check-circle"></i></button>
                                         </div>
 
                                     </td>
@@ -150,7 +150,6 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script>
     $.ajaxSetup({
         headers: {
@@ -268,34 +267,31 @@
         let table_id = $(this).data('table-id')
         Swal.fire({
                 title: "Arxivə göndərilsin?",
-                type: "warning",
                 showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
+                confirmButtonColor: "#dd6b55",
                 confirmButtonText: "Göndər!",
                 cancelButtonText: 'Imtina et',
-                closeOnConfirm: false
-        }, function (confirmed) {
-                if(confirmed && table_id && done) return
-                $.ajax({
-                    type: 'POST',
-                    url:  '/reservations/status/update',
-                    data: {status: 'done', reservation_id, table_id},
-                    success: function (result) {
-                        if($.trim(result.data)){
-                            location.reload()
-                        }
-                    },
-                    error: function () {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'Xəta baş verdi!',
-                        })
+        }).then((confirmed)=>{
+            if(!confirmed.value || !table_id) return
+            $.ajax({
+                type: 'POST',
+                url:  '/reservations/status/update',
+                data: {status: 'done', reservation_id, table_id},
+                success: function (result) {
+                    if($.trim(result.data)){
+                        location.reload()
                     }
-                })
-            }
-        )
-        // let done = confirm('Arxivə göndərilsin?')
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Xəta baş verdi!',
+                    })
+                }
+            })
+        })
+
 
     })
 </script>
