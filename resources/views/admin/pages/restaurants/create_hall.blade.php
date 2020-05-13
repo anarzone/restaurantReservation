@@ -156,8 +156,9 @@
         // save table_number changes
         $(document).on('change', '.table-number', function(){
             let new_table_number = $(this).val();
+            let table_counter = $(this).data('id');
             if(new_table_number && $.isNumeric(new_table_number)){
-                hall_tables[counter]['table_number'] = new_table_number;
+                hall_tables[table_counter]['table_number'] = new_table_number;
             }
             console.log(hall_tables);
         })
@@ -165,8 +166,9 @@
         // save people amount changes
         $(document).on('change', '.people-amount', function(){
             let people_amount = $(this).val();
+            let table_counter = $(this).data('id');
             if(people_amount && $.isNumeric(people_amount)){
-                hall_tables[counter]['people_amount'] = people_amount;
+                hall_tables[table_counter]['people_amount'] = people_amount;
             }
             console.log(hall_tables);
 

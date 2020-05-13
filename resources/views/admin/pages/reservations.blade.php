@@ -181,7 +181,7 @@
                         html += '<div class="row">';
                         $.each(result.data, function(key, val){
                             let bgColorStatus = '';
-                            if(val.status === table_status && val.id === reserved_table_id) {
+                            if(parseInt(val.status) === parseInt(table_status) && parseInt(val.id) === parseInt(reserved_table_id)) {
                                     bgColorStatus = 'bg-danger'
                             }else if(val.status === 1) {
                                 bgColorStatus = 'bg-secondary'
