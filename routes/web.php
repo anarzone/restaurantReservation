@@ -25,7 +25,7 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function (){
     Route::get('/', 'AdminController@dashboard')->name('dashboard');
     Route::get('reservations', 'ReservationController@index')->name('reservations.index');
     Route::get('reservations/archive', 'ReservationController@showArchive')->name('reservations.archive');
-    Route::post('reservations/filterByDate', 'ReservationController@filterByDate')->name('filter.date');
+    Route::get('reservations/filterByDate', 'ReservationController@filterByDate')->name('filter.date');
 
     // Users
     Route::get('users/index', 'UserController@index')->name('users.index');
