@@ -24,9 +24,12 @@ class ReservationController extends Controller
         if ($request->has('status')){
             $request->validate(['status' => 'integer']);
             $reservation->where('reservations.status', $request->status);
-        };
+        }
+
+        $user_restaurants = array_column(Auth::user()->groups[0]->restaurants->toArray(), 'id');
 
         $result = $reservation->where('status', '!=', Reservation::STATUS_DONE)
+                              ->whereIn('res_restaurant_id', $user_restaurants)
                               ->with('halls')
                               ->with('restaurants')
                               ->with('table')->paginate(10)->appends('status', $request->status);
