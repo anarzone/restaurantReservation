@@ -37,7 +37,6 @@
                         </div>
                         <div class="col-8">
                             <form class="form-inline row" action="{{route('admin.filter.date')}}">
-{{--                                @csrf--}}
                                 <div class="mb-2 mr-sm-2 input-group date col-xs-4" id="datetimepicker" data-target-input="nearest">
                                     <input type="text" name="date_from" value="{{request('date_from')}}" class="form-control datetimepicker-input" data-target="#datetimepicker"/>
                                     <div class="input-group-append" data-target="#datetimepicker" data-toggle="datetimepicker">
@@ -183,7 +182,7 @@
                             let bgColorStatus = '';
                             if(parseInt(val.status) === parseInt(table_status) && parseInt(val.id) === parseInt(reserved_table_id)) {
                                     bgColorStatus = 'bg-danger'
-                            }else if(val.status === 1) {
+                            }else if(parseInt(val.status) === 1) {
                                 bgColorStatus = 'bg-secondary'
                             }else{
                                 bgColorStatus = 'bg-success'
