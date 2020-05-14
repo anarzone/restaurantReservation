@@ -2,7 +2,7 @@
 <h5>Configuration steps</h5>
 - Add roles and permissions: 
 ```  ```
-```
+``` php
 // Install related packages
 composer install
 
