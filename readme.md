@@ -1,5 +1,5 @@
-<h4>Amburan Reservation</h4>
-<h5>Configuration steps</h5>
+**Amburan Reservation**
+Configuration steps
  - Install related packages:  composer install
  ```sh
 $ composer install
@@ -8,4 +8,3 @@ $ composer install
  ```sh
 $ php artisan migrate:fresh --seed
  ```
-
