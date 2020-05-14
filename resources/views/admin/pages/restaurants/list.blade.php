@@ -6,7 +6,7 @@
             <div class="list-goup">
                 @foreach($restaurants as $rest)
                     <a href="{{route('admin.restaurants.edit', $rest->id)}}">
-                        <li class="list-group-item {{$rest->status ? 'list-group-item-success' : 'list-group-item-secondary'}}">
+                        <li class="list-group-item {{isset($rest->reservations[0]) ? 'list-group-item-success' : 'list-group-item-secondary'}}">
                             {{$rest->name}}
                         </li>
                     </a>

@@ -22,10 +22,12 @@
                         </div>
                         <div class="form-group text-center">
                             <button class="btn btn-success">Yenilə</button>
-                            <button class="btn btn-danger rest-delete"
-                                    data-rest-id="{{$restaurant->id}}"
-                                    data-rest-status="{{$restaurant->status}}"
-                            >Sil</button>
+                            @if(!isset($restaurant->reservations[0]))
+                                <button class="btn btn-danger rest-delete"
+                                        data-rest-id="{{$restaurant->id}}"
+                                        data-rest-status="{{$restaurant->status}}"
+                                >Sil</button>
+                            @endif
                         </div>
                     </form>
                 </div>

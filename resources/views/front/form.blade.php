@@ -92,7 +92,7 @@
                             <div class="form-group row">
                                 <label class="col-lg-3 col-form-label form-control-label"></label>
                                 <div class="col-lg-9">
-                                    <input type="submit" name="submit" class="btn btn-outline-primary check_table" value="Yoxla">
+                                    <input type="submit" name="submit" class="btn btn-outline-primary check_table" value="Göndər">
                                 </div>
                             </div>
                         </form>
