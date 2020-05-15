@@ -7,7 +7,6 @@ use App\Table as HallTable;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Http\Response as ResponseAlias;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
