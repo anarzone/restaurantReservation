@@ -50,7 +50,6 @@ class FrontController extends Controller
                 'status'    => Customer::STATUS_NEW,
             ])->id;
         }
-        dd($request->reservation_date);
         $data = Reservation::create([
             'res_firstname' => $request->firstname,
             'res_lastname' => $request->lastname,
