@@ -25,4 +25,8 @@ class Hall extends Model
     public function reservations(){
         return $this->hasMany(Reservation::class, 'res_hall_id');
     }
+
+    public function plan(){
+        return $this->hasOne(Plan::class, 'hall_id');
+    }
 }

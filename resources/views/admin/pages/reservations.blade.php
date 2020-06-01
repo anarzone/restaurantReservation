@@ -1,9 +1,21 @@
 @extends('admin.layouts.app')
 @section('css')
     <!-- This page plugin CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
-          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
+    <style>
+        .hall-plan-image{
+            max-height:100%;
+            max-width:100%;
+            object-fit: cover;
+        }
+        area {
+            cursor: pointer;
+        }
+
+        .small-btn{
+            padding: .2rem;
+        }
+    </style>
 @endsection
 @section('page-title', 'Rezervasiyalar')
 @section('content')
@@ -21,7 +33,6 @@
                 </div>
             </div>
         </div>
-
     @endif
     <div class="row">
         <div class="col-12">
@@ -56,19 +67,20 @@
                 </div>
                 <table class="table mb-0">
                     <thead>
-                    <tr>
-                        <th scope="col">Id</th>
-                        <th scope="col">Ad soyad</th>
-                        <th scope="col">Telefon</th>
-                        <th scope="col">Qonaq</th>
-                        <th scope="col">Restoran</th>
-                        <th scope="col">Zal</th>
-                        <th scope="col">Tarix</th>
-                        <th scope="col">Masa</th>
-                        <th scope="col">Əməliyyat</th>
-                    </tr>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Ad soyad</th>
+                            <th scope="col">Telefon</th>
+                            <th scope="col">Qonaq</th>
+                            <th scope="col">Restoran</th>
+                            <th scope="col">Qeyd</th>
+                            <th scope="col">Zal</th>
+                            <th scope="col">Tarix</th>
+                            <th scope="col">Masa</th>
+                            <th scope="col">Əməliyyat</th>
+                        </tr>
                     </thead>
-                    <tbody style='font-family: "Roboto", "Arial", "Helvetica Neue", sans-serif'>
+                    <tbody>
                         @foreach($reservations as $res)
                             @if($res->restaurants)
                                 @switch($res->status)
@@ -81,23 +93,35 @@
                             @endswitch
                                 <tr data-tr-id="{{$res->id}}" class="{{$colors}}">
                                     <th scope="row">{{$res->id}}</th>
-                                    <td>{{$res->res_firstname}} {{$res->res_lastname}}</td>
+                                    <td>
+                                        {{$res->res_firstname}} {{$res->res_lastname}}
+                                        @if(key_exists($res->customer_id, $reservations_by_customers)
+                                            && $reservations_by_customers[$res->customer_id] > 1)
+                                            <i class="text-primary fas fa-certificate"></i>
+                                        @endif
+                                    </td>
                                     <td>{{$res->res_phone}}</td>
                                     <td>{{$res->res_people}}</td>
                                     <td>{{$res->restaurants->name}}</td>
+                                    <td class="text-center">
+                                        <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{$res->note}}"></i>
+                                    </td>
                                     <td>{{$res->halls->name}}</td>
-                                    <td>{{date('Y/m/d -  H:m', strtotime($res->datetime)) }}</td>
-                                    <td>{{ $res->table ? $res->table->table_number : "" }}</td>
+                                    <td>{{Carbon\Carbon::createFromDate($res->datetime)}}</td>
+                                    <td id="{{$res->id}}">{{ $res->table ? $res->table->table_number : "" }}</td>
                                     <td>
                                         <div class="row">
-                                            <button class="btn btn-sm btn-dark choose-table"
+                                            <button class="btn btn-sm btn-dark choose-table small-btn"
                                                     data-hall-id = "{{$res->halls->id}}"
                                                     data-hall-name = "{{$res->halls->name}}"
                                                     data-table-status = "{{ $res->table ? $res->table->status : null}}"
                                                     data-res-id = "{{$res->id}}"
                                                     data-table-id = "{{$res->table ? $res->table->id : null}}"
+                                                    data-table-number= "{{$res->table ? $res->table->table_number : null}}"
+                                                    data-res-date = "{{$res->datetime}}"
+                                                    data-res-fullname = "{{$res->res_firstname}} {{$res->res_lastname}}"
                                                     data-toggle="modal"
-                                                    data-target="#bs-example-modal-lg"
+                                                    data-target="#full-width-modal"
                                             >Masa seç
                                             </button>
                                             <button class="btn btn-sm btn-warning reservation-done"
@@ -119,36 +143,50 @@
             {{$reservations->appends(['date_from'=> request('date_from'), 'date_to' => request('date_to')])->links()}}
         </div>
     </div>
-    <!--  Modal content for the above example -->
-    <div class="modal fade" id="bs-example-modal-lg" tabindex="-1" role="dialog"
-         aria-labelledby="myLargeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content bg-white">
+
+    <div id="full-width-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-full-width">
+            <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="hall-name">Masalar</h4>
                     <div class="btn-group" role="group" aria-label="Basic example">
-                        <button type="button" class="btn btn-outline-primary btn-sm save-table" data-dismiss="modal">Yadda saxla</button>
+{{--                        <button type="button" class="btn btn-outline-primary btn-sm save-table" data-dismiss="modal">Yadda saxla</button>--}}
                         <button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Bağla</button>
                     </div>
                 </div>
                 <div class="modal-body">
-                    <div class="col-sm-12">
-                        <div class="card">
-                            <div class="card-body" id="tables">
-
+                    <div class="card">
+                        <div class="row reservation-info"></div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-10">
+                                <div class="imagemaps-wrapper">
+                                    <img class="hall-plan-image" src="" draggable="false" usemap="#hallmap">
+                                    <map class="imagemaps" name="hallmap">
+                                    </map>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="res-table-info text-center">
+                                    <h4 class="bg-danger text-light">Rezervasiyalar</h4>
+                                    <span class="table-number"></span>
+                                    <hr>
+                                    <div class="table-reservations"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+    </div>
 @endsection
 
 @section('js')
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script type="text/javascript" src="{{asset('back/dist/js/tooltipster/tooltipster.bundle.min.js')}}"></script>
     <script>
     $.ajaxSetup({
         headers: {
@@ -156,56 +194,171 @@
         }
     });
 
+    toastr.options = {
+        "preventDuplicates": true,
+        "positionClass": "toast-top-center",
+    }
+
     let reservation_id = null;
     let selected_table_id = null;
     let reserved_table_id = null;
+    let edited_date = null;
+    let res_date = null;
+    let table_number = null;
 
     $('.choose-table').on('click', function () {
+        // make empty before initialized
+        $('.hall-plan-image').attr('src', '')
+        $('.imagemaps').empty()
         $('#tables').empty()
+        $('.reservation-info').empty()
+
+        let fullname = $(this).data('res-fullname');
+
+        table_number = $(this).data('table-number');
         hall_id = $(this).data('hall-id');
         reservation_id = $(this).data('res-id');
-
-        let table_status = $(this).data('table-status');
+        res_date = $(this).data('res-date');
         reserved_table_id = $(this).data('table-id');
+
+
+
         $('#hall-name').text($(this).data('hall-name')+' - masalar');
         if(hall_id){
             $.ajax({
                 type: 'GET',
-                url:  '/tables/get_by_hall_id/' + hall_id,
+                url:  '/tables/getPlanByHallId/' + hall_id,
                 dataType: 'json',
                 success: function (result) {
-                    if($.trim(result.data)){
-                        let tables = $('#tables');
-                        let html = '';
-                        html += '<div class="row">';
-                        $.each(result.data, function(key, val){
-                            let bgColorStatus = '';
-                            if(parseInt(val.status) === parseInt(table_status) && parseInt(val.id) === parseInt(reserved_table_id)) {
-                                    bgColorStatus = 'bg-danger'
-                            }else if(parseInt(val.status) === 1) {
-                                bgColorStatus = 'bg-secondary'
-                            }else{
-                                bgColorStatus = 'bg-success'
-                            }
-                            html += `
-                                <div class="col-sm-3">
-                                    <div class="card mt-4 ${bgColorStatus} text-light table-properties"
-                                         data-status="${val.status}"
-                                         data-id="${ val.id }">
-                                        <div class="card-body text-center input-properties">
-                                            <h4>Masa #${val.table_number}</h4>
-                                            <h5>Tutum ${val.people_amount} </h5>
-                                        </div>
-                                    </div>
-                                </div>
-                            `
+                    if($.trim(result.data.tables)){
+                        let src = "{{url('storage/back/images')}}/" + result.data.plan_image
+                        $('.hall-plan-image').attr('src', src)
+                        $.each(result.data.tables, function (i, val) {
+                            let mapDiv = $(`<area
+                                                    shape="rect"
+                                                    data-table-id="${val.table_id}"
+                                                    coords="${val.coords}"
+                                                    onclick="selectTable('${val.table_id}'); showTableInfo('${val.table_id}');"
+                                                    >
+                                          `)
+                            $('.imagemaps').append(mapDiv)
                         })
-                        html += '</div';
-                        tables.append(html)
+                        let reservation_info_html = `
+                            <div class="col-md-4 col-sm-4">
+                                <h4>${fullname}</h4>
+                            </div>
+                            <div class="col-md-4 col-sm-4 table-number">
+                                <h4>Masa #${table_number}</h4>
+                            </div>
+                            <div class="col-md-4 col-sm-4 res-info-wrapper">
+                                <h4 class="res-d">
+                                    ${res_date}
+                                    <span class="badge badge-warning" onclick="editDate('${res_date}')" style="cursor: pointer">Edit</span>
+                                </h4>
+                            </div>
+                        `;
+
+                        $('.reservation-info').append(reservation_info_html)
+
                     }
                 }
             })
         }
+    })
+
+    function selectTable(table_id){
+        if(table_id){
+            let current_res_date = edited_date ?? res_date;
+
+            $.ajax({
+                type: 'PUT',
+                url:  '/reservations/'+ reservation_id +'/update/table',
+                data: {table_id, 'date': current_res_date},
+                success: function (result) {
+                    $.trim(result.message) ? toastr.success(result.data) : toastr.error(result.data);
+                }
+            })
+        }
+    }
+
+    function showTableInfo(table_id){
+        $('.table-reservations').empty();
+        $('.table-number').empty();
+        if(table_id){
+            $.ajax({
+                type: 'GET',
+                url:  '/reservations/table/'+ table_id +'/all',
+                success: function (result) {
+                    if($.trim(result.data.reservations)){
+                        $.each(result.data.reservations, function (i, val) {
+                            let html = `
+                                <h4><span>${i+1}. </span> ${val.datetime}</h4>
+                            `
+                            $('.table-reservations').append(html);
+                        })
+                        $('.table-number').append('Masa #' + result.data.table.table_number)
+                    }
+                }
+            })
+        }
+    }
+
+    function editDate(date){
+        let html = `
+            <div class="mb-2 mr-sm-2 input-group date col-xs-4" id="datetimepickerInfo" data-target-input="nearest">
+                <input type="text" name="res_date_info" value="${date}" class="form-control datetimepicker-input" data-target="#datetimepickerInfo"/>
+                <div class="input-group-append" data-target="#datetimepickerInfo" data-toggle="datetimepicker">
+                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                </div>
+            </div>
+            <span class="badge badge-success save-date" style="cursor: pointer">Save</span>
+            <span class="badge badge-secondary cancel-date" style="cursor: pointer">Cancel</span>
+        `
+
+        $('.res-d').remove()
+        $('.res-info-wrapper').append(html)
+
+        $('#datetimepickerInfo').datetimepicker({
+            format: 'YYYY-MM-Do, HH:mm',
+        });
+
+    }
+
+    function cancelDate(date){
+        let html = `
+            <h4 class="res-d">
+                ${date}
+                <span class="badge badge-warning" onclick="editDate('${date}')" style="cursor: pointer">Edit</span>
+            </h4>
+        `;
+        $('#datetimepickerInfo').remove()
+        $('.save-date').remove()
+        $('.cancel-date').remove()
+        $('.res-info-wrapper').append(html)
+    }
+
+    $(document).on('change.datetimepicker', function (e) {
+        edited_date = moment(e.date).format('YYYY-MM-DD HH:mm')
+    })
+
+    $(document).on('click', '.save-date', function () {
+        if(edited_date && reservation_id){
+            $.ajax({
+                type: 'PUT',
+                url: '/reservations/'+ reservation_id +'/update/date',
+                data: {'date': edited_date},
+                success: function (result) {
+                    if($.trim(result.message)){
+                        toastr.success(result.message)
+                        cancelDate(edited_date)
+                    }
+                }
+            });
+        }
+    })
+
+    $(document).on('click', '.cancel-date', function () {
+        cancelDate(res_date)
     })
 
     $(document).on('click', '.table-properties', function () {
@@ -249,10 +402,12 @@
         $('#datetimepicker').datetimepicker({
             format: 'MMMM Do YYYY, HH:mm'
         });
+
         $('#datetimepicker2').datetimepicker({
             format: 'MMMM Do YYYY, HH:mm',
             useCurrent: false
         });
+
         $("#datetimepicker").on("change.datetimepicker", function (e) {
             $('#datetimepicker2').datetimepicker('minDate', e.date);
         });
@@ -264,6 +419,7 @@
     $('.reservation-done').on('click', function () {
         let reservation_id = $(this).data('reservation-id')
         let table_id = $(this).data('table-id')
+
         Swal.fire({
                 title: "Arxivə göndərilsin?",
                 showCancelButton: true,

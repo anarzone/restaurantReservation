@@ -28,7 +28,6 @@ class AdminController extends Controller
             ->whereIn('id', Auth::user()->inGroupRestaurants())
             ->where('status', '=', Restaurant::AVAILABLE)
             ->with('halls')->get();
-
         return view('admin.pages.dashboard', ['restaurants' => $restaurants]);
     }
 
@@ -103,6 +102,11 @@ class AdminController extends Controller
 
         return redirect()->back()->with('msg', 'Məlumatlarınız uğurla yeniləndi');
 
+    }
+
+    public function getForm(){
+        $data = Restaurant::select('id','name')->whereNull('deleted_at')->where('status', '=', '1')->get();
+        return view('admin.pages.reservation_form', ['restaurants' => $data]);
     }
 
     // will return to this function when role editing activated

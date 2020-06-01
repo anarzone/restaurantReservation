@@ -1,0 +1,56 @@
+/*
+* Prefixed by https://autoprefixer.github.io
+* PostCSS: v7.0.29,
+* Autoprefixer: v9.7.6
+* Browsers: last 4 version
+*/
+
+@media screen and (min-width: 1199px){
+    .t-datepicker-days{
+        width: 500px;
+    }
+    .t-next, .t-prev, .t-table-condensed td, .t-table-condensed th{
+        padding: 5px !important;
+        font-size: 14px !important;
+    }
+}
+@media screen and (max-width: 1199px){
+    .partner-footer{
+        display: none;
+    }
+}
+@media screen and (max-width: 991px){
+    .t-datepicker-days{
+        left: 0 !important;
+        max-width: 100% !important;
+    }
+    .t-check-in, .t-check-out{
+        width: 100%;
+        border: 1px solid #CECECE !important;
+    }
+    .t-next, .t-prev, .t-table-condensed td, .t-table-condensed th{
+        padding: 5px !important;
+        font-size: 14px !important;
+    }
+}
+
+@media screen and (max-width: 767px){
+    .form-center{
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    .success-menu{
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    .success-text p{
+        font-size: 18px;
+    }
+    .success-text-bottom p{
+        font-size: 14px;
+    }
+    .info-validation{
+        right: 0%;
+        top: -4px;
+    }
+}

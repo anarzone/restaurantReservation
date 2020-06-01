@@ -14,6 +14,7 @@
 
 Route::get('/', 'FrontController@index');
 Route::post('/check_table', 'FrontController@checkTableAvailability');
+Route::post('/send_form', 'FrontController@sendForm');
 Route::get('/getHallsByRestId/{restaurant_id}', 'FrontController@getHallsByRestId');
 
 // Admin routes
@@ -23,9 +24,12 @@ Route::prefix('ambrn-admin')->group(function (){
 
 Route::prefix('admin')->middleware('auth')->name('admin.')->group(function (){
     Route::get('/', 'AdminController@dashboard')->name('dashboard');
+
+    // Reservations
     Route::get('reservations', 'ReservationController@index')->name('reservations.index');
     Route::get('reservations/archive', 'ReservationController@showArchive')->name('reservations.archive');
     Route::get('reservations/filterByDate', 'ReservationController@filterByDate')->name('filter.date');
+    Route::get('reservations/form', 'AdminController@getForm')->name('reservations.form');
 
     // Users
     Route::get('users/index', 'UserController@index')->name('users.index');
@@ -61,6 +65,18 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function (){
     Route::put('halls/{hall}/update', 'HallController@update')->name('halls.update');
     Route::delete('halls/destroy/{hall}', 'HallController@destroy')->name('halls.destroy');
 
+    // Hall plans
+    Route::get('plans/images/new', 'PlanController@upload_image')->name('plan.images.new');
+    Route::post('plans/images/upload', 'PlanController@upload')->name('plan.images.upload');
+    Route::get('halls/{hall}/plan/create', 'PlanController@create')->name('plans.create');
+    Route::post('plans/store', 'PlanController@store')->name('plans.store');
+    Route::get('plans/{plan}/edit', 'PlanController@edit')->name('plans.edit');
+    Route::put('plans/{plan}/update', 'PlanController@update')->name('plans.update');
+
+
+    // Customers
+    Route::get('customers', 'CustomerController@index')->name('customers.index');
+    Route::get('customers/{customer}/reservations', 'CustomerController@getReservationsByCustomer')->name('customer.reservations');
 });
 
 // Hall routes
@@ -77,6 +93,7 @@ Route::middleware('auth')->group(function (){
     Route::delete('/tables/destroy/{id}', 'TableController@destroy');
     Route::post('/tables/store', 'TableController@store');
     Route::post('/tables/change_number', 'TableController@change_number');
+    Route::get('/tables/getPlanByHallId/{hall}', 'TableController@get_plan_tables_by_hall_id')->name('plan.tables');
 
     // Restaurants routes
     Route::post('/restaurants/store', 'RestaurantController@store')->name('restaurants.store');
@@ -93,6 +110,9 @@ Route::middleware('auth')->group(function (){
     // Reservation routes
     Route::post('/reservations/update', 'ReservationController@update');
     Route::post('/reservations/status/update', 'ReservationController@updateStatus');
+    Route::put('/reservations/{reservation}/update/date', 'ReservationController@updateDate')->name('reservation.date.update');
+    Route::put('/reservations/{reservation}/update/table', 'ReservationController@updateTable')->name('reservation.table.update');
+    Route::get('/reservations/table/{table_id}/all', 'ReservationController@getTableReservations')->name('reservation.table.update');
 });
 
 
