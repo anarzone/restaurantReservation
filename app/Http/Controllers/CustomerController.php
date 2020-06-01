@@ -12,7 +12,7 @@ class CustomerController extends Controller
     public function index(){
 
         return view('admin.pages.customers.index', [
-           'customers' => Customer::paginate(10),
+           'customers' => Customer::latest()->paginate(10),
         ]);
     }
 //Select r.*, r2.name, h.name FROM reservations r
