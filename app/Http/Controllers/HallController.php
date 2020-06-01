@@ -3,11 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Hall;
+use App\Plan;
+use App\PlanTable;
 use App\Restaurant;
 use App\Table as Hall_Table;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class HallController extends Controller
 {
@@ -25,7 +30,7 @@ class HallController extends Controller
     public function create(){
         $restaurants = Restaurant::whereNull('deleted_at')->whereIn('id', Auth::user()->inGroupRestaurants())->with('halls')->get();
 
-        return view('admin.pages.restaurants.create_hall', ['restaurants' => $restaurants]);
+        return view('admin.pages.halls.create', ['restaurants' => $restaurants]);
     }
 
     public function store(Request $request){

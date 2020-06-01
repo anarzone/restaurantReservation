@@ -21,4 +21,8 @@ class Table extends Model
     public function reservation(){
         return $this->hasOne(Reservation::class);
     }
+
+    public function plans(){
+        return $this->belongsToMany(Plan::class, 'plan_tables');
+    }
 }

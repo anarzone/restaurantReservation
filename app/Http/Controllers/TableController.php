@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Hall;
+use App\Plan;
+use App\PlanTable;
 use App\Reservation;
 use App\Table as HallTable;
 use Illuminate\Http\JsonResponse;
@@ -108,9 +110,19 @@ class TableController extends Controller
 
     public function get_by_hall_id(Request $request, $hall_id){
         $tables = HallTable::where('hall_id', $hall_id)->orderBy('status', 'asc')->get();
+        $has_plan = Hall::where('id', $hall_id)->with('plan')->first()->plan;
         return response()->json([
             'status' => Response::HTTP_OK,
-            'data'   => $tables
+            'data'   => ['tables' => $tables, 'has_plan' => $has_plan]
+        ]);
+    }
+
+    public function get_plan_tables_by_hall_id($hall_id){
+        $tables = PlanTable::where('hall_id', $hall_id)->get();
+        $plan = Plan::where('hall_id', $hall_id)->first();
+        $plan_image = $plan ? $plan->img_name : '';
+        return response()->json([
+           'data' => ['tables' => $tables, 'plan_image' => $plan_image]
         ]);
     }
 

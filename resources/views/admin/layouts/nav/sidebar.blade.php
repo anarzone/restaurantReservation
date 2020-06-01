@@ -9,12 +9,24 @@
           class="hide-menu">Dashboard</span></a></li>
           <li class="list-divider"></li>
           <li class="nav-small-cap"><span class="hide-menu">Rezervasiya</span></li>
-
-          <li class="sidebar-item"> <a class="sidebar-link" href="{{route('admin.reservations.index')}}"
-            aria-expanded="false"><i data-feather="tag" class="feather-icon"></i><span
-            class="hide-menu">Rezervasiyalar
-          </span></a>
+        <li class="sidebar-item">
+            <a class="sidebar-link" href="{{route('admin.reservations.index')}}"
+                    aria-expanded="false"><i data-feather="tag" class="feather-icon"></i>
+                <span class="hide-menu">Rezervasiyalar</span>
+            </a>
         </li>
+          <li class="sidebar-item">
+              <a class="sidebar-link" href="{{route('admin.reservations.form')}}"
+                 aria-expanded="false"><i data-feather="file-text" class="feather-icon"></i>
+                  <span class="hide-menu">Rezervasiya formu</span>
+              </a>
+          </li>
+          <li class="sidebar-item">
+              <a class="sidebar-link" href="{{route('admin.customers.index')}}"
+                 aria-expanded="false"><i data-feather="briefcase" class="feather-icon"></i>
+                  <span class="hide-menu">Müştərilər</span>
+              </a>
+          </li>
         <li class="sidebar-item">
           <a class="sidebar-link" href="{{route('admin.reservations.archive')}}" aria-expanded="false">
             <i data-feather="archive" class="feather-icon"></i>
@@ -25,7 +37,7 @@
       </li>
       <li class="list-divider"></li>
       <li class="sidebar-item"> <a class="sidebar-link has-arrow" href="javascript:void(0)"
-        aria-expanded="false"><i data-feather="file-text" class="feather-icon"></i><span
+        aria-expanded="false"><i data-feather="list" class="feather-icon"></i><span
         class="hide-menu">Restoran & Zal</span></a>
         <ul aria-expanded="false" class="collapse  first-level base-level-line">
           <li class="sidebar-item"><a href="{{route('admin.restaurants.index')}}" class="sidebar-link"><span

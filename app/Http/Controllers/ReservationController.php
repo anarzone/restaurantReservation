@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Customer;
 use App\Reservation;
 use App\Table as HallTable;
 use Carbon\Carbon;
@@ -14,8 +15,6 @@ class ReservationController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
-     * @return Reservation
      */
     public function index(Request $request)
     {
@@ -31,9 +30,20 @@ class ReservationController extends Controller
                               ->whereIn('res_restaurant_id', $user_restaurants)
                               ->with('halls')
                               ->with('restaurants')
-                              ->with('table')->paginate(10)->appends('status', $request->status);
+                              ->with('table')->latest()->paginate(10)->appends('status', $request->status);
 
-        return view('admin.pages.reservations', ['reservations' => $result ]);
+        $customers = Customer::all();
+        $reservations_by_customers = [];
+
+        foreach ($customers as $customer){
+            $reservations_by_customers[$customer->id] = count($customer->reservations);
+        }
+
+
+        return view('admin.pages.reservations', [
+            'reservations'             => $result,
+            'reservations_by_customers' => $reservations_by_customers
+        ]);
     }
 
     /**
@@ -105,6 +115,7 @@ class ReservationController extends Controller
                                 ->with('restaurants')
                                 ->with('table')
                                 ->whereBetween('datetime', [$from->toDateTimeString(), $to->toDateTimeString()])
+                                ->where('status', '!=', Reservation::STATUS_DONE)
                                 ->paginate(10);
             return view('admin.pages.reservations', ['reservations' => $result ]);
         }
@@ -119,7 +130,7 @@ class ReservationController extends Controller
             $request->validate([
                 'table_id' => 'required|integer',
             ]);
-            HallTable::where('id', $request->table_id)->update(['status' => HallTable::TABLE_AVAILABLE]);
+
             Reservation::find($request->reservation_id)->update(['status' => Reservation::STATUS_DONE]);
         }
 
@@ -136,5 +147,77 @@ class ReservationController extends Controller
         $result = $reservation->where('status', Reservation::STATUS_DONE)->with('halls')->with('restaurants')->with('table')->paginate(10);
 
         return view('admin.pages.reservations_archive', ['reservations' => $result ]);
+    }
+
+    public function updateDate($res_id, Request $request){
+        $rules = [
+            'date' => 'required|date'
+        ];
+
+        $messages = [
+            'date'      => 'Doğru formatda daxil etməmisiniz',
+            'required'  => 'Tarix boş ola bilməz'
+        ];
+
+        Validator::make($request->all(), $rules, $messages);
+
+        Reservation::where('id', $res_id)->update(['datetime' => $request->date]);
+
+        return response()->json([
+            'message' => 'Tarix uğurla yeniləndi.'
+        ], Response::HTTP_CREATED);
+    }
+
+    public function updateTable($res_id, Request $request){
+        $rules = [
+            'table_id' => 'required|numeric',
+            'date'     => 'required|date'
+        ];
+
+        $messages = [
+            'required.table_id'  => 'Stol seçilməyib',
+            'date'               => 'Yalnış format'
+        ];
+
+        Validator::make($request->all(), $rules, $messages);
+
+        $reserved = Reservation::where('datetime', $request->date)
+                                ->where('table_id', $request->table_id)
+                                ->where('status', '!=', Reservation::STATUS_DONE)
+                                ->first();
+        if($reserved){
+            $message = '';
+            $data = 'Masa bu tarixdə artıq tutulmuşdur';
+        }else{
+            Reservation::where('id', $res_id)
+                        ->update([
+                                    'table_id' => $request->table_id,
+                                    'status' => Reservation::STATUS_ACCEPTED
+                                ]);
+
+            $table = HallTable::find($request->table_id);
+
+            $message = 'Success';
+            $data = $table->table_number . ' nömrəli masa  seçildi.';
+        }
+
+
+        return response()->json([
+            'message' => $message,
+            'data'    => $data,
+        ], Response::HTTP_CREATED);
+    }
+
+    public function getTableReservations($table_id){
+
+        $related_reservations = Reservation::where('table_id', $table_id)->get();
+        $table = HallTable::find($table_id);
+        return response()->json([
+            'message' => 'Success',
+            'data' => [
+                'reservations' => $related_reservations,
+                'table' => $table
+            ],
+        ], Response::HTTP_OK);
     }
 }

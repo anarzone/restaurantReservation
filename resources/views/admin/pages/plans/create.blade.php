@@ -1,0 +1,129 @@
+@extends('admin.layouts.app')
+@section('page-title', 'Plan yarat')
+@section('css')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <style>
+        .hall-plan-image{
+            max-height:100%;
+            max-width:100%;
+            object-fit: cover;
+            opacity: 0.4;
+        }
+        .imagemaps-wrapper{
+            width: 90%;
+            background: black;
+            overflow: hidden;
+        }
+    </style>
+@endsection
+@section('content')
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+            <div class="card">
+                <div class="imagemaps-wrapper">
+                    <img class="hall-plan-image" src="{{asset('storage/back/images/'.$hall->plan->img_name)}}" draggable="false" usemap="hallmap">
+                    <map class="imagemaps" name=hallmap">
+{{--                        <area shape="rect" name="imagemaps-area" class="imagemaps-area0" coords="83,49,129,118" href="https://www.jqueryscript.net" target="_blank">--}}
+{{--                        <area shape="rect" name="imagemaps-area" class="imagemaps-area1" coords="273,123,325,166" href="https://www.jqueryscript.net" target="_blank">--}}
+                    </map>
+                </div>
+                <div class="imagemaps-control">
+                    <fieldset>
+                        <legend>Settings</legend>
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Masa</th>
+{{--                                <th scope="col">Target</th>--}}
+                                <th scope="col">Sil</th>
+                            </tr>
+                            </thead>
+                            <tbody class="imagemaps-output">
+                            <tr class="item-###">
+                                <th scope="row">###</th>
+                                <td>
+                                    <select class="form-control area-href">
+                                        <option value="" selected disabled>-- Masa seç --</option>
+                                        @foreach($hall->tables as $table)
+                                            <option value="{{$table->id}}">{{$table->table_number}}</option>
+                                        @endforeach
+                                    </select>
+{{--                                    <input type="text" class="form-control area-href">--}}
+                                </td>
+{{--                                <td>--}}
+{{--                                    <select class="form-control area-target">--}}
+{{--                                        <option value="_self">_self</option>--}}
+{{--                                        <option value="_blank">_blank</option>--}}
+{{--                                    </select>--}}
+{{--                                </td>--}}
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-delete">Sil</button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </fieldset>
+                    <div class="px-2">
+                        <button type="button" class="btn btn-info btn-sm btn-add-map">Əlavə et</button>
+                        <button type="button" class="btn btn-outline-success save-map float-right">Yadda saxla</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+@section('js')
+    <script src="{{asset('back/dist/js/jquery.imagemaps.js')}}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            }
+        });
+        $(document).ready(function(){
+            $('.imagemaps-wrapper').imageMaps({
+                addBtn: '.btn-add-map',
+                output: '.imagemaps-output',
+                stopCallBack: function(active, coords){
+                    console.log(active);
+                    console.log(coords);
+                }
+            });
+        })
+
+
+        $('.btn-get-map').on('click', function(){
+            let oParent = $(this).parent().parent().parent();
+            let result  = oParent.find('.imagemaps-wrapper').clone();
+            result.children('div').remove();
+            console.log(result.html());
+            alert(result.html());
+        });
+
+        $('.save-map').on('click', function () {
+            let plan_details = []
+
+            $.each($('map.imagemaps').children(), function (i, val) {
+                table_id = val.href.split('/')[7]
+                plan_details.push({'table_id': table_id, 'coords': val.coords})
+            })
+
+            if($('[name=imagemaps-area]').length){
+                console.log(plan_details)
+                $.ajax({
+                    url: '{{route('admin.plans.store')}}',
+                    type: 'POST',
+                    data: {plan_details, plan_id: '{{$hall->plan->id}}', hall_id: '{{$hall->id}}' },
+                    success: function (result) {
+                        if ($.trim(result.message) === 'success'){
+                            location.href = '/admin'
+                        }
+                    }
+                })
+            }
+        })
+
+    </script>
+@endsection

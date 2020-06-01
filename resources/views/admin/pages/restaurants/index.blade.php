@@ -26,6 +26,10 @@
                         </div>
                         <div class="col-sm-4 text-right">
                             <button class="btn btn-success add-table" disabled>+ Masa əlavə et</button>
+                            <button class="btn btn-warning edit-plan" disabled >
+                                Plan redaktə et
+                                <span class="badge badge-warning"><i class="fas fa-external-link-alt"></i></span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -59,6 +63,7 @@
     let counter = 0;
 
     $('#restaurants').on('change', function () {
+        $('.edit-plan').attr('disabled', true);
         rest_id = $(this).val();
         if(rest_id){
             $.ajax({
@@ -94,10 +99,15 @@
                 dataType: 'json',
                 success: function (result) {
                     if($.trim(result.data)){
+                        if(result.data.has_plan){
+                            $('.edit-plan').removeAttr('disabled').attr('data-plan-id', result.data.has_plan.id);
+                        }else{
+                            $('.edit-plan').attr('disabled', true);
+                        }
                         let tables = $('#tables');
                         let html = '';
                         html += '<div class="row table-rows">';
-                        $.each(result.data, function(key, val){
+                        $.each(result.data.tables, function(key, val){
                             let bgColorStatus = parseInt(val.status) === 0 ? 'bg-success' : 'bg-danger';
                             html += `
                                 <div class="col-sm-3">
@@ -323,6 +333,14 @@
             </div>
         `
         $('.table-rows').append(html)
+    })
+
+    $('.edit-plan').on('click', function () {
+        let plan_id = $(this).data('plan-id');
+
+        if(plan_id){
+            location.href = '/admin/plans/'+ plan_id +'/edit'
+        }
     })
 </script>
 
