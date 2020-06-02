@@ -8,7 +8,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-body" style="padding: 0">
+                <div class="card-body">
                     <div class="table-responsive">
                         <table id="zero_config" class="table table-striped table-bordered no-wrap">
                             <thead>

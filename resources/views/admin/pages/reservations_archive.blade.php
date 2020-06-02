@@ -10,8 +10,7 @@
     <!-- basic table -->
     @if ($errors->any())
         <div class="row">
-            <div class="col-4"></div>
-            <div class="col-8">
+            <div class="col-12">
                 <div class="alert alert-danger">
                     <ul>
                         @foreach ($errors->all() as $error)

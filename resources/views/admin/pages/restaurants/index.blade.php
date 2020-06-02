@@ -36,7 +36,7 @@
             </div>
         </div>
         <div class="col-sm-12">
-            <div class="card">
+            <div class="card" style="display:none" id="resultCard">
                 <div class="card-body" id="tables">
 
                 </div>
@@ -91,6 +91,8 @@
 
     $('#halls').on('change', function () {
         $('#tables').empty()
+        $('#resultCard').hide()
+
         hall_id = $(this).val();
         if(hall_id){
             $.ajax({
@@ -99,6 +101,7 @@
                 dataType: 'json',
                 success: function (result) {
                     if($.trim(result.data)){
+                        $("#resultCard").fadeIn();
                         if(result.data.has_plan){
                             $('.edit-plan').removeAttr('disabled').attr('data-plan-id', result.data.has_plan.id);
                         }else{
@@ -259,8 +262,8 @@
                         <div class="card-footer text-right">
                             <button class="btn btn-sm edit-table"
                                 data-id="${table_id ?? result.data.id}"
-                                data-number ="${table_number}"
-                                data-amount ="${people_amount}"
+                                data-number="${table_number}"
+                                data-amount="${people_amount}"
                             >
                                 <span class="badge badge-warning"><i class="fas fa-pen"></i> Redaktə et</span>
                             </button>
@@ -270,7 +273,7 @@
                         </div>
                     `;
 
-                    html += '</div';
+                    html += '</div>';
                     inputPlace.removeClass('bg-secondary')
                     inputPlace.addClass('bg-success')
                     inputPlace.addClass('text-light')

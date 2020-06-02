@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('page-title', 'Plan yarat')
+@section('page-title', 'Planı dəyişdir')
 @section('css')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
     <style>
@@ -10,7 +10,8 @@
             opacity: 0.4;
         }
         .imagemaps-wrapper{
-            width: 90%;
+            width: 100%;
+            text-align: left!important;
             background: black;
             overflow: hidden;
         }
@@ -22,7 +23,7 @@
             <div class="card">
                 <div class="imagemaps-wrapper">
                     <img class="hall-plan-image" src="{{asset('storage/back/images/'.$plan->img_name)}}" draggable="false" usemap="#hallmap">
-                    <map class="imagemaps" name=hallmap">
+                    <map class="imagemaps" name="hallmap">
                         @foreach($planData as $key => $data)
                             <area shape="rect" name="imagemaps-area" id="{{$data->id}}" class="imagemaps-area{{$key}}" coords="{{$data->coords}}" href="{{$data->table_id}}" target="_blank">
                         @endforeach
@@ -30,7 +31,6 @@
                 </div>
                 <div class="imagemaps-control">
                     <fieldset>
-                        <legend>Settings</legend>
                         <table class="table table-hover">
                             <thead>
                             <tr>
@@ -58,7 +58,7 @@
                         </table>
                     </fieldset>
                     <div class="px-2">
-                        <button type="button" class="btn btn-info btn-sm btn-add-map">Əlavə et</button>
+                        <button type="button" class="btn btn-info btn-sm btn-add-map">+ Masa əlavə et</button>
                         <button type="button" class="btn btn-outline-success save-map float-right">Yadda saxla</button>
                     </div>
                 </div>

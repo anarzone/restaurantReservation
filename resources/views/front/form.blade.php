@@ -24,7 +24,7 @@
 <body>
     <section class="reservation_box">
     <div class="bg-image">
-        <img src="" alt="">
+        <img src="{{asset('images/bg_image.jpg')}}" alt="">
     </div>
     <div class="form-box">
         <div class="lang-flex-box">
@@ -143,7 +143,7 @@
                                 <input type="text" class="clock-value-inp" name="reservation_date" hidden>
                                 <p class="value-clock"></p>
                                 <div class="time-control">
-                                    <div class="flex-control-time">
+                                    <div class="flex-control-time justify-content-center">
                                         <p class="time-text text-hours">
                                             12
                                         </p>
@@ -162,7 +162,6 @@
                                             <i class="fa fa-angle-down" onclick="minusTime(2, 2)">
                                             </i>
                                         </div>
-                                        <div class="info-clock">PM</div>
                                     </div>
                                 </div>
                             </div>

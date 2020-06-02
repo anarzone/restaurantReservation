@@ -22,8 +22,7 @@
     <!-- basic table -->
     @if ($errors->any())
         <div class="row">
-            <div class="col-4"></div>
-            <div class="col-8">
+            <div class="col-12">
                 <div class="alert alert-danger">
                     <ul>
                         @foreach ($errors->all() as $error)
@@ -81,6 +80,15 @@
                         </tr>
                     </thead>
                     <tbody>
+                      @if($reservations && count($reservations) < 1)
+                        <tr>
+                          <td colspan="10">
+                            <div class="alert alert-warning">
+                              Rezervasiyalar tapılmadı
+                            </div>
+                          </td>
+                        </tr>
+                      @else
                         @foreach($reservations as $res)
                             @if($res->restaurants)
                                 @switch($res->status)
@@ -134,6 +142,7 @@
                                 </tr>
                             @endif
                         @endforeach
+                      @endif
                     </tbody>
                 </table>
             </div>
@@ -171,7 +180,11 @@
                                     <h4 class="bg-danger text-light">Rezervasiyalar</h4>
                                     <span class="table-number"></span>
                                     <hr>
-                                    <div class="table-reservations"></div>
+                                    <div class="table-reservations">
+                                      <div class="alert alert-warning">
+                                        Masa seçilməyib
+                                      </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -253,7 +266,7 @@
                             <div class="col-md-4 col-sm-4 res-info-wrapper">
                                 <h4 class="res-d">
                                     ${res_date}
-                                    <span class="badge badge-warning" onclick="editDate('${res_date}')" style="cursor: pointer">Edit</span>
+                                    <span class="badge badge-warning" onclick="editDate('${res_date}')" style="cursor: pointer">Dəyişdir</span>
                                 </h4>
                             </div>
                         `;
@@ -311,8 +324,8 @@
                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                 </div>
             </div>
-            <span class="badge badge-success save-date" style="cursor: pointer">Save</span>
-            <span class="badge badge-secondary cancel-date" style="cursor: pointer">Cancel</span>
+            <span class="badge badge-success save-date" style="cursor: pointer">Yadda saxla</span>
+            <span class="badge badge-secondary cancel-date" style="cursor: pointer">İmtina et</span>
         `
 
         $('.res-d').remove()
