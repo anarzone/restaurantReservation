@@ -105,7 +105,11 @@
                                         {{$res->res_firstname}} {{$res->res_lastname}}
                                         @if(key_exists($res->customer_id, $reservations_by_customers)
                                             && $reservations_by_customers[$res->customer_id] > 1)
-                                            <i class="text-primary fas fa-certificate"></i>
+                                            <i class="text-primary fas fa-certificate"
+                                               data-toggle="tooltip"
+                                               title="Daimi müştəri"
+                                               data-placement="top"
+                                               data-original-title="Daimi müştəri"></i>
                                         @endif
                                     </td>
                                     <td>{{$res->res_phone}}</td>
@@ -397,7 +401,6 @@
 
     $('.save-table').on('click', function () {
         if(selected_table_id){
-            console.log(selected_table_id)
             $.ajax({
                 type: 'POST',
                 url: '/reservations/update',
@@ -440,7 +443,7 @@
                 confirmButtonText: "Göndər!",
                 cancelButtonText: 'Imtina et',
         }).then((confirmed)=>{
-            if(!confirmed.value || !table_id) return
+            if(!confirmed.value) return
             $.ajax({
                 type: 'POST',
                 url:  '/reservations/status/update',

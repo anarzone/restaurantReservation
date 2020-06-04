@@ -47,20 +47,16 @@
         <li class="sidebar-item"><a href="{{route('admin.restaurants.list')}}" class="sidebar-link"><span
           class="hide-menu"> Restoranlar
         </span></a>
-      </li>
+        </li>
       <li class="sidebar-item"><a href="{{route('admin.halls.index')}}" class="sidebar-link"><span
         class="hide-menu"> Zallar
       </span></a>
     </li>
     @hasanyrole('manager|supervisor|super-admin')
-    <li class="sidebar-item"><a href="{{route('admin.halls.create')}}" class="sidebar-link"><span
-      class="hide-menu"> Yeni zal
+    <li class="sidebar-item"><a href="{{route('admin.plan.images.new')}}" class="sidebar-link"><span
+      class="hide-menu"> Plan
     </span></a>
-  </li>
-  <li class="sidebar-item"><a href="{{route('admin.restaurants.create')}}" class="sidebar-link"><span
-    class="hide-menu"> Yeni restoran
-  </span></a>
-</li>
+    </li>
 @endhasanyrole
 </ul>
 </li>

@@ -30,3 +30,26 @@ function deleteEl(data, url, titleQuestion,
         })
     })
 }
+
+
+function getHalls(restaurant_id, hall_id=null){
+    $.ajax({
+        type: 'GET',
+        url: '/getHallsByRestId/' + restaurant_id,
+        dataType: "json",
+        success: function (result) {
+            if(result.data){
+                $('#halls').empty().focus();
+                $('#halls').append('<option disabled selected value> -- Zal seçin -- </option>');
+                $.each(result.data, function(key, val){
+                    let selected = parseInt(hall_id) === val.id ? "selected" : ""
+                    $('#halls').append(
+                        '<option value="'+ val.id +'" '+ selected +' > ' + val.name + '</option>'
+                    );
+                });
+            }else{
+                $('#halls').empty();
+            }
+        }
+    })
+}

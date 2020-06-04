@@ -68,16 +68,18 @@ class FrontController extends Controller
     }
 
     public function sendForm(Request $request){
+        $request->note ?? $request->merge(['note' => '']);
+
         $rules =[
             'firstname'         => 'required|string|min:2',
             'lastname'          => 'required|string|min:2',
-            'country_code'       => 'required|string',
+            'country_code'      => 'required|string',
             'phone'             => 'required|string',
             'restaurant_id'     => 'required|alpha_num',
             'hall_id'           => 'required|alpha_num',
             'people'            => 'required|alpha_num',
             'reservation_date'  => 'required|date',
-            'note'              => 'string'
+            'note'              => 'present'
         ];
 
         $messages = [

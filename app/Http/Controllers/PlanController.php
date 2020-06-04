@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Hall;
 use App\Plan;
 use App\PlanTable;
+use App\Restaurant;
 use App\Table;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -14,8 +15,9 @@ use Illuminate\Support\Facades\Validator;
 class PlanController extends Controller
 {
     public function upload_image(){
-        $halls = Hall::doesnthave('plan')->get();
-        return view('admin.pages.plans.image_upload', ['halls' => $halls]);
+        $restaurants = Restaurant::where('status', Restaurant::AVAILABLE)->get();
+        $halls = Hall::all();
+        return view('admin.pages.plans.image_upload', ['restaurants' => $restaurants, 'halls' => $halls]);
     }
 
     public function upload(Request $request){
@@ -37,13 +39,14 @@ class PlanController extends Controller
             $image = $request->file('plan_image');
             $filename = time().'.'.$image->getClientOriginalExtension();
             $path = $image->storeAs('public/back/images', $filename);
-
             $old_image = Plan::where('hall_id', $request->hall_id)->first();
+
             $plan = Plan::updateOrCreate(
                 ['hall_id' => $request->hall_id],
                 [
-                    'img_name' => $filename,
-                    'hall_id'    => $request->hall_id
+                    'img_name'   => $filename,
+                    'img_size'   => Storage::size($path),
+                    'hall_id'    => $request->hall_id,
                 ]
             );
 
@@ -125,5 +128,9 @@ class PlanController extends Controller
             );
         }
         return response()->json(['message' => 'success'], Response::HTTP_CREATED);
+    }
+
+    public function getPlansByHallId(Hall $hall){
+        return response()->json(['plan' => $hall->plan]);
     }
 }

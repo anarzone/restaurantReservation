@@ -23,8 +23,6 @@
                 <div class="imagemaps-wrapper">
                     <img class="hall-plan-image" src="{{asset('storage/back/images/'.$hall->plan->img_name)}}" draggable="false" usemap="hallmap">
                     <map class="imagemaps" name=hallmap">
-{{--                        <area shape="rect" name="imagemaps-area" class="imagemaps-area0" coords="83,49,129,118" href="https://www.jqueryscript.net" target="_blank">--}}
-{{--                        <area shape="rect" name="imagemaps-area" class="imagemaps-area1" coords="273,123,325,166" href="https://www.jqueryscript.net" target="_blank">--}}
                     </map>
                 </div>
                 <div class="imagemaps-control">
@@ -49,14 +47,7 @@
                                             <option value="{{$table->id}}">{{$table->table_number}}</option>
                                         @endforeach
                                     </select>
-{{--                                    <input type="text" class="form-control area-href">--}}
                                 </td>
-{{--                                <td>--}}
-{{--                                    <select class="form-control area-target">--}}
-{{--                                        <option value="_self">_self</option>--}}
-{{--                                        <option value="_blank">_blank</option>--}}
-{{--                                    </select>--}}
-{{--                                </td>--}}
                                 <td>
                                     <button type="button" class="btn btn-danger btn-delete">Sil</button>
                                 </td>

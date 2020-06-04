@@ -102,7 +102,7 @@
                                         <td>${val.hall_name}</td>
                                         <td>${val.table_number ?? ''}</td>
                                         <td class="text-center">
-                                            <i class="fas fa-info-circle"
+                                            <i class="fas fa-info-circle tooltip"
                                                 data-toggle="tooltip"
                                                 title="${val.note}"
                                                 data-placement="top"
