@@ -1,4 +1,5 @@
 @extends('admin.layouts.app')
+@section('page-title', 'Masalar')
 @section('css')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ=" crossorigin="anonymous" />
 @endsection
@@ -11,17 +12,22 @@
                     <div class="row">
                         <div class="col-sm-4">
                             <label class="mr-sm-2">Restoran</label>
-                            <select class="custom-select mr-sm-2 " id="restaurants">
+                            <select class="custom-select mr-sm-2"
+                                    id="restaurants"
+                                    {{request()->has('restaurant') && request()->has('hall') ? 'disabled' : ''}}>
                                 <option disabled selected> -- Restoran seç</option>
                                 @foreach($restaurants as $rest)
-                                    <option value="{{$rest->id}}">{{$rest->name}}</option>
+                                    <option value="{{$rest->id}}"
+                                        {{request()->has('restaurant') && request('restaurant') == $rest->id ? 'selected' : ''}}
+                                    >
+                                        {{$rest->name}}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="col-sm-4">
                             <label class="mr-sm-2">Zal</label>
                             <select class="custom-select mr-sm-2" id="halls">
-
                             </select>
                         </div>
                         <div class="col-sm-4 text-right">
@@ -46,7 +52,7 @@
 
 @endsection
 @section('js')
-
+<script src="{{asset('back/dist/js/dry_functions.js')}}"></script>
 <script>
     $.ajaxSetup({
         headers: {
@@ -55,35 +61,26 @@
     });
 
     // resuable variables
-    let hall_id = null;
+    let hall_id = '{{request()->has("hall") ? request('hall') : null}}';
     let hall_name = null;
-    let rest_id = null;
+    let rest_id = $('#restaurants option:selected').val();
     let table_values = {};
     let new_table_values = {};
     let counter = 0;
+
+    if(!isNaN(rest_id)){
+        $('#halls').attr('disabled', true)
+        $('.add-table').removeAttr('disabled');
+
+        getHalls(rest_id, hall_id)
+        getTables(hall_id)
+    }
 
     $('#restaurants').on('change', function () {
         $('.edit-plan').attr('disabled', true);
         rest_id = $(this).val();
         if(rest_id){
-            $.ajax({
-                type: 'GET',
-                url: '/getHallsByRestId/' + rest_id,
-                dataType: "json",
-                success: function (result) {
-                    if(result.data){
-                        $('#halls').empty().focus();
-                        $('#halls').append('<option disabled selected value> -- Zal seçin -- </option>');
-                        $.each(result.data, function(key, val){
-                            $('#halls').append(
-                                '<option value="'+ val.id + '"> ' + val.name + '</option>'
-                            );
-                        });
-                    }else{
-                        $('#halls').empty();
-                    }
-                }
-            })
+            getHalls(rest_id)
         }else{
             $('#halls').empty();
         }
@@ -95,56 +92,7 @@
 
         hall_id = $(this).val();
         if(hall_id){
-            $.ajax({
-                type: 'GET',
-                url:  '/tables/get_by_hall_id/' + hall_id,
-                dataType: 'json',
-                success: function (result) {
-                    if($.trim(result.data)){
-                        $("#resultCard").fadeIn();
-                        if(result.data.has_plan){
-                            $('.edit-plan').removeAttr('disabled').attr('data-plan-id', result.data.has_plan.id);
-                        }else{
-                            $('.edit-plan').attr('disabled', true);
-                        }
-                        let tables = $('#tables');
-                        let html = '';
-                        html += '<div class="row table-rows">';
-                        $.each(result.data.tables, function(key, val){
-                            let bgColorStatus = parseInt(val.status) === 0 ? 'bg-success' : 'bg-danger';
-                            html += `
-                                <div class="col-sm-3">
-                                    <div class="card mt-4 ${bgColorStatus} text-light table-properties">
-                                        <div class="card-body text-center input-properties">
-                                            <h4>Masa:    ${val.table_number}</h4>
-                                            <h4>Tutum: ${val.people_amount}</h4>
-                                        </div>
-                                        <div class="card-footer text-right">
-                                    `
-                            if(parseInt(val.status) === 0){
-                                html += `<button class="btn btn-sm edit-table"
-                                                data-id="${val.id}"
-                                                data-number ="${val.table_number}"
-                                                data-amount ="${val.people_amount}"
-                                            >
-                                            <span class="badge badge-warning"><i class="fas fa-pen"></i> Redaktə</span>
-                                        </button>
-                                        <button class="btn btn-sm delete-table" data-table-id="${val.id}">
-                                            <span class="badge badge-light">Sil</span>
-                                        </button>
-                                        `;
-                            }
-                            html += `
-                                        </div>
-                                    </div>
-                                </div>`
-
-                            })
-                        html += '</div';
-                        tables.append(html)
-                    }
-                }
-            })
+            getTables(hall_id)
         }
     })
 
@@ -345,6 +293,59 @@
             location.href = '/admin/plans/'+ plan_id +'/edit'
         }
     })
+
+    function getTables(hall_id){
+        $.ajax({
+            type: 'GET',
+            url:  '/tables/get_by_hall_id/' + hall_id,
+            dataType: 'json',
+            success: function (result) {
+                if($.trim(result.data)){
+                    $("#resultCard").fadeIn();
+                    if(result.data.has_plan){
+                        $('.edit-plan').removeAttr('disabled').attr('data-plan-id', result.data.has_plan.id);
+                    }else{
+                        $('.edit-plan').attr('disabled', true);
+                    }
+                    let tables = $('#tables');
+                    let html = '';
+                    html += '<div class="row table-rows">';
+                    $.each(result.data.tables, function(key, val){
+                        let bgColorStatus = parseInt(val.status) === 0 ? 'bg-success' : 'bg-danger';
+                        html += `
+                                <div class="col-sm-3">
+                                    <div class="card mt-4 ${bgColorStatus} text-light table-properties">
+                                        <div class="card-body text-center input-properties">
+                                            <h4>Masa:    ${val.table_number}</h4>
+                                            <h4>Tutum: ${val.people_amount}</h4>
+                                        </div>
+                                        <div class="card-footer text-right">
+                                    `
+                        if(parseInt(val.status) === 0){
+                            html += `<button class="btn btn-sm edit-table"
+                                                data-id="${val.id}"
+                                                data-number ="${val.table_number}"
+                                                data-amount ="${val.people_amount}"
+                                            >
+                                            <span class="badge badge-warning"><i class="fas fa-pen"></i> Redaktə</span>
+                                        </button>
+                                        <button class="btn btn-sm delete-table" data-table-id="${val.id}">
+                                            <span class="badge badge-light">Sil</span>
+                                        </button>
+                                        `;
+                        }
+                        html += `
+                                        </div>
+                                    </div>
+                                </div>`
+
+                    })
+                    html += '</div';
+                    tables.append(html)
+                }
+            }
+        })
+    }
 </script>
 
 @endsection

@@ -16,11 +16,19 @@ use Illuminate\Support\Facades\Validator;
 
 class HallController extends Controller
 {
-    public function index(){
+    public function index(Request $request){
+        if ($request->has('restaurant')){
+            $halls = Hall::with('reservations')
+                        ->where('restaurant_id', $request->restaurant)
+                        ->whereNull('deleted_at')
+                        ->paginate(10);
+        }else{
+            $halls = Hall::with('reservations')
+                ->whereNull('deleted_at')
+                ->paginate(10);
+        }
         return view('admin.pages.halls.index', [
-            'halls' => Hall::with('reservations')
-                            ->whereNull('deleted_at')
-                            ->paginate(10)
+            'halls' => $halls
         ]);
     }
 
@@ -92,4 +100,5 @@ class HallController extends Controller
 
         return response()->json([],Response::HTTP_NO_CONTENT);
     }
+
 }

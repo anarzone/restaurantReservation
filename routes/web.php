@@ -57,6 +57,7 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function (){
     Route::get('restaurants/{restaurant}/edit', 'RestaurantController@edit')->name('restaurants.edit');
     Route::put('restaurants/{restaurant}/update', 'RestaurantController@update')->name('restaurants.update');
     Route::delete('restaurants/destroy/{restaurant}', 'RestaurantController@destroy')->name('restaurants.destroy');
+    Route::get('restaurants/{}');
 
     // Halls
     Route::get('halls', 'HallController@index')->name('halls.index');
@@ -72,6 +73,7 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function (){
     Route::post('plans/store', 'PlanController@store')->name('plans.store');
     Route::get('plans/{plan}/edit', 'PlanController@edit')->name('plans.edit');
     Route::put('plans/{plan}/update', 'PlanController@update')->name('plans.update');
+    Route::get('/plans/getByHallId/{hall}', 'PlanController@getPlansByHallId');
 
 
     // Customers
@@ -83,7 +85,6 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function (){
 
 Route::post('/halls/update/name', 'HallController@update_name');
 Route::post('/halls/store', 'HallController@store');
-
 
 
 Route::middleware('auth')->group(function (){

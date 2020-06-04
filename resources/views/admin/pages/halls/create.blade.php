@@ -7,20 +7,20 @@
         <div class="col-xl-12">
             <div class="card">
                 <div class="card-body">
-                    <div class="row mb-3 pl-2">
-                        <a href="{{route('admin.plan.images.new')}}" class="btn btn-sm btn-success">Plan yarat</a>
-                    </div>
-
                     <div class="row">
                         <div class="col-lg-5">
                             <div class="grid-container">
                                 <div class="form-group row">
                                     <label for="hall_name_val" class="col-sm-3 col-form-label">Restoran</label>
                                     <div class="col-sm-9">
-                                        <select class="custom-select mr-sm-2" id="restaurants">
+                                        <select class="custom-select mr-sm-2" id="restaurants" {{request()->has('restaurant') ? 'disabled' : ''}}>
                                             <option disabled selected value>-- Restoran seç --</option>
                                             @foreach($restaurants as $res)
-                                                <option value="{{$res->id}}">{{$res->name}}</option>
+                                                <option value="{{$res->id}}"
+                                                        {{request()->has('restaurant') && request('restaurant') == $res->id ? 'selected' : ''}}
+                                                    >
+                                                    {{$res->name}}
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -78,9 +78,11 @@
         // reusable variables
         let hall_id =   null;
         let hall_name = null;
-        let rest_id =   null;
+        let rest_id =   $('#restaurants option:selected').val();
         let hall_tables = {};
         let counter = 0;
+
+        console.log('restaurant id', rest_id)
 
         // get hall name
         $('#hall_name_val').on('change', function () {

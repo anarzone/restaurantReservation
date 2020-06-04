@@ -102,6 +102,13 @@ class ReservationController extends Controller
         $to = Carbon::create($request->date_to);
         $result = '';
 
+        $customers = Customer::all();
+        $reservations_by_customers = [];
+
+        foreach ($customers as $customer){
+            $reservations_by_customers[$customer->id] = count($customer->reservations);
+        }
+
         if($request->has('archive')){
             $result = Reservation::where('status', Reservation::STATUS_DONE)
                                 ->with('halls')
@@ -109,7 +116,10 @@ class ReservationController extends Controller
                                 ->with('table')
                                 ->whereBetween('datetime', [$from->toDateTimeString(), $to->toDateTimeString()])
                                 ->paginate(10);
-            return view('admin.pages.reservations_archive', ['reservations' => $result ]);
+            return view('admin.pages.reservations_archive', [
+                'reservations' => $result,
+                'reservations_by_customers' => $reservations_by_customers
+            ]);
         }else{
             $result = Reservation::with('halls')
                                 ->with('restaurants')
@@ -117,23 +127,21 @@ class ReservationController extends Controller
                                 ->whereBetween('datetime', [$from->toDateTimeString(), $to->toDateTimeString()])
                                 ->where('status', '!=', Reservation::STATUS_DONE)
                                 ->paginate(10);
-            return view('admin.pages.reservations', ['reservations' => $result ]);
+            return view('admin.pages.reservations', [
+                'reservations' => $result,
+                'reservations_by_customers' => $reservations_by_customers
+            ]);
         }
     }
 
     public function updateStatus(Request $request){
+
         $request->validate([
            'reservation_id' => 'required|integer',
         ]);
 
-        if($request->table_id){
-            $request->validate([
-                'table_id' => 'required|integer',
-            ]);
 
-            Reservation::find($request->reservation_id)->update(['status' => Reservation::STATUS_DONE]);
-        }
-
+        Reservation::find($request->reservation_id)->update(['status' => Reservation::STATUS_DONE]);
 
         return response()->json([
             'message' => 'Success',
