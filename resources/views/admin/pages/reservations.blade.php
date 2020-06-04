@@ -99,7 +99,7 @@
                                     @php $colors = 'bg-success text-white' @endphp
                                     @break
                             @endswitch
-                                <tr data-tr-id="{{$res->id}}" class="{{$colors}}">
+                                <tr data-tr-id="{{$res->id}}" class="{{$colors}} reservation_row" >
                                     <th scope="row">{{$res->id}}</th>
                                     <td>
                                         {{$res->res_firstname}} {{$res->res_lastname}}
@@ -399,21 +399,6 @@
         }
     })
 
-    $('.save-table').on('click', function () {
-        if(selected_table_id){
-            $.ajax({
-                type: 'POST',
-                url: '/reservations/update',
-                data: {table_id: selected_table_id, reservation_id, reserved_table_id},
-                success: function (result) {
-                    if($.trim(result.data)){
-                        location.reload();
-                    }
-                }
-            })
-        }
-    })
-
     $(function () {
         $('#datetimepicker').datetimepicker({
             format: 'MMMM Do YYYY, HH:mm'
@@ -465,5 +450,9 @@
 
 
     })
+
+    $('#full-width-modal').on('hidden.bs.modal', function() {
+        location.reload();
+    });
 </script>
 @endsection
