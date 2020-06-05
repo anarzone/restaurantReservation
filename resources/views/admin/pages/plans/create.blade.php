@@ -89,7 +89,6 @@
             let oParent = $(this).parent().parent().parent();
             let result  = oParent.find('.imagemaps-wrapper').clone();
             result.children('div').remove();
-            console.log(result.html());
             alert(result.html());
         });
 

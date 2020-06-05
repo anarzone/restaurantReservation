@@ -82,8 +82,6 @@
         let hall_tables = {};
         let counter = 0;
 
-        console.log('restaurant id', rest_id)
-
         // get hall name
         $('#hall_name_val').on('change', function () {
             hall_name = $(this).val();
@@ -152,7 +150,6 @@
                 delete hall_tables[counter];
             }
             $(this).parent('div').parent('div').remove()
-            console.log(hall_tables);
             counter--;
         })
 
@@ -163,7 +160,6 @@
             if(new_table_number && $.isNumeric(new_table_number)){
                 hall_tables[table_counter]['table_number'] = new_table_number;
             }
-            console.log(hall_tables);
         })
 
         // save people amount changes
@@ -173,7 +169,6 @@
             if(people_amount && $.isNumeric(people_amount)){
                 hall_tables[table_counter]['people_amount'] = people_amount;
             }
-            console.log(hall_tables);
 
         })
 
@@ -182,7 +177,6 @@
                 if(val.people_amount === undefined || val.table_number === undefined){
                     delete tables[key]
                 }
-                console.log(`${val.people_amount}, ${val.table_number}`);
             }
         }
     </script>

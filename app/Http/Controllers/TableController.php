@@ -110,10 +110,20 @@ class TableController extends Controller
 
     public function get_by_hall_id(Request $request, $hall_id){
         $tables = HallTable::where('hall_id', $hall_id)->orderBy('status', 'asc')->get();
+        $table_have_reservations = [];
+
+        foreach ($tables as $table){
+            $table_have_reservations[$table->id] = $table->reservation ? 1 : 0;
+        }
+
         $has_plan = Hall::where('id', $hall_id)->with('plan')->first()->plan;
         return response()->json([
             'status' => Response::HTTP_OK,
-            'data'   => ['tables' => $tables, 'has_plan' => $has_plan]
+            'data'   => [
+                'tables' => $tables,
+                'has_plan' => $has_plan,
+                'table_have_reservations' => $table_have_reservations,
+            ]
         ]);
     }
 
