@@ -61,16 +61,6 @@
                     <input type="text" class="form-inp" name="lastname" id="lastname">
                 </div>
                 <div class="input-box">
-                    <p class="half-label">EMAIL</p>
-                    <input type="text" class="form-inp" name="email" id="email" onblur="validationForm(this,2)">
-                    <div class="info-validation">
-                        <i class="fa fa-question"></i>
-                        <div class="box-validation">
-                            <p>Email doğru qeyd edilməyib.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="input-box">
                     <p class="half-label">PHONE</p>
 
                     <div class="flex-input-box">

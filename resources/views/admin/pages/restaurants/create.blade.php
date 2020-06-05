@@ -1,11 +1,10 @@
 @extends('admin.layouts.app')
-
+@section('page-title', 'Restoran yarat')
 @section('content')
     <div class="row">
         <div class="col-sm-12 col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <div class="card-title">Restoran yarat</div>
                         <form action="{{route('restaurants.store')}}" method="POST">
                             @csrf
                             <div class="form-group row">

@@ -212,7 +212,6 @@ $('.submit-btn').click(function(){
     if(length < 1){
         let firstname = $('[name=firstname]').val()
         let lastname = $('[name=lastname]').val()
-        let email = $('[name=email]').val()
         let country_code = $('.country-box').find('span').html()
         let phone = $('[name=phone]').val()
         let people = $('[name=people]').val()
@@ -227,7 +226,6 @@ $('.submit-btn').click(function(){
             data: {
                 firstname,
                 lastname,
-                email,
                 country_code,
                 phone,
                 people,

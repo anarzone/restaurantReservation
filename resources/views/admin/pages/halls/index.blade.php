@@ -60,3 +60,14 @@
         </div>
     </div>
 @endsection
+@section('js')
+    <script>
+        toastr.options = {
+            "preventDuplicates": true,
+            "positionClass": "toast-top-center",
+        }
+        @if(session('message'))
+            toastr.success("{{ session('message') }}");
+        @endif
+    </script>
+@endsection
