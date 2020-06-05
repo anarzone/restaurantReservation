@@ -100,7 +100,7 @@
             <div class="custom-select-item">
                 <p class="half-label">HALL</p>
                 <div class="select-btn">
-                    <p class="title">Masalar</p>
+                    <p class="title">Zallar</p>
                     <i class="figure-icon fa fa-angle-down"></i>
                 </div>
                 <div class="content-custom-select">
