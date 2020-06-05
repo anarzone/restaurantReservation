@@ -69,6 +69,9 @@ class HallController extends Controller
         }
 
         $tables_created = Hall_Table::where('hall_id', $hall_created->id)->get();
+
+        $request->session()->flash('message', 'Zal yaradıldı');
+
         return response()->json([
             'status' => Response::HTTP_CREATED,
             'data'   => ['halls' => $hall_created, 'tables' => $tables_created]
@@ -85,7 +88,7 @@ class HallController extends Controller
         ]);
 
         $hall->update($request->all());
-        return back()->with('message', 'Yeniləndi');
+        return redirect()->route('admin.halls.index')->with('message', 'Zal yeniləndi');
     }
 
     public function destroy(Hall $hall){

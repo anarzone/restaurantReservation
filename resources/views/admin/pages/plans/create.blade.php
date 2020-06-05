@@ -27,7 +27,6 @@
                 </div>
                 <div class="imagemaps-control">
                     <fieldset>
-                        <legend>Settings</legend>
                         <table class="table table-hover">
                             <thead>
                             <tr>

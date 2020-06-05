@@ -116,7 +116,8 @@
                                     <td>{{$res->res_people}}</td>
                                     <td>{{$res->restaurants->name}}</td>
                                     <td class="text-center">
-                                        <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{$res->note}}"></i>
+                                        <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title=""
+                                           data-original-title="{{trim($res->note) ? $res->note : 'Qeyd yoxdur'}}"></i>
                                     </td>
                                     <td>{{$res->halls->name}}</td>
                                     <td>{{Carbon\Carbon::createFromDate($res->datetime)}}</td>

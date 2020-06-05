@@ -45,14 +45,6 @@
             }
         });
 
-        toastr.options = {
-            "preventDuplicates": true,
-            "positionClass": "toast-top-center",
-        }
-        @if(session('message'))
-            toastr.success("{{ session('message') }}");
-        @endif
-
         $('.rest-delete').on('click', function (e) {
             e.preventDefault();
             let rest_id = $(this).data('rest-id');

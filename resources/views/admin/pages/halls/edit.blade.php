@@ -36,14 +36,6 @@
             }
         });
 
-        toastr.options = {
-            "preventDuplicates": true,
-            "positionClass": "toast-top-center",
-        }
-        @if(session('message'))
-            toastr.success("{{ session('message') }}");
-        @endif
-
         $('.hall-delete').on('click', function (e) {
             e.preventDefault();
             let hall_id = $(this).data('hall-id');

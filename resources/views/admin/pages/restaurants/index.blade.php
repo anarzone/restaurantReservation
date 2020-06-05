@@ -110,12 +110,14 @@
         let people_amount = $(this).data('amount')
         let inputPlace = $(this).closest('.card').find('.input-properties');
         let footer = $(this).parent();
+        let status = $(this).closest('.table-properties').data('status')
 
         table_values[table_id] = {
             'prev_number': table_number,
             'prev_amount': people_amount,
             'current_number': table_number,
-            'current_amount': people_amount
+            'current_amount': people_amount,
+            status,
         }
 
         let inputsHtml = `
@@ -158,13 +160,17 @@
         let table_id = $(this).data('table-id');
         let table_number = table_values[table_id].prev_number
         let people_amount = table_values[table_id].prev_amount
+
+        let table_status = table_values[table_id].status
+        let bgColorStatus = table_status === 1 ? 'bg-success' : 'bg-secondary';
+
         let html = '';
         html += `
-                <div class="card-body text-center input-properties">
+                <div class="card-body text-center input-properties ${bgColorStatus}">
                     <h4>Masa:    ${table_number}</h4>
                     <h4>Adam sayı: ${people_amount}</h4>
                 </div>
-                <div class="card-footer text-right">
+                <div class="card-footer text-right ${bgColorStatus}">
                     <button class="btn btn-sm edit-table"
                         data-id="${table_id}"
                         data-number ="${table_number}"
@@ -172,7 +178,7 @@
                     >
                         <span class="badge badge-warning"><i class="fas fa-pen"></i> Redaktə</span>
                     </button>
-                    <button class="btn btn-sm edit-table" data-id="${table_id}">
+                    <button class="btn btn-sm delete-table" data-table-id="${table_id}">
                         <span class="badge badge-light">Sil</span>
                     </button>
                 </div>
@@ -201,13 +207,14 @@
             success: function (result) {
                 if($.trim(result.data)){
                     console.log(result.data)
-
+                    let table_status = table_values[table_id] ? table_values[table_id].status : 0
+                    let bgColorStatus = table_status === 1 ? 'bg-success' : 'bg-secondary';
                     html += `
-                        <div class="card-body text-center input-properties">
+                        <div class="card-body text-center input-properties ${bgColorStatus} ">
                             <h4>Masa:    ${table_number}</h4>
                             <h4>Adam sayı: ${people_amount}</h4>
                         </div>
-                        <div class="card-footer text-right">
+                        <div class="card-footer text-right ${bgColorStatus}">
                             <button class="btn btn-sm edit-table"
                                 data-id="${table_id ?? result.data.id}"
                                 data-number="${table_number}"
@@ -240,10 +247,11 @@
 
         if (new_table_counter && new_table_values[new_table_counter]){
             delete new_table_values[new_table_counter];
-            console.log(new_table_values)
         }
 
         let table_id = $(this).data('table-id')
+        console.log(table_id)
+
         if(table_id && confirm('Silmək istədiyinizdən əminsiniz?')){
             $.ajax({
                 type: 'DELETE',
@@ -312,10 +320,11 @@
                     let html = '';
                     html += '<div class="row table-rows">';
                     $.each(result.data.tables, function(key, val){
-                        let bgColorStatus = result.data.table_have_reservations[val.id] === 1 ? 'bg-success' : 'bg-secondary';
+                        let table_status = result.data.table_have_reservations[val.id]
+                        let bgColorStatus = table_status === 1 ? 'bg-success' : 'bg-secondary';
                         html += `
                                 <div class="col-sm-3">
-                                    <div class="card mt-4 ${bgColorStatus} text-light table-properties">
+                                    <div class="card mt-4 ${bgColorStatus} text-light table-properties" data-status="${table_status}">
                                         <div class="card-body text-center input-properties">
                                             <h4>Masa:    ${val.table_number}</h4>
                                             <h4>Tutum: ${val.people_amount}</h4>

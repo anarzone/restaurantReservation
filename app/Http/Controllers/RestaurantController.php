@@ -40,7 +40,7 @@ class RestaurantController extends Controller
     $related_group = Auth::user()->groups[0];
     $related_group->restaurants()->attach($restaurant->id);
 
-    return redirect()->back();
+    return redirect()->route('admin.restaurants.list')->with('message', 'Restoran yaradıldı');
   }
 
   public function getList(){
@@ -60,7 +60,7 @@ class RestaurantController extends Controller
 
     $restaurant->update($request->all());
 
-    return redirect()->back()->with('message', 'Yeniləndi');
+    return redirect()->route('admin.restaurants.list')->with('message', 'Restoran yeniləndi');
   }
 
   public function destroy(Request $request, Restaurant $restaurant){
