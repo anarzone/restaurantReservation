@@ -99,10 +99,11 @@ class TableController extends Controller
         $message = null;
         $table = HallTable::find($id);
 
-        if($table->status == 0){
-            $table->delete();
-            $message = 'Successfully deleted';
-        }
+        \DB::table('plan_tables')->where('table_id', $id)->delete();
+        $table->delete();
+
+        $message = 'Successfully deleted';
+
         return response()->json([
             'message' => $message,
         ]);
