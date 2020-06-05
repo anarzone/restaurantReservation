@@ -20,8 +20,9 @@ class RestaurantController extends Controller
     ->where('status', '=', Restaurant::AVAILABLE)
     ->with('halls')->get();
 
-    return view('admin.pages.restaurants.index',
-    ['restaurants' => $restaurants]);
+    return view('admin.pages.restaurants.index', [
+        'restaurants' => $restaurants,
+    ]);
   }
 
   public function create(Request $request){

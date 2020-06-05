@@ -301,6 +301,7 @@
             dataType: 'json',
             success: function (result) {
                 if($.trim(result.data)){
+                    console.log(result.data.table_have_reservations)
                     $("#resultCard").fadeIn();
                     if(result.data.has_plan){
                         $('.edit-plan').removeAttr('disabled').attr('data-plan-id', result.data.has_plan.id);
@@ -311,7 +312,7 @@
                     let html = '';
                     html += '<div class="row table-rows">';
                     $.each(result.data.tables, function(key, val){
-                        let bgColorStatus = parseInt(val.status) === 0 ? 'bg-success' : 'bg-danger';
+                        let bgColorStatus = result.data.table_have_reservations[val.id] === 1 ? 'bg-success' : 'bg-secondary';
                         html += `
                                 <div class="col-sm-3">
                                     <div class="card mt-4 ${bgColorStatus} text-light table-properties">
@@ -338,7 +339,6 @@
                                         </div>
                                     </div>
                                 </div>`
-
                     })
                     html += '</div';
                     tables.append(html)

@@ -91,7 +91,6 @@
                     success: function (result) {
                         if($.trim(result.data)){
                             $.each(result.data, function (i, val) {
-                                console.log(val)
                                 let html = `
                                     <tr>
                                         <th scope="row">${val.id}</th>
