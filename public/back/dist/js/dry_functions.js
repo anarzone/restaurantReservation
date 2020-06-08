@@ -53,3 +53,15 @@ function getHalls(restaurant_id, hall_id=null){
         }
     })
 }
+
+function displayMessage(message, type='success'){
+    toastr.options = {
+        "preventDuplicates": true,
+        "positionClass": "toast-top-center",
+    }
+    if(type === 'success'){
+        toastr.success(message);
+    }else if (type === 'error'){
+        toastr.error(message)
+    }
+}

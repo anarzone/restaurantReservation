@@ -39,6 +39,17 @@
 @section('js')
 
     <script>
+        toastr.options = {
+            "preventDuplicates": true,
+            "positionClass": "toast-top-center",
+        }
+
+        @if($errors->any())
+            @foreach ($errors->all() as $error)
+                toastr.error('{{$error}}');
+            @endforeach
+        @endif
+
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': "{{ csrf_token() }}"

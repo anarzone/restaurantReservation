@@ -83,6 +83,20 @@ class HallController extends Controller
     }
 
     public function update(Request $request, Hall $hall){
+        $rules = [
+            'name'    => 'required|string|min:2',
+        ];
+
+        $messages = [
+            'name.required' => 'Zal adını yazmamısınız.'
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if($validator->fails()) {
+            return redirect()->back()->withErrors($validator->errors());
+        }
+
         $request->validate([
             'name' => 'required|string'
         ]);
