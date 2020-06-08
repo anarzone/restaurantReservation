@@ -89,7 +89,6 @@
 
                 active = _this;
             }
-
             let index  = parseInt( active.attr('data-index') );
             let oArea  = active.parent().find('.imagemaps .imagemaps-area'+index);
             let output = $(options.output+':eq('+ active.parent().attr('data-index') +')');
@@ -97,7 +96,7 @@
             let oImg   = active.parent().children('img');
             let ratio  = oImg.width()/oImg.get(0).naturalWidth;
 
-            if(doingRecover==false) oArea.attr('coords', `${parseInt(coords.x1/ratio)},${parseInt(coords.y1/ratio)},${parseInt(coords.x2/ratio)},${parseInt(coords.y2/ratio)}`);
+            if(doingRecover==false) oArea.attr('coords', `${parseInt(coords.x1/1)},${parseInt(coords.y1/1)},${parseInt(coords.x2/1)},${parseInt(coords.y2/1)}`);
 
             output.find(`.item-${index+1} `+options.areaHref).val( oArea.attr('href') );
             output.find(`.item-${index+1} `+options.areaTarget).val( oArea.attr('target') );
@@ -145,7 +144,7 @@
                 let index  = parseInt(count-1);
                 let coords = doingRecover? _this.find('.imagemaps area').eq(index).attr('coords').split(',') : [];
                 coords = coords.map(function (v) {
-                    return parseInt( parseInt(v)*ratio );
+                    return parseInt( parseInt(v)*1 );
                 });
 
                 let oDiv   = $(`<div id="imagemaps-rect-${i}-${lastIndex}" style="width:${(coords[2]-coords[0]) || options.rectWidth}px;height:${(coords[3]-coords[1]) || options.rectHeight}px;position:absolute;left:${coords[0] || 0}px;top:${coords[1] || 0}px;background-color:rgba(255,255,255,0.5)" data-index="${lastIndex}">${count}</div>`);

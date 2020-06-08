@@ -11,7 +11,7 @@
         }
         .imagemaps-wrapper{
             width: 100%;
-            text-align: left!important;
+            text-align: left !important;
             background: black;
             overflow: hidden;
         }
