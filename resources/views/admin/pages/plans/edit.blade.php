@@ -19,7 +19,7 @@
 @endsection
 @section('content')
     <div class="row">
-        <div class="col-sm-12 col-md-12">
+        <div class="col-md-10">
             <div class="card">
                 <div class="imagemaps-wrapper">
                     <img class="hall-plan-image" src="{{asset('storage/back/images/'.$plan->img_name)}}" draggable="false" usemap="#hallmap">

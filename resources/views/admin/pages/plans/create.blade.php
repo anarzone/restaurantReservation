@@ -10,7 +10,7 @@
             opacity: 0.4;
         }
         .imagemaps-wrapper{
-            width: 90%;
+            width: 100%;
             background: black;
             overflow: hidden;
         }
@@ -18,7 +18,7 @@
 @endsection
 @section('content')
     <div class="row">
-        <div class="col-sm-12 col-md-12">
+        <div class="col-md-10">
             <div class="card">
                 <div class="imagemaps-wrapper">
                     <img class="hall-plan-image" src="{{asset('storage/back/images/'.$hall->plan->img_name)}}" draggable="false" usemap="hallmap">
