@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Customer;
 use App\Reservation;
+use Carbon\Carbon;
+use Cassandra\Custom;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class CustomerController extends Controller
 {
@@ -15,6 +18,53 @@ class CustomerController extends Controller
            'customers' => Customer::latest()->paginate(10),
         ]);
     }
+
+    public function edit(Customer $customer){
+        return view('admin.pages.customers.edit', [
+            'customer' => $customer
+        ]);
+    }
+
+    public function update(Request $request, Customer $customer){
+        $request->lastname ?? $request->merge(['lastname' => '']);
+
+        $rules = [
+            'firstname' => 'required|string|min:2',
+            'lastname'  => 'nullable|string',
+            'phone'     => 'required',
+            'birthdate' => 'nullable|date',
+        ];
+
+
+        $messages = [
+            'firstname.required' => 'Ad yazmaq tələb olunur',
+            'phone.required'     => 'Telefon yazılmayıb',
+            'date'               => 'Tarix doğru formatda deyil',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+
+        if($validator->fails()) {
+            return redirect()->back()->withErrors($validator->errors());
+        }
+
+        $request->merge([
+            'birthdate' => Carbon::parse($request->birthdate)->toDateString(),
+        ]);
+
+        $customer->update($request->all());
+
+        return redirect()->route('admin.customers.index')->with('message', 'Müştəri məlumatları yeniləndi');
+    }
+
+    public function destroy(Request $request, Customer $customer){
+        $customer->delete();
+        $customer->reservations()->delete();
+
+        $request->session()->flash('message-danger', 'İstifadəçi silindi');
+    }
+
     public function getReservationsByCustomer(Customer $customer){
         $reservation_info = Reservation::leftJoin('customers  as c', 'reservations.customer_id', '=', 'c.id')
                                        ->leftjoin('restaurants as r', 'reservations.res_restaurant_id', '=', 'r.id')

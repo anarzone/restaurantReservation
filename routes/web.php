@@ -79,6 +79,9 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function (){
     // Customers
     Route::get('customers', 'CustomerController@index')->name('customers.index');
     Route::get('customers/{customer}/reservations', 'CustomerController@getReservationsByCustomer')->name('customer.reservations');
+    Route::get('customers/{customer}/edit', 'CustomerController@edit')->name('customer.edit');
+    Route::put('customers/{customer}/update', 'CustomerController@update')->name('customer.update');
+    Route::delete('customers/{customer}/destroy', 'CustomerController@destroy')->name('customer.destroy');
 });
 
 // Hall routes

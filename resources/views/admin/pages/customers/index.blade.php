@@ -18,6 +18,7 @@
                             <th scope="col">Ad Soyad</th>
                             <th scope="col">Telefon</th>
                             <th scope="col">Rezervasiyalar</th>
+                            <th scope="col">Əməliyyatlar</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -32,6 +33,10 @@
                                         data-toggle="modal"
                                         data-target="#full-width-modal"
                                 >Göstər</button>
+                            </td>
+                            <td>
+                                <a class="btn btn-sm btn-warning" href="{{route('admin.customer.edit',$customer->id)}}"
+                                >Redaktə et</a>
                             </td>
                         </tr>
                     @endforeach
@@ -79,6 +84,13 @@
 
 @section('js')
     <script>
+
+        @if(session('message'))
+            displayMessage('{{session("message")}}')
+        @elseif(session('message-danger'))
+            displayMessage('{{session("message-danger")}}', 'danger')
+        @endif
+
         $('.show-reservations').on('click', function () {
             $('.reservations').empty()
 
@@ -120,3 +132,4 @@
 
     </script>
 @endsection
+
