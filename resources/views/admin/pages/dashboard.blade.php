@@ -8,8 +8,8 @@
     object-fit: cover;
   }
 
-  area {
-    cursor: pointer;
+  .tableDiv{
+      cursor: pointer;
   }
   </style>
 @endsection
@@ -143,7 +143,7 @@
                 let backgroundColor = table_status ? 'green' : 'grey'
                 let opacity = '.6'
 
-                let tableDiv = $(`<div data-table-id="${val.table_id}"
+                let tableDiv = $(`<div class="tableDiv" data-table-id="${val.table_id}"
                                     onclick="showTableInfo('${val.table_id}');"
                                     style="position: absolute;
                                            top:${top};
