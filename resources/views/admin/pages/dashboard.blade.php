@@ -43,9 +43,9 @@
         <div class="row">
           <div class="col-md-10">
             <div class="imagemaps-wrapper">
-              <img class="hall-plan-image" src="" draggable="false" usemap="#hallmap">
-              <map class="imagemaps" name="hallmap">
-              </map>
+                <img class="hall-plan-image" src="" draggable="false" usemap="#hallmap">
+                <map class="imagemaps" name="hallmap">
+                </map>
             </div>
           </div>
 
@@ -120,14 +120,42 @@
           if($.trim(result.data.tables)){
             let src = "{{url('storage/back/images')}}/" + result.data.plan_image
             $('.hall-plan-image').attr('src', src)
+
             $.each(result.data.tables, function (i, val) {
               let mapDiv = $(`<area   shape="rect"
-              data-table-id="${val.table_id}"
-              coords="${val.coords}"
-              onclick="showTableInfo('${val.table_id}');"
-              >
-              `)
+                                      data-table-id="${val.table_id}"
+                                      coords="${val.coords}"
+                                      onclick="showTableInfo('${val.table_id}');"
+                              >
+                            `)
+
               $('.imagemaps').append(mapDiv)
+
+                let table_status = result.data.table_have_reservations[val.table_id]
+
+                let coords = val.coords.split(',')
+
+                // table div parameters
+                let top    = coords[1]+'px'
+                let left   = (parseInt(coords[0])+14 ) +'px'
+                let width  = (coords[2] - coords[0])+'px'
+                let height = (coords[3] - coords[1])+'px'
+                let backgroundColor = table_status ? 'green' : 'grey'
+                let opacity = '.6'
+
+                let tableDiv = $(`<div data-table-id="${val.table_id}"
+                                    onclick="showTableInfo('${val.table_id}');"
+                                    style="position: absolute;
+                                           top:${top};
+                                           left:${left};
+                                           width:${width};
+                                           height:${height};
+                                           background-color: ${backgroundColor};
+                                           opacity: ${opacity};
+                                 ">
+
+                                </div>`)
+                $('.imagemaps-wrapper').append(tableDiv)
             })
           }
         }

@@ -129,11 +129,22 @@ class TableController extends Controller
     }
 
     public function get_plan_tables_by_hall_id($hall_id){
+        $tables = HallTable::where('hall_id', $hall_id)->orderBy('status', 'asc')->get();
+        $table_have_reservations = [];
+
+        foreach ($tables as $table){
+            $table_have_reservations[$table->id] = $table->reservation ? 1 : 0;
+        }
+
         $tables = PlanTable::where('hall_id', $hall_id)->get();
         $plan = Plan::where('hall_id', $hall_id)->first();
         $plan_image = $plan ? $plan->img_name : '';
         return response()->json([
-           'data' => ['tables' => $tables, 'plan_image' => $plan_image]
+           'data' => [
+               'tables' => $tables,
+               'plan_image' => $plan_image,
+               'table_have_reservations' => $table_have_reservations,
+           ]
         ]);
     }
 
