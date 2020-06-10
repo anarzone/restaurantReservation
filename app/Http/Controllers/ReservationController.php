@@ -228,4 +228,61 @@ class ReservationController extends Controller
             ],
         ], Response::HTTP_OK);
     }
+
+    public function makeQuickReservation(Request $request){
+        $rules = [
+            'table_id'      => 'required|integer',
+            'rest_id'      => 'required|integer',
+            'hall_id'      => 'required|integer',
+            'table_status'  => 'required|integer'
+        ];
+
+        $messages = [
+            'table_id.required'      => 'Stol id-si yoxdur',
+            'table_status.required'  => 'Stol statusu yoxdur',
+            'rest_id.required'       => 'Restoran id-si yoxdur',
+            'hall_id.required'       => 'Zal id-si yoxdur',
+            'integer'                => 'Səhv formatdadır',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if($validator->fails()){
+            return response()->json([
+               'data'  => $validator->errors(),
+            ]);
+        }
+        $date = Carbon::now()->toDateTimeString();
+
+        $reserved = Reservation::where('datetime', $date)
+            ->where('table_id', $request->table_id)
+            ->where('status', '!=', Reservation::STATUS_DONE)
+            ->first();
+
+        if($reserved){
+            $message = '';
+            $data = 'Masa bu tarixdə artıq tutulmuşdur';
+        }else{
+            Reservation::create([
+                'res_firstname'     => '',
+                'datetime'          => $date,
+                'res_restaurant_id' => $request->rest_id,
+                'res_hall_id'       => $request->hall_id,
+                'table_id'          => $request->table_id,
+                'status'            => Reservation::STATUS_ACCEPTED,
+            ]);
+
+            $table = HallTable::find($request->table_id);
+
+            $message = 'Success';
+            $data = $table->table_number . ' nömrəli masa rezerv edildi.';
+        }
+
+
+        return response()->json([
+            'message' => $message,
+            'data'    => $data,
+        ], Response::HTTP_CREATED);
+
+    }
 }

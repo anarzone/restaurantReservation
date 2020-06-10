@@ -8,8 +8,8 @@
     object-fit: cover;
   }
 
-  area {
-    cursor: pointer;
+  .tableDiv{
+      cursor: pointer;
   }
   </style>
 @endsection
@@ -43,9 +43,9 @@
         <div class="row">
           <div class="col-md-10">
             <div class="imagemaps-wrapper">
-              <img class="hall-plan-image" src="" draggable="false" usemap="#hallmap">
-              <map class="imagemaps" name="hallmap">
-              </map>
+                <img class="hall-plan-image" src="" draggable="false" usemap="#hallmap">
+                <map class="imagemaps" name="hallmap">
+                </map>
             </div>
           </div>
 
@@ -72,6 +72,13 @@
     }
   });
 
+  toastr.options = {
+      "preventDuplicates": true,
+      "positionClass": "toast-top-center",
+  }
+
+  let rest_id = null;
+  let hall_id = null;
 
   $('#restaurants').on('change', function () {
     $('#map_card').hide();
@@ -120,14 +127,43 @@
           if($.trim(result.data.tables)){
             let src = "{{url('storage/back/images')}}/" + result.data.plan_image
             $('.hall-plan-image').attr('src', src)
+
             $.each(result.data.tables, function (i, val) {
               let mapDiv = $(`<area   shape="rect"
-              data-table-id="${val.table_id}"
-              coords="${val.coords}"
-              onclick="showTableInfo('${val.table_id}');"
-              >
-              `)
+                                      coords="${val.coords}"
+                                      onclick="showTableInfo('${val.table_id}'); "
+                              >
+                            `)
+
               $('.imagemaps').append(mapDiv)
+
+                let table_status = result.data.table_have_reservations[val.table_id]
+
+                let coords = val.coords.split(',')
+
+                // table div parameters
+                let top    = coords[1]+'px'
+                let left   = (parseInt(coords[0])+14 ) +'px'
+                let width  = (coords[2] - coords[0])+'px'
+                let height = (coords[3] - coords[1])+'px'
+                let backgroundColor = table_status ? 'green' : 'grey'
+                let opacity = '.6'
+
+                let tableDiv = $(`<div class="tableDiv"
+                                    data-table-id="${val.table_id}"
+                                    data-table-status="${table_status}"
+                                    onclick="showTableInfo('${val.table_id}'); reserveGuest('${val.table_id}', '${table_status}')"
+                                    style="position: absolute;
+                                           top:${top};
+                                           left:${left};
+                                           width:${width};
+                                           height:${height};
+                                           background-color: ${backgroundColor};
+                                           opacity: ${opacity};
+                                 ">
+
+                                </div>`)
+                $('.imagemaps-wrapper').append(tableDiv)
             })
           }
         }
@@ -135,7 +171,7 @@
     }
   })
 
-  function showTableInfo(table_id){
+    function showTableInfo(table_id){
     $('.table-reservations').empty();
     $('.table-number').empty();
     if(table_id){
@@ -157,6 +193,19 @@
     }
   }
 
+    function reserveGuest(table_id, table_status){
+        if(table_id){
+            $.ajax({
+                type: 'POST',
+                url: '{{route('reservation.quick.reservation')}}',
+                data: {table_id, table_status, rest_id, hall_id},
+                success: function (response) {
+                    $(`[data-table-id=${table_id}]`).css('background-color', 'green')
+                    $.trim(response.message) ? toastr.success(response.data) : toastr.error(response.data);
+                }
+            })
+        }
+    }
   </script>
 
 @endsection

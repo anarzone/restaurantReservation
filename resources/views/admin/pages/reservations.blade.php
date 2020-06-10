@@ -8,18 +8,22 @@
             max-width:100%;
             object-fit: cover;
         }
-        area {
+        .tableDiv{
             cursor: pointer;
         }
 
         .small-btn{
             padding: .2rem;
         }
+
+        .modal-full-width{
+            width: 94.5%;
+        }
     </style>
 @endsection
 @section('page-title', 'Rezervasiyalar')
 @section('content')
-    <!-- basic table -->
+    <!-- display errors -->
     @if ($errors->any())
         <div class="row">
             <div class="col-12">
@@ -158,13 +162,12 @@
         </div>
     </div>
 
-    <div id="full-width-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true" style="display: none;">
+        <div id="full-width-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true" style="display: none;">
         <div class="modal-dialog modal-full-width">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="hall-name">Masalar</h4>
                     <div class="btn-group" role="group" aria-label="Basic example">
-{{--                        <button type="button" class="btn btn-outline-primary btn-sm save-table" data-dismiss="modal">Yadda saxla</button>--}}
                         <button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Bağla</button>
                     </div>
                 </div>
@@ -173,7 +176,7 @@
                         <div class="row reservation-info"></div>
                         <hr>
                         <div class="row">
-                            <div class="col-md-10">
+                            <div class="col-md-9">
                                 <div class="imagemaps-wrapper">
                                     <img class="hall-plan-image" src="" draggable="false" usemap="#hallmap">
                                     <map class="imagemaps" name="hallmap">
@@ -240,7 +243,6 @@
         reserved_table_id = $(this).data('table-id');
 
 
-
         $('#hall-name').text($(this).data('hall-name')+' - masalar');
         if(hall_id){
             $.ajax({
@@ -256,10 +258,36 @@
                                                     shape="rect"
                                                     data-table-id="${val.table_id}"
                                                     coords="${val.coords}"
-                                                    onclick="selectTable('${val.table_id}'); showTableInfo('${val.table_id}');"
+                                                    onclick="showTableInfo('${val.table_id}');"
                                                     >
                                           `)
                             $('.imagemaps').append(mapDiv)
+
+                            let table_status = result.data.table_have_reservations[val.table_id]
+
+                            let coords = val.coords.split(',')
+
+                            // table div parameters
+                            let top    = coords[1]+'px'
+                            let left   = (parseInt(coords[0])+16 ) +'px'
+                            let width  = (coords[2] - coords[0])+'px'
+                            let height = (coords[3] - coords[1])+'px'
+                            let backgroundColor = table_status ? 'green' : 'grey'
+                            let opacity = '.6'
+
+                            let tableDiv = $(`<div class="tableDiv" data-table-id="${val.table_id}"
+                                    onclick="showTableInfo('${val.table_id}'); selectTable('${val.table_id}');"
+                                    style="position: absolute;
+                                           top:${top};
+                                           left:${left};
+                                           width:${width};
+                                           height:${height};
+                                           background-color: ${backgroundColor};
+                                           opacity: ${opacity};
+                                 ">
+
+                                </div>`)
+                            $('.imagemaps-wrapper').append(tableDiv)
                         })
                         let reservation_info_html = `
                             <div class="col-md-4 col-sm-4">
@@ -293,6 +321,7 @@
                 url:  '/reservations/'+ reservation_id +'/update/table',
                 data: {table_id, 'date': current_res_date},
                 success: function (result) {
+                    $(`[data-table-id=${table_id}]`).css('background-color', 'green')
                     $.trim(result.message) ? toastr.success(result.data) : toastr.error(result.data);
                 }
             })

@@ -309,7 +309,6 @@
             dataType: 'json',
             success: function (result) {
                 if($.trim(result.data)){
-                    console.log(result.data.table_have_reservations)
                     $("#resultCard").fadeIn();
                     if(result.data.has_plan){
                         $('.edit-plan').removeAttr('disabled').attr('data-plan-id', result.data.has_plan.id);
