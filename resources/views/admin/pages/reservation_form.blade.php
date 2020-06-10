@@ -32,7 +32,7 @@
                         <div class="form-group row">
                             <label class="col-lg-3 col-form-label form-control-label">Telefon</label>
                             <div class="col-lg-9">
-                                <input class="form-control" name="phone" id="phone" type="text">
+                                <input class="form-control" name="phone" id="phone" type="text"  data-mask="(994)-(00)-000-00-00" data-mask-clearifnotmatch="true">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -92,7 +92,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
-
+    <script src="{{asset('back/dist/js/jquery.mask.min.js')}}"></script>
     <script>
         $.ajaxSetup({
             headers: {
@@ -167,7 +167,7 @@
                             minlength: 2
                         },
                         lastname:  {
-                            required: true,
+                            required: false,
                             minlength: 2
                         },
                         phone: {
@@ -214,7 +214,7 @@
 
             $('#datetimepicker2').datetimepicker({
                 locale: 'en',
-                format: 'dddd, MMMM Do YYYY, HH:mm'
+                format: 'MMMM Do YYYY, HH:mm'
             });
 
             $('#datetimepicker2').on("change.datetimepicker", function (e) {

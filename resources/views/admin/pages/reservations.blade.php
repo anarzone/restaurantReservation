@@ -17,13 +17,13 @@
         }
 
         .modal-full-width{
-            width: 93%;
+            width: 94.5%;
         }
     </style>
 @endsection
 @section('page-title', 'Rezervasiyalar')
 @section('content')
-    <!-- basic table -->
+    <!-- display errors -->
     @if ($errors->any())
         <div class="row">
             <div class="col-12">
@@ -168,7 +168,6 @@
                 <div class="modal-header">
                     <h4 class="modal-title" id="hall-name">Masalar</h4>
                     <div class="btn-group" role="group" aria-label="Basic example">
-{{--                        <button type="button" class="btn btn-outline-primary btn-sm save-table" data-dismiss="modal">Yadda saxla</button>--}}
                         <button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Bağla</button>
                     </div>
                 </div>

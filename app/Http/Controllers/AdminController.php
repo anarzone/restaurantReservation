@@ -120,4 +120,5 @@ class AdminController extends Controller
 //        $unassosiated_permissions = Permission::whereNotIn('id', $rol_permission_ids)->get();
 //        return view('admin.pages.roles.edit', ['role' => $role, 'unassosiated_permissions' => $unassosiated_permissions]);
 //    }
+
 }
