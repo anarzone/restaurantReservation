@@ -103,7 +103,7 @@
         });
 
         $('.delete_customer').on('click', function () {
-            deleteEl('', '{{route('admin.customer.destroy', $customer->id)}}', 'Silmək istədiynizdən əminsiniz?',
+            deleteEl('', '{{route('admin.customer.destroy', $customer->id)}}', 'Silmək istədiyinizdən əminsiniz?',
                          '/admin/customers')
         })
     </script>

@@ -117,6 +117,7 @@ Route::middleware('auth')->group(function (){
     Route::put('/reservations/{reservation}/update/date', 'ReservationController@updateDate')->name('reservation.date.update');
     Route::put('/reservations/{reservation}/update/table', 'ReservationController@updateTable')->name('reservation.table.update');
     Route::get('/reservations/table/{table_id}/all', 'ReservationController@getTableReservations')->name('reservation.table.update');
+    Route::post('/reservations/makeQuickReservation', 'ReservationController@makeQuickReservation')->name('reservation.quick.reservation');
 });
 
 

@@ -111,11 +111,7 @@ class TableController extends Controller
 
     public function get_by_hall_id(Request $request, $hall_id){
         $tables = HallTable::where('hall_id', $hall_id)->orderBy('status', 'asc')->get();
-        $table_have_reservations = [];
-
-        foreach ($tables as $table){
-            $table_have_reservations[$table->id] = $table->reservation ? 1 : 0;
-        }
+        $table_have_reservations = $this->get_reservation_statuses_by_hall_id($hall_id);
 
         $has_plan = Hall::where('id', $hall_id)->with('plan')->first()->plan;
         return response()->json([
@@ -129,12 +125,7 @@ class TableController extends Controller
     }
 
     public function get_plan_tables_by_hall_id($hall_id){
-        $tables = HallTable::where('hall_id', $hall_id)->orderBy('status', 'asc')->get();
-        $table_have_reservations = [];
-
-        foreach ($tables as $table){
-            $table_have_reservations[$table->id] = $table->reservation ? 1 : 0;
-        }
+        $table_have_reservations = $this->get_reservation_statuses_by_hall_id($hall_id);
 
         $tables = PlanTable::where('hall_id', $hall_id)->get();
         $plan = Plan::where('hall_id', $hall_id)->first();
@@ -164,5 +155,22 @@ class TableController extends Controller
             'status' => Response::HTTP_OK,
             'data'   => $table_updated
         ]);
+    }
+
+    public function get_reservation_statuses_by_hall_id($hall_id){
+        $tables = HallTable::where('hall_id', $hall_id)->orderBy('status', 'asc')->get();
+        $table_have_reservations = [];
+        foreach ($tables as $table){
+            if(count($table->reservations) > 0){
+                foreach ($table->reservations as $reservation){
+                    if ($reservation->status === Reservation::STATUS_ACCEPTED){
+                        $table_have_reservations[$table->id] = 1;
+                    }
+                }
+            }else{
+                $table_have_reservations[$table->id] = 0;
+            }
+        }
+        return $table_have_reservations;
     }
 }

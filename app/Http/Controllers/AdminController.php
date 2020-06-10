@@ -8,6 +8,7 @@ use App\Reservation;
 use App\Restaurant;
 use App\Role;
 use App\Table as Hall_Table;
+use App\Table as HallTable;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;

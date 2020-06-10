@@ -17,6 +17,7 @@ class CreatePlansTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('hall_id');
             $table->string('img_name');
+            $table->string('img_size')->default(0);
             $table->timestamps();
         });
     }

@@ -19,9 +19,6 @@ class FrontController extends Controller
     }
 
     public function checkTableAvailability(Request $request){
-        $request->note ?? $request->merge(['note' => '']);
-        $request->lastname ?? $request->merge(['lastname' => '']);
-
         $rules =[
             'firstname'         => 'required|string|min:2',
             'lastname'          => 'string|min:2',
@@ -71,9 +68,6 @@ class FrontController extends Controller
     }
 
     public function sendForm(Request $request){
-        $request->note ?? $request->merge(['note' => '']);
-        $request->lastname ?? $request->merge(['lastname' => '']);
-
         $rules =[
             'firstname'         => 'required|string|min:2',
             'lastname'          => 'string|min:2',

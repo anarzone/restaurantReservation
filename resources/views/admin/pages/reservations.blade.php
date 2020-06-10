@@ -15,6 +15,10 @@
         .small-btn{
             padding: .2rem;
         }
+
+        .modal-full-width{
+            width: 93%;
+        }
     </style>
 @endsection
 @section('page-title', 'Rezervasiyalar')
@@ -158,7 +162,7 @@
         </div>
     </div>
 
-    <div id="full-width-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true" style="display: none;">
+        <div id="full-width-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true" style="display: none;">
         <div class="modal-dialog modal-full-width">
             <div class="modal-content">
                 <div class="modal-header">
@@ -255,7 +259,7 @@
                                                     shape="rect"
                                                     data-table-id="${val.table_id}"
                                                     coords="${val.coords}"
-                                                    onclick="selectTable('${val.table_id}'); showTableInfo('${val.table_id}');"
+                                                    onclick="showTableInfo('${val.table_id}');"
                                                     >
                                           `)
                             $('.imagemaps').append(mapDiv)
@@ -273,7 +277,7 @@
                             let opacity = '.6'
 
                             let tableDiv = $(`<div class="tableDiv" data-table-id="${val.table_id}"
-                                    onclick="showTableInfo('${val.table_id}');"
+                                    onclick="showTableInfo('${val.table_id}'); selectTable('${val.table_id}');"
                                     style="position: absolute;
                                            top:${top};
                                            left:${left};
@@ -318,6 +322,7 @@
                 url:  '/reservations/'+ reservation_id +'/update/table',
                 data: {table_id, 'date': current_res_date},
                 success: function (result) {
+                    $(`[data-table-id=${table_id}]`).css('background-color', 'green')
                     $.trim(result.message) ? toastr.success(result.data) : toastr.error(result.data);
                 }
             })

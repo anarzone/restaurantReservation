@@ -72,6 +72,13 @@
     }
   });
 
+  toastr.options = {
+      "preventDuplicates": true,
+      "positionClass": "toast-top-center",
+  }
+
+  let rest_id = null;
+  let hall_id = null;
 
   $('#restaurants').on('change', function () {
     $('#map_card').hide();
@@ -123,9 +130,8 @@
 
             $.each(result.data.tables, function (i, val) {
               let mapDiv = $(`<area   shape="rect"
-                                      data-table-id="${val.table_id}"
                                       coords="${val.coords}"
-                                      onclick="showTableInfo('${val.table_id}');"
+                                      onclick="showTableInfo('${val.table_id}'); "
                               >
                             `)
 
@@ -143,8 +149,10 @@
                 let backgroundColor = table_status ? 'green' : 'grey'
                 let opacity = '.6'
 
-                let tableDiv = $(`<div class="tableDiv" data-table-id="${val.table_id}"
-                                    onclick="showTableInfo('${val.table_id}');"
+                let tableDiv = $(`<div class="tableDiv"
+                                    data-table-id="${val.table_id}"
+                                    data-table-status="${table_status}"
+                                    onclick="showTableInfo('${val.table_id}'); reserveGuest('${val.table_id}', '${table_status}')"
                                     style="position: absolute;
                                            top:${top};
                                            left:${left};
@@ -163,7 +171,7 @@
     }
   })
 
-  function showTableInfo(table_id){
+    function showTableInfo(table_id){
     $('.table-reservations').empty();
     $('.table-number').empty();
     if(table_id){
@@ -185,6 +193,19 @@
     }
   }
 
+    function reserveGuest(table_id, table_status){
+        if(table_id){
+            $.ajax({
+                type: 'POST',
+                url: '{{route('reservation.quick.reservation')}}',
+                data: {table_id, table_status, rest_id, hall_id},
+                success: function (response) {
+                    $(`[data-table-id=${table_id}]`).css('background-color', 'green')
+                    $.trim(response.message) ? toastr.success(response.data) : toastr.error(response.data);
+                }
+            })
+        }
+    }
   </script>
 
 @endsection
