@@ -16,6 +16,11 @@ use Illuminate\Support\Facades\Validator;
 
 class HallController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('role:super-admin');
+    }
+
     public function index(Request $request){
         if ($request->has('restaurant')){
             $halls = Hall::with('reservations')

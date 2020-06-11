@@ -78,7 +78,7 @@
                     <div class="form-group row">
                         <label for="name" class="col-sm-2 col-form-label">Rol</label>
                         <div class="col-sm-10">
-                            <select class="custom-select mr-sm-2 form-control" id="roles">
+                            <select class="custom-select mr-sm-2 form-control" id="roles" >
                             </select>
                         </div>
                     </div>
@@ -131,6 +131,10 @@
             role_id = $(this).data('role-id');
             group_id = $(this).data('group-id');
 
+            if('{{auth()->user()->roles[0]->name}}' === 'super-admin' && parseInt('{{auth()->user()->id}}') === parseInt(user_id)){
+                $('#roles').attr('disabled', true)
+            }
+
             $('#name').attr('value', name);
             $('#email').attr('value', email);
 
@@ -139,9 +143,6 @@
                 url: "/admin/getRolesAndGroups",
                 success: function (result) {
                     if($.trim(result.data)){
-                        // $('#roles').append('' +
-                        //     '<option>--Rol seçin--</option>'
-                        // )
                         $.each(result.data.roles, function(key, val){
                             let val_with_selected = val.id === role_id ? 'value="'+ val.id + '" selected' : 'value="' + val.id + '"';
                             $('#roles').append('' +
@@ -155,6 +156,7 @@
                         $('#groups').append('' +
                             '<option>-- Qrup seçin --</option>'
                         )
+
                         $.each(result.data.groups, function(key, val){
                             let val_with_selected = val.id === group_id ? 'value="'+ val.id + '" selected' : 'value="' + val.id + '"';
                             $('#groups').append('' +
@@ -176,6 +178,8 @@
         $('#email').on('change', function () {
             email = $(this).val();
         })
+
+
         $('#roles').on('change', function () {
             role_id = $(this).val();
         })

@@ -14,6 +14,11 @@ use Illuminate\Support\Facades\Validator;
 
 class PlanController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('role:super-admin');
+    }
+
     public function upload_image(){
         $restaurants = Restaurant::where('status', Restaurant::AVAILABLE)->get();
         $halls = Hall::all();

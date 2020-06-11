@@ -63,9 +63,9 @@ class PermissionsSeeder extends Seeder
 
         $role1 = Role::create(['name' => 'super-admin']);
 
-        $role2 = Role::create(['name' => 'manager']);
-
-        $role3 = Role::create(['name' => 'supervisor']);
+//        $role2 = Role::create(['name' => 'manager']);
+//
+//        $role3 = Role::create(['name' => 'supervisor']);
 
         $role4 = Role::create(['name' => 'stuff']);
 
@@ -77,19 +77,19 @@ class PermissionsSeeder extends Seeder
         ]);
         $user1->assignRole($role1);
 
-        $user2 = Factory(App\User::class)->create([
-            'name' => 'Manager',
-            'email' => 'manager@example.com',
-            'password' => \Illuminate\Support\Facades\Hash::make('123456')
-        ]);
-        $user2->assignRole($role2);
+//        $user2 = Factory(App\User::class)->create([
+//            'name' => 'Manager',
+//            'email' => 'manager@example.com',
+//            'password' => \Illuminate\Support\Facades\Hash::make('123456')
+//        ]);
+//        $user2->assignRole($role2);
 
-        $user3 = Factory(App\User::class)->create([
-            'name' => 'Supervisor',
-            'email' => 'supervisor@example.com',
-            'password' => \Illuminate\Support\Facades\Hash::make('123456')
-        ]);
-        $user3->assignRole($role3);
+//        $user3 = Factory(App\User::class)->create([
+//            'name' => 'Supervisor',
+//            'email' => 'supervisor@example.com',
+//            'password' => \Illuminate\Support\Facades\Hash::make('123456')
+//        ]);
+//        $user3->assignRole($role3);
 
         $user4 = Factory(App\User::class)->create([
             'name' => 'Stuff',
@@ -111,8 +111,8 @@ class PermissionsSeeder extends Seeder
 
         // assign users to groups
         $user1->groups()->attach($group1);
-        $user2->groups()->attach($group1);
-        $user3->groups()->attach($group1);
+//        $user2->groups()->attach($group1);
+//        $user3->groups()->attach($group1);
         $user4->groups()->attach($group2);
     }
 }

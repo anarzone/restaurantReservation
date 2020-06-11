@@ -7,8 +7,8 @@
         <li class="sidebar-item"> <a class="sidebar-link sidebar-link active" href="{{route('admin.dashboard')}}"
           aria-expanded="false"><i data-feather="home" class="feather-icon"></i><span
           class="hide-menu">Dashboard</span></a></li>
-          <li class="list-divider"></li>
-          <li class="nav-small-cap"><span class="hide-menu">Rezervasiya</span></li>
+         <li class="list-divider"></li>
+         <li class="nav-small-cap"><span class="hide-menu">Rezervasiya</span></li>
         <li class="sidebar-item">
             <a class="sidebar-link" href="{{route('admin.reservations.index')}}"
                     aria-expanded="false"><i data-feather="tag" class="feather-icon"></i>
@@ -35,6 +35,7 @@
           </span>
         </a>
       </li>
+      @role('super-admin')
       <li class="list-divider"></li>
       <li class="sidebar-item"> <a class="sidebar-link has-arrow" href="javascript:void(0)"
         aria-expanded="false"><i data-feather="list" class="feather-icon"></i><span
@@ -52,15 +53,13 @@
         class="hide-menu"> Zallar
       </span></a>
     </li>
-    @hasanyrole('manager|supervisor|super-admin')
+
     <li class="sidebar-item"><a href="{{route('admin.plan.images.new')}}" class="sidebar-link"><span
       class="hide-menu"> Plan
     </span></a>
     </li>
-@endhasanyrole
 </ul>
 </li>
-@hasanyrole('manager|supervisor|super-admin')
 <li class="list-divider"></li>
 <li class="nav-small-cap"><span class="hide-menu">İstifadəçi paneli</span></li>
 
@@ -89,19 +88,15 @@
     class="hide-menu">Yeni Qrup
   </span></a>
 </li>
-<li class="sidebar-item"> <a class="sidebar-link sidebar-link" href="{{route('admin.roles.index')}}"
-  aria-expanded="false"><i data-feather="key" class="feather-icon"></i><span
-  class="hide-menu">Rollar
-</span></a>
-</li>
-{{--                        <li class="sidebar-item"> <a class="sidebar-link sidebar-link" href="{{route('admin.roles.create')}}"--}}
-{{--                                                     aria-expanded="false"><i data-feather="plus" class="feather-icon"></i><span--}}
-{{--                                    class="hide-menu">Yeni Rol--}}
-{{--                                        </span></a>--}}
+    <li class="sidebar-item"> <a class="sidebar-link sidebar-link" href="{{route('admin.roles.index')}}"
+      aria-expanded="false"><i data-feather="key" class="feather-icon"></i><span
+      class="hide-menu">Rollar
+    </span></a>
+    </li>
 </li>
 </ul>
 </li>
-@endhasanyrole
+@endrole
 </ul>
 </nav>
 <!-- End Sidebar navigation -->
