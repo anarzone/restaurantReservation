@@ -32,6 +32,7 @@ class HallController extends Controller
                 ->whereNull('deleted_at')
                 ->paginate(10);
         }
+
         return view('admin.pages.halls.index', [
             'halls' => $halls
         ]);

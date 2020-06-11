@@ -228,6 +228,7 @@
 
     $('.choose-table').on('click', function () {
         // make empty before initialized
+        $('.plan-alert').remove()
         $('.hall-plan-image').attr('src', '')
         $('.imagemaps').empty()
         $('#tables').empty()
@@ -305,6 +306,14 @@
 
                         $('.reservation-info').append(reservation_info_html)
 
+                    }else{
+                        let planAlert = $(`
+                                <div class="alert alert-warning plan-alert">
+                                    Plan tapılmadı
+                                </div>
+                            `)
+
+                        $('.imagemaps-wrapper').prepend(planAlert)
                     }
                 }
             })
