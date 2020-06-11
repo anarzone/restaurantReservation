@@ -25,7 +25,11 @@
               <select class="custom-select mr-sm-2 " id="restaurants">
                 <option disabled selected> -- Restoran seç</option>
                 @foreach($restaurants as $rest)
-                  <option value="{{$rest->id}}">{{$rest->name}}</option>
+                    @if(count($restaurants) == 1)
+                        <option value="{{$rest->id}}" selected>{{$rest->name}}</option>
+                    @else
+                        <option value="{{$rest->id}}">{{$rest->name}}</option>
+                    @endif
                 @endforeach
               </select>
             </div>
@@ -77,9 +81,12 @@
       "positionClass": "toast-top-center",
   }
 
-  let rest_id = null;
+  let rest_id = $('#restaurants option:selected').val();;
   let hall_id = null;
 
+  if(!isNaN(rest_id)){
+      getHalls(rest_id)
+  }
   $('#restaurants').on('change', function () {
     $('#map_card').hide();
     $('.reservation-info').empty()
@@ -88,28 +95,32 @@
 
     rest_id = $(this).val();
     if(rest_id){
-      $.ajax({
-        type: 'GET',
-        url: '/getHallsByRestId/' + rest_id,
-        dataType: "json",
-        success: function (result) {
-          if(result.data){
-            $('#halls').empty().focus();
-            $('#halls').append('<option disabled selected value> -- Zal seçin -- </option>');
-            $.each(result.data, function(key, val){
-              $('#halls').append(
-                '<option value="'+ val.id + '"> ' + val.name + '</option>'
-              );
-            });
-          }else{
-            $('#halls').empty();
-          }
-        }
-      })
+      getHalls(rest_id)
     }else{
       $('#halls').empty();
     }
   })
+
+  function getHalls(rest_id){
+      $.ajax({
+          type: 'GET',
+          url: '/getHallsByRestId/' + rest_id,
+          dataType: "json",
+          success: function (result) {
+              if(result.data){
+                  $('#halls').empty().focus();
+                  $('#halls').append('<option disabled selected value> -- Zal seçin -- </option>');
+                  $.each(result.data, function(key, val){
+                      $('#halls').append(
+                          '<option value="'+ val.id + '"> ' + val.name + '</option>'
+                      );
+                  });
+              }else{
+                  $('#halls').empty();
+              }
+          }
+      })
+  }
 
   $('#halls').on('change', function () {
     $('#map_card').fadeIn();
