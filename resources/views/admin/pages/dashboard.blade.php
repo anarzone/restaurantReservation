@@ -170,7 +170,7 @@
           }else{
               let planAlert = $(`
                     <div class="alert alert-warning" id="plan-alert">
-                        Rezervasiyalar tapılmadı
+                        Plan tapılmadı
                     </div>
                 `)
 
