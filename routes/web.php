@@ -57,7 +57,6 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function (){
     Route::get('restaurants/{restaurant}/edit', 'RestaurantController@edit')->name('restaurants.edit');
     Route::put('restaurants/{restaurant}/update', 'RestaurantController@update')->name('restaurants.update');
     Route::delete('restaurants/destroy/{restaurant}', 'RestaurantController@destroy')->name('restaurants.destroy');
-    Route::get('restaurants/{}');
 
     // Halls
     Route::get('halls', 'HallController@index')->name('halls.index');

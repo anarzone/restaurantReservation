@@ -67,7 +67,10 @@ class UserController extends Controller
         ]);
 
         $user->groups()->sync([$request->group_id]);
-        $user->syncRoles($request->role_id);
+
+        if ($request->user_id != auth()->user()->id){
+            $user->syncRoles($request->role_id);
+        }
 
         return response()->json([
             'message' => 'success',

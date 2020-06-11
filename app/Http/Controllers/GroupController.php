@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Validator;
 
 class GroupController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('role:super-admin');
+    }
+
     public function index()
     {
         $groups = Group::whereNull('deleted_at')->get();

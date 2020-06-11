@@ -60,7 +60,7 @@
             @if($errors->any())
                 <div class="alert alert-danger">
                     <ul>
-                        @foreach ($errors->all() as $error)
+                        @foreach ($errors->all() as $error)https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>

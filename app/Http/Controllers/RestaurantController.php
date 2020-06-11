@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\Validator;
 
 class RestaurantController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('role:super-admin');
+    }
+
     /**
     * Displaying restaurants and assigned halls
     */

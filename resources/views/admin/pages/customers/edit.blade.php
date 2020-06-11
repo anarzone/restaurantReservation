@@ -53,7 +53,7 @@
                             <div class="col-lg-9 input-group date" id="datetimepicker2" data-target-input="nearest">
                                 <input type="text" name="birthdate" class="form-control datetimepicker-input"
                                        data-target="#datetimepicker2"
-                                       value="{{\Carbon\Carbon::parse($customer->birthdate)->toDateString()}}" />
+                                       value="{{$customer->birthdate ? \Carbon\Carbon::parse($customer->birthdate)->toDateString() : ''}}" />
                                 <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
@@ -79,10 +79,10 @@
     </div>
 @endsection
 @section('js')
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+    <script type="text/javascript" src="{{asset('back/dist/js/moment/moment-2.26.0.js')}}"></script>
+    <<script type="text/javascript" src="{{asset('back/dist/js/moment/moment-with-locales.js')}}"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script type="text/javascript" src="{{asset('back/dist/js/tempusdominus-bootstrap-4/tempusdominus-bootstrap-5.0.1.min.js')}}"></script>
 
     <script>
         $.ajaxSetup({
