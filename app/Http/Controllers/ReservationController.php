@@ -231,18 +231,15 @@ class ReservationController extends Controller
 
     public function makeQuickReservation(Request $request){
         $rules = [
-            'table_id'      => 'required|integer',
-            'rest_id'      => 'required|integer',
-            'hall_id'      => 'required|integer',
-            'table_status'  => 'required|integer'
+            'table_id'      => 'required',
+            'rest_id'      => 'required',
+            'hall_id'      => 'required',
         ];
 
         $messages = [
             'table_id.required'      => 'Stol id-si yoxdur',
-            'table_status.required'  => 'Stol statusu yoxdur',
             'rest_id.required'       => 'Restoran id-si yoxdur',
             'hall_id.required'       => 'Zal id-si yoxdur',
-            'integer'                => 'Səhv formatdadır',
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -252,7 +249,8 @@ class ReservationController extends Controller
                'data'  => $validator->errors(),
             ]);
         }
-        $date = Carbon::now()->toDateTimeString();
+
+        $date = Carbon::parse($request->date);
 
         $reserved = Reservation::where('datetime', $date)
             ->where('table_id', $request->table_id)
