@@ -225,10 +225,10 @@
                         } else {
                             $('.tableDiv').remove()
                             let planAlert = $(`
-                        <div class="alert alert-warning plan-alert">
-                            Plan tapılmadı
-                        </div>
-                    `)
+                                <div class="alert alert-warning plan-alert">
+                                    Plan tapılmadı
+                                </div>
+                            `)
 
                             $('.imagemaps-wrapper').prepend(planAlert)
                         }
