@@ -29,8 +29,9 @@ class HallController extends Controller
                         ->paginate(10);
         }else{
             $halls = Hall::with('reservations')
-                ->whereNull('deleted_at')
-                ->paginate(10);
+                        ->whereIn('restaurant_id', Auth::user()->inGroupRestaurants())
+                        ->whereNull('deleted_at')
+                        ->paginate(10);
         }
 
         return view('admin.pages.halls.index', [
