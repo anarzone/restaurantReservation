@@ -168,6 +168,7 @@
                 $('.imagemaps-wrapper').append(tableDiv)
             })
           }else{
+              $('.tableDiv').remove()
               let planAlert = $(`
                     <div class="alert alert-warning" id="plan-alert">
                         Plan tapılmadı
