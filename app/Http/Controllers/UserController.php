@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('role:super-admin');
+    }
+
     public function index(){
         $users = User::whereNull('deleted_at')->with('roles')->with('groups')->get();
         return view('admin.pages.users.index', ['users' => $users]);
