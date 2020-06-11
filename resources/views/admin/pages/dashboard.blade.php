@@ -125,6 +125,8 @@
         dataType: 'json',
         success: function (result) {
           if($.trim(result.data.tables)){
+            $('#plan-alert').remove();
+
             let src = "{{url('storage/back/images')}}/" + result.data.plan_image
             $('.hall-plan-image').attr('src', src)
 
@@ -165,6 +167,14 @@
                                 </div>`)
                 $('.imagemaps-wrapper').append(tableDiv)
             })
+          }else{
+              let planAlert = $(`
+                    <div class="alert alert-warning" id="plan-alert">
+                        Rezervasiyalar tapılmadı
+                    </div>
+                `)
+
+              $('.imagemaps-wrapper').prepend(planAlert)
           }
         }
       })
