@@ -162,7 +162,7 @@
         </div>
     </div>
 
-        <div id="full-width-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true" style="display: none;">
+    <div id="full-width-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true" style="display: none;">
         <div class="modal-dialog modal-full-width">
             <div class="modal-content">
                 <div class="modal-header">
@@ -189,7 +189,7 @@
                                     <span class="table-number"></span>
                                     <hr>
                                     <div class="table-reservations">
-                                      <div class="alert alert-warning">
+                                      <div class="alert alert-warning default-alert-message">
                                         Masa seçilməyib
                                       </div>
                                     </div>
@@ -219,12 +219,13 @@
         "positionClass": "toast-top-center",
     }
 
-    let reservation_id = null;
+    let reservation_id    = null;
     let selected_table_id = null;
     let reserved_table_id = null;
-    let edited_date = null;
-    let res_date = null;
-    let table_number = null;
+    let edited_date       = null;
+    let res_date          = null;
+    let table_number      = null;
+    let previous_table    = null;
 
     $('.choose-table').on('click', function () {
         // make empty before initialized
@@ -240,8 +241,12 @@
         hall_id = $(this).data('hall-id');
         reservation_id = $(this).data('res-id');
         res_date = $(this).data('res-date');
-        reserved_table_id = $(this).data('table-id');
+        previous_table = reserved_table_id = $(this).data('table-id');
 
+
+        if (table_number){
+            showTableInfo(reserved_table_id, false)
+        }
 
         $('#hall-name').text($(this).data('hall-name')+' - masalar');
         if(hall_id){
@@ -255,11 +260,10 @@
                         $('.hall-plan-image').attr('src', src)
                         $.each(result.data.tables, function (i, val) {
                             let mapDiv = $(`<area
-                                                    shape="rect"
-                                                    data-table-id="${val.table_id}"
-                                                    coords="${val.coords}"
-                                                    onclick="showTableInfo('${val.table_id}');"
-                                                    >
+                                                shape="rect"
+                                                data-table-id="${val.table_id}"
+                                                coords="${val.coords}"
+                                             >
                                           `)
                             $('.imagemaps').append(mapDiv)
 
@@ -276,7 +280,7 @@
                             let opacity = '.6'
 
                             let tableDiv = $(`<div class="tableDiv" data-table-id="${val.table_id}"
-                                    onclick="showTableInfo('${val.table_id}'); selectTable('${val.table_id}');"
+                                    onclick="showTableInfo('${val.table_id}')"
                                     style="position: absolute;
                                            top:${top};
                                            left:${left};
@@ -320,7 +324,7 @@
         }
     })
 
-    function selectTable(table_id){
+    function selectTable(table_id, showMessage = true){
         if(table_id){
             let current_res_date = edited_date ?? res_date;
 
@@ -329,14 +333,49 @@
                 url:  '/reservations/'+ reservation_id +'/update/table',
                 data: {table_id, 'date': current_res_date},
                 success: function (result) {
+                    console.log(previous_table)
+
+                    hasTableReservations(previous_table, changeTableBackgroundColor)
+
                     $(`[data-table-id=${table_id}]`).css('background-color', 'green')
-                    $.trim(result.message) ? toastr.success(result.data) : toastr.error(result.data);
+
+                    previous_table = table_id;
+
+                    if(showMessage){
+                        $.trim(result.message) ? toastr.success(result.data) : toastr.error(result.data);
+                    }
                 }
             })
         }
     }
 
-    function showTableInfo(table_id){
+    function hasTableReservations(table_id, callback) {
+        let hasReservation = 0;
+        if(table_id){
+            $.ajax({
+                type: 'GET',
+                url: '/tables/hasReservations/'+table_id,
+                success: function (response) {
+                    if($.trim(response.data)){
+                        callback(table_id, response.data[table_id]);
+                    }
+                }
+            })
+
+            return hasReservation;
+        }
+    }
+
+    function changeTableBackgroundColor(previous_table, has_reservation){
+        debugger
+        if(!has_reservation){
+            $(`[data-table-id=${previous_table}]`).css('background-color', 'grey')
+        }
+    }
+
+    function showTableInfo(table_id, showMessage = true){
+        selectTable(table_id, showMessage)
+
         $('.table-reservations').empty();
         $('.table-number').empty();
         if(table_id){

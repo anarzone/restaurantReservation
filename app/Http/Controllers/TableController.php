@@ -173,4 +173,21 @@ class TableController extends Controller
         }
         return $table_have_reservations;
     }
+
+    public function has_reservations(HallTable $table){
+        if(count($table->reservations) > 0){
+            foreach ($table->reservations as $reservation){
+                if ($reservation->status === Reservation::STATUS_ACCEPTED){
+                    $table_have_reservations[$table->id] = 1;
+                }
+            }
+        }else{
+            $table_have_reservations[$table->id] = 0;
+        }
+
+
+        return response()->json([
+            'data' => $table_have_reservations
+        ]);
+    }
 }

@@ -16,13 +16,15 @@
                         <div class="form-group row">
                             <label for="name" class="col-sm-2 col-form-label">Ad</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="name" id="name" placeholder="istifadəçi adı">
+                                <input type="text" class="form-control" name="name" id="name" placeholder="istifadəçi adı"
+                                    value="{{old('name')}}" >
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="email" class="col-sm-2 col-form-label">Email</label>
                             <div class="col-sm-10">
-                                <input type="email" class="form-control" id="email" name="email" placeholder="aktiv email olmalıdır">
+                                <input type="email" class="form-control" id="email" name="email" placeholder="aktiv email olmalıdır"
+                                    value="{{old('email')}}">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -60,7 +62,7 @@
             @if($errors->any())
                 <div class="alert alert-danger">
                     <ul>
-                        @foreach ($errors->all() as $error)https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css
+                        @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
