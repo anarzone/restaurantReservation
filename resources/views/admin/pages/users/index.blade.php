@@ -109,6 +109,12 @@
     <script src="{{asset('back/assets/extra-libs/datatables.net/js/jquery.dataTables.min.js')}}"></script>
     <script src="{{asset('back/dist/js/pages/datatables/datatable-basic.init.js')}}"></script>
     <script>
+        @if(session('message-delete'))
+            displayMessage("{{session('message-delete')}}" ,'error')
+        @elseif(session('message-success'))
+            displayMessage("{{session('message-success')}}")
+        @endif
+
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': "{{ csrf_token() }}"
@@ -203,22 +209,12 @@
         })
 
         $('.delete-user').on('click', function () {
-            let accepted = confirm('Silmək istədiyinizdən əminsiniz?')
-            if(user_id && accepted){
-                $.ajax({
-                    type: 'DELETE',
-                    url: '/users/destroy/' + user_id,
-                    success: function (result) {
-                        if($.trim(result.data)){
-                            location.reload();
-                        }
-                    },
-                    complete: function (result) {
-                        alert(result.message)
-                        taostr.error(result.message)
-                    }
-                })
-            }
+            deleteEl(
+                '',
+                '/users/destroy/' + user_id,
+                'Silmək istədiyinizdən əminsiniz?',
+                '/admin/users/index'
+            )
         })
 
     </script>

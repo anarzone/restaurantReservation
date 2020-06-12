@@ -7,6 +7,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use MongoDB\Driver\Session;
 
 class UserController extends Controller
 {
@@ -35,12 +36,12 @@ class UserController extends Controller
         ];
 
         $messages = [
-            'email.required' => 'Email vacib sahədir',
-            'name.required' => 'Ad vacib sahədir',
+            'email.required'    => 'Email vacib sahədir',
+            'name.required'     => 'Ad vacib sahədir',
             'password.required' => 'Şifrə vacib sahədir',
-            'email.unique' => 'Bu email artıq qeydiyyatdan keçib',
-            'password.min:6' => 'Şifrə ən az 6 xarakter olmalıdır',
-            'name.min:2' => 'Ad ən az 2 xarakter olmalıdır',
+            'email.unique'      => 'Bu email artıq qeydiyyatdan keçib',
+            'password.min'      => 'Şifrə ən az :min xarakter olmalıdır',
+            'name.min'          => 'Ad ən az :min xarakter olmalıdır',
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -54,6 +55,9 @@ class UserController extends Controller
 
         $user->roles()->attach($request->role_id);
         $user->groups()->attach($request->group_id);
+
+        $request->session()->flash('message-success', "Yeni istifadəçi yaradıldı");
+
         return redirect()->route('admin.users.index');
     }
 
@@ -77,14 +81,18 @@ class UserController extends Controller
             $user->syncRoles($request->role_id);
         }
 
+        $request->session()->flash('message-success', "Uğurla yeniləndi");
+
         return response()->json([
             'message' => 'success',
             'data'    => $user
         ]);
     }
 
-    public function destroy(User $user){
+    public function destroy(User $user, Request $request){
         $affected_user = $user->delete();
+
+        $request->session()->flash('message-delete', 'İstifadəçi silindi');
 
         return response()->json([
            'message' => 'İstifadəçi silindi',

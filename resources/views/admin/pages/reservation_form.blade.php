@@ -180,19 +180,19 @@
                     },
                     messages: {
                         firstname: {
-                            required: "Adınızı yazın",
+                            required: "Ad daxil edilməyib",
                             minlength: jQuery.validator.format('Ən az {0} hərf daxil edilməlidir')
                         },
                         lastname:  {
-                            required: "Soyadınızı yazın",
+                            required: "Soyad daxil edilməyib",
                             minlength: jQuery.validator.format('Ən az {0} hərf daxil edilməlidir')
                         },
                         phone: {
-                            required: "Telefon nömrənizi qeyd edin"
+                            required: "Telefon nömrəsi daxil edilməyib"
                         },
-                        restaurants: "Restoran seçin",
-                        halls: "Zal seçin",
-                        people: "Qonaq sayını yazın"
+                        restaurants: "Restoran seçiləməyib",
+                        halls: "Zal seçiləməyib",
+                        people: "Qonaq sayı yazılmayıb"
                     },
                     submitHandler: function(form){
                         $.ajax({
