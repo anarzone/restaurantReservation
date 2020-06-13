@@ -159,11 +159,12 @@ class TableController extends Controller
 
     public function get_reservation_statuses_by_hall_id($hall_id){
         $tables = HallTable::where('hall_id', $hall_id)->orderBy('status', 'asc')->get();
+
         $table_have_reservations = [];
         foreach ($tables as $table){
             if(count($table->reservations) > 0){
                 foreach ($table->reservations as $reservation){
-                    if ($reservation->status === Reservation::STATUS_ACCEPTED){
+                    if ((int) $reservation->status === (int) Reservation::STATUS_ACCEPTED){ //fix it
                         $table_have_reservations[$table->id] = 1;
                     }
                 }
