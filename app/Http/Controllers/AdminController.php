@@ -3,19 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Group;
-use App\Hall;
-use App\Reservation;
+use App\Http\Requests\ProfileUpdateRequest;
 use App\Restaurant;
 use App\Role;
-use App\Table as Hall_Table;
-use App\Table as HallTable;
-use App\User;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use phpDocumentor\Reflection\Types\Null_;
 use Spatie\Permission\Models\Permission;
 
 class AdminController extends Controller
@@ -64,42 +58,15 @@ class AdminController extends Controller
         return view('admin.pages.users.profile', ['userdata' => Auth::user()]);
     }
 
-    public function updateProfile(Request $request){
+    public function updateProfile(ProfileUpdateRequest $request){
         $user = Auth::user();
-        $rules = [
-            'name'  => 'required|string',
-            'email' => 'required|email|unique:users,email,'.Auth::user()->id,
-        ];
-        $messages = [
-            'name.required'  => 'Adınızı daxil edin',
-            'email.required'  => 'İşlək email daxil edin',
-            'email'     => 'Doğru email ünvanını daxil edin',
-            'unique:users,email'    => 'Bu emaillə istifadəçi mövcuddur',
-        ];
 
-        if($request->has('password') && Hash::check($request->input('password'), $user->password)){
-            $rules['new_password'] = 'required|between:6,255';
-            $rules['new_password_confirmation'] = 'required|same:new_password|min:6';
+        $request->validated();
 
-            $messages['new_password.required'] = 'Yeni şifrəni daxil edin';
-            $messages['new_password_confirmation.required'] = 'Yeni şifrənin təkrarını daxil edin';
-            $messages['new_password_confirmation.same'] = 'Şifrənin təsdiqi yalnışdır';
-            $messages['between'] = 'Şifrə ən az 6 xarakterli olmalıdır';
-        }
-
-
-        Validator::make($request->all(), $rules, $messages)->validate();
-
-        $values = [
+        $user->update([
             'name' => $request->name,
             'email' => $request->email,
-        ];
-
-        if($request->new_password){
-            $values['password'] = Hash::make($request->new_password);
-        }
-
-        $user->update($values);
+        ]);
 
         return redirect()->back()->with('msg', 'Məlumatlarınız uğurla yeniləndi');
 

@@ -65,7 +65,6 @@ class RestaurantController extends Controller
     public function getList(){
         $restaurants = Restaurant::whereNull('deleted_at')
             ->whereIn('id', Auth::user()->inGroupRestaurants())
-            ->where('status', '=', Restaurant::AVAILABLE)
             ->with('halls')->get();
         return view('admin.pages.restaurants.list', ['restaurants' => $restaurants]);
     }

@@ -1,9 +1,11 @@
-function deleteEl(data, url, titleQuestion,
+function deleteEl(data,
+                  url,
+                  titleQuestion,
                   redirectUrl='',
-                  confirmText="Təsdiq et",
-                  cancelText= "Imtina et",
-                  successMessage = "",
-                  )
+                  elm="",
+                  type="DELETE",
+                  callback = null,
+                 )
 {
     Swal.fire({
         title: titleQuestion,
@@ -14,11 +16,18 @@ function deleteEl(data, url, titleQuestion,
     }).then((confirmed)=>{
         if(!confirmed.value) return
         $.ajax({
-            type: 'DELETE',
+            type: type,
             url:  url,
             data: data,
             success: function (result) {
-                window.location.href = redirectUrl
+                if(redirectUrl === '' && elm){
+                    if (callback && data.table_id){
+                        callback(data.table_id);
+                    }
+                    elm.remove();
+                }else{
+                    window.location.href = redirectUrl
+                }
             },
             error: function (result) {
                 Swal.fire({
@@ -65,3 +74,4 @@ function displayMessage(message, type='success'){
         toastr.error(message)
     }
 }
+

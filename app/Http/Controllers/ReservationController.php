@@ -258,11 +258,12 @@ class ReservationController extends Controller
             ->where('status', '!=', Reservation::STATUS_DONE)
             ->first();
 
+        $reservation = [];
         if($reserved){
             $message = '';
             $data = 'Masa bu tarixdə artıq tutulmuşdur';
         }else{
-            Reservation::create([
+            $reservation = Reservation::create([
                 'res_firstname'     => '',
                 'datetime'          => $date,
                 'res_restaurant_id' => $request->rest_id,
@@ -276,11 +277,10 @@ class ReservationController extends Controller
             $message = 'Success';
             $data = $table->table_number . ' nömrəli masa rezerv edildi.';
         }
-
-
         return response()->json([
-            'message' => $message,
-            'data'    => $data,
+            'message'     => $message,
+            'data'        => $data,
+            'reservation' => $reservation,
         ], Response::HTTP_CREATED);
 
     }

@@ -203,6 +203,12 @@
                         if($.trim(result.data)){
                             location.reload();
                         }
+                    },
+                    error: function (data) {
+                        let response = data.responseText
+                        $.each(response.errors, function (key, val) {
+
+                        })
                     }
                 })
             }
@@ -210,7 +216,7 @@
 
         $('.delete-user').on('click', function () {
             deleteEl(
-                '',
+                {},
                 '/users/destroy/' + user_id,
                 'Silmək istədiyinizdən əminsiniz?',
                 '/admin/users/index'

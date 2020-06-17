@@ -98,6 +98,7 @@ Route::middleware('auth')->group(function (){
     Route::post('/tables/change_number', 'TableController@change_number');
     Route::get('/tables/getPlanByHallId/{hall}', 'TableController@get_plan_tables_by_hall_id')->name('plan.tables');
     Route::get('/tables/hasReservations/{table}', 'TableController@has_reservations')->name('plan.tables.has.reservations');
+    Route::post('/tables/changeStatus', 'TableController@change_status')->name('table.change.status');
 
     // Restaurants routes
     Route::post('/restaurants/store', 'RestaurantController@store')->name('restaurants.store');
