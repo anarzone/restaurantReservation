@@ -34,14 +34,16 @@ class ReservationController extends Controller
 
         $customers = Customer::all();
         $reservations_by_customers = [];
+        $notes_by_customers     = [];
 
         foreach ($customers as $customer){
             $reservations_by_customers[$customer->id] = count($customer->reservations);
+            $notes_by_customers[$customer->id]        = $customer->note;
         }
 
-
         return view('admin.pages.reservations', [
-            'reservations'             => $result,
+            'reservations'              => $result,
+            'notes_by_customers'                 => $notes_by_customers,
             'reservations_by_customers' => $reservations_by_customers
         ]);
     }

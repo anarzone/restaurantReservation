@@ -1,9 +1,7 @@
 @extends('admin.layouts.app')
 @section('css')
-    <link rel="stylesheet" href="{{asset('back/dist/css/font-awesome/font-awesome-5.13.0.min.css')}}"
-          integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ=" crossorigin="anonymous"/>
-    <link rel="stylesheet"
-          href="{{asset('back/dist/css/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.css')}}"/>
+    <link rel="stylesheet" href="{{asset('back/dist/css/font-awesome/font-awesome-5.13.0.min.css')}}"/>
+    <link rel="stylesheet" href="{{asset('back/dist/css/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.css')}}"/>
     <style>
         .hall-plan-image {
             max-height: 100%;
