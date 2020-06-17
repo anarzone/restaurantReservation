@@ -127,7 +127,8 @@ class TableController extends Controller
     public function get_plan_tables_by_hall_id($hall_id){
         $table_have_reservations = $this->get_reservation_statuses_by_hall_id($hall_id);
 
-        $tables = PlanTable::where('hall_id', $hall_id)->get();
+        $tables = PlanTable::where('hall_id', $hall_id)->with('table')->get();
+
         $plan = Plan::where('hall_id', $hall_id)->first();
         $plan_image = $plan ? $plan->img_name : '';
         return response()->json([
@@ -157,19 +158,36 @@ class TableController extends Controller
         ]);
     }
 
+    public function change_status(Request $request){
+        if ($request->table_status){
+            $status = HallTable::TABLE_AVAILABLE;
+            $message = 'Masa boşdur';
+        }else{
+            $status = HallTable::TABLE_BOOKED;
+            $message = 'Masa tutuldu';
+        }
+
+        HallTable::where('id', $request->table_id)->update(['status' => $status]);
+        $affected_table = HallTable::find($request->table_id);
+
+        return response()->json([
+            'message' => $message,
+            'table'   => $affected_table,
+        ]);
+    }
+
     public function get_reservation_statuses_by_hall_id($hall_id){
         $tables = HallTable::where('hall_id', $hall_id)->orderBy('status', 'asc')->get();
 
         $table_have_reservations = [];
         foreach ($tables as $table){
+            $table_have_reservations[$table->id] = 0;
             if(count($table->reservations) > 0){
                 foreach ($table->reservations as $reservation){
-                    if ((int) $reservation->status === (int) Reservation::STATUS_ACCEPTED){ //fix it
-                        $table_have_reservations[$table->id] = 1;
+                    if ((int) $reservation->status === Reservation::STATUS_ACCEPTED){
+                        $table_have_reservations[$table->id] += 1;
                     }
                 }
-            }else{
-                $table_have_reservations[$table->id] = 0;
             }
         }
         return $table_have_reservations;
@@ -178,14 +196,13 @@ class TableController extends Controller
     public function has_reservations(HallTable $table){
         if(count($table->reservations) > 0){
             foreach ($table->reservations as $reservation){
-                if ($reservation->status === Reservation::STATUS_ACCEPTED){
+                if ((int)$reservation->status === Reservation::STATUS_ACCEPTED){
                     $table_have_reservations[$table->id] = 1;
                 }
             }
         }else{
             $table_have_reservations[$table->id] = 0;
         }
-
 
         return response()->json([
             'data' => $table_have_reservations

@@ -11,4 +11,8 @@ class PlanTable extends Model
     public function plan(){
         return $this->belongsTo(Plan::class, 'plan_id');
     }
+
+    public function table(){
+        return $this->belongsTo(Table::class, 'table_id');
+    }
 }
