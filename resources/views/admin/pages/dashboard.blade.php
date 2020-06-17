@@ -284,9 +284,14 @@
 
         function decreaseTableCounter(table_id){
             let currentTable = $(`.tableDiv[data-table-id="${table_id}"]`);
-            let countEl = currentTable.children()
-            currentTable.css('background-color', 'green')
+            currentTable.attr('data-table-res-amount', parseInt(currentTable.attr('data-table-res-amount')) - 1)
 
+            let table_res_amount = parseInt(currentTable.attr('data-table-res-amount'));
+            let backgroundColor = table_res_amount ? 'green' : 'grey';
+
+            currentTable.css('background-color', backgroundColor)
+
+            let countEl = currentTable.children()
             countEl.text(parseInt(countEl.text()) - 1)
         }
 
@@ -335,7 +340,7 @@
                         } else {
                             $('.table-number').append(bookTableBtn)
                             $('.table-number').append('Masa #' + result.data.table.table_number)
-                            $('.table-reservations').html('<div class="alert alert-warning default-alert-message">\
+                            $('.table-reservations').html('<div class="alert alert-warning default-alert-message no_reservation_alert">\
                                     Rezervasiya yoxdur\
                                 </div>\
                                 <button class="btn btn-sm btn-info reserveBtn">Rezerv et</button>\
@@ -360,10 +365,15 @@
                 success: function (response) {
                     let currentTable = $(`.tableDiv[data-table-id="${table_id}"]`);
                     let countEl = currentTable.children()
+
                     currentTable.css('background-color', 'green')
 
                     if($.trim(response.message)){
+                        $('.no_reservation_alert').remove()
+
                         countEl.text(parseInt(countEl.text()) + 1)
+                        currentTable.attr('data-table-res-amount', parseInt(currentTable.attr('data-table-res-amount')) + 1)
+
                         let html = `
                                         <h4>
                                             <span class="badge badge-pill badge-danger reservation_done"
@@ -409,7 +419,7 @@
         })
 
         $('#datetimepickerInfo').datetimepicker({
-            format: 'YYYY-MM-Do, HH:mm',
+            format: 'YYYY-MM-DD HH:mm',
         });
     </script>
 
