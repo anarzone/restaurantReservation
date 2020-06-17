@@ -76,8 +76,9 @@
                             <th scope="col">Telefon</th>
                             <th scope="col">Qonaq</th>
                             <th scope="col">Restoran</th>
-                            <th scope="col">Qeyd</th>
                             <th scope="col">Zal</th>
+                            <th scope="col">Qeyd</th>
+                            <th scope="col">M-Qeyd</th>
                             <th scope="col">Tarix</th>
                             <th scope="col">Masa</th>
                             <th scope="col">Əməliyyat</th>
@@ -96,13 +97,13 @@
                         @foreach($reservations as $res)
                             @if($res->restaurants)
                                 @switch($res->status)
-                                @case(0)
-                                    @php $colors = 'bg-white text-secondary' @endphp
-                                    @break
-                                @case(1)
-                                    @php $colors = 'bg-success text-white' @endphp
-                                    @break
-                            @endswitch
+                                    @case(0)
+                                        @php $colors = 'bg-white text-secondary' @endphp
+                                        @break
+                                    @case(1)
+                                        @php $colors = 'bg-success text-white' @endphp
+                                        @break
+                                @endswitch
                                 <tr data-tr-id="{{$res->id}}" class="{{$colors}} reservation_row" >
                                     <th scope="row">{{$res->id}}</th>
                                     <td>
@@ -119,12 +120,22 @@
                                     <td>{{$res->res_phone}}</td>
                                     <td>{{$res->res_people}}</td>
                                     <td>{{$res->restaurants->name}}</td>
+                                    <td>{{$res->halls->name}}</td>
                                     <td class="text-center">
                                         <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title=""
                                            data-original-title="{{trim($res->note) ? $res->note : 'Qeyd yoxdur'}}"></i>
                                     </td>
-                                    <td>{{$res->halls->name}}</td>
-                                    <td>{{Carbon\Carbon::createFromDate($res->datetime)}}</td>
+                                    <td class="text-center">
+                                        @if(key_exists($res->customer_id, $notes_by_customers)
+                                            && $notes_by_customers[$res->customer_id])
+                                            <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title=""
+                                               data-original-title="{{$notes_by_customers[$res->customer_id]}}"></i>
+                                        @else
+                                            <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title=""
+                                               data-original-title="{{trim($res->note) ? $res->note : 'Qeyd yoxdur'}}"></i>
+                                        @endif
+                                    </td>
+                                    <td>{{Carbon\Carbon::createFromDate($res->datetime)->format('F Y H:i')}}</td>
                                     <td id="{{$res->id}}">{{ $res->table ? $res->table->table_number : "" }}</td>
                                     <td>
                                         <div class="row">
@@ -146,7 +157,6 @@
                                                 data-table-id = "{{$res->table ? $res->table->id : null}}"
                                             ><i class="fas fa-check-circle"></i></button>
                                         </div>
-
                                     </td>
                                 </tr>
                             @endif
