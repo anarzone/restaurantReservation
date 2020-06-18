@@ -83,7 +83,11 @@
         <script src="{{asset('back/dist/js/custom.min.js')}}"></script>
         <script src="{{asset('back/dist/js/dry_functions.js')}}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-
+        <script>
+            $(document).ready(function(){
+                $('meta[name="viewport"]').prop('content', 'width=1440');
+            });
+        </script>
         @yield('js')
     </body>
 </html>
