@@ -19,6 +19,19 @@
         .modal-full-width{
             width: 94.5%;
         }
+
+        .unselectable {
+            -moz-user-select: -moz-none;
+            -khtml-user-select: none;
+            -webkit-user-select: none;
+
+            /*
+            Introduced in IE 10.
+            See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+            */
+            -ms-user-select: none;
+            user-select: none;
+        }
     </style>
 @endsection
 @section('page-title', 'Rezervasiyalar')
@@ -194,7 +207,7 @@
                                 </div>
                             </div>
                             <div class="col-md-2">
-                                <div class="res-table-info text-center">
+                                <div class="res-table-info text-center unselectable">
                                     <h4 class="bg-danger text-light">Rezervasiyalar</h4>
                                     <span class="table-number"></span>
                                     <hr>
@@ -269,13 +282,6 @@
                         let src = "{{url('storage/back/images')}}/" + result.data.plan_image
                         $('.hall-plan-image').attr('src', src)
                         $.each(result.data.tables, function (i, val) {
-                            let mapDiv = $(`<area
-                                                shape="rect"
-                                                data-table-id="${val.table_id}"
-                                                coords="${val.coords}"
-                                             >
-                                          `)
-                            $('.imagemaps').append(mapDiv)
 
                             let table_status = result.data.table_have_reservations[val.table_id]
 
@@ -290,17 +296,19 @@
                             let opacity = '.6'
 
                             let tableDiv = $(`<div class="tableDiv" data-table-id="${val.table_id}"
-                                    onclick="showTableInfo('${val.table_id}')"
-                                    style="position: absolute;
-                                           top:${top};
-                                           left:${left};
-                                           width:${width};
-                                           height:${height};
-                                           background-color: ${backgroundColor};
-                                           opacity: ${opacity};
-                                 ">
+                                                    onclick="showTableInfo('${val.table_id}')" ondblclick="selectTable(${val.table_id})"
+                                                    style="position: absolute;
+                                                           top:${top};
+                                                           left:${left};
+                                                           width:${width};
+                                                           height:${height};
+                                                           background-color: ${backgroundColor};
+                                                           opacity: ${opacity};
+                                                          "
+                                                >
 
-                                </div>`)
+                                                </div>`)
+
                             $('.imagemaps-wrapper').append(tableDiv)
                         })
                         let reservation_info_html = `
@@ -312,7 +320,7 @@
                             </div>
                             <div class="col-md-4 col-sm-4 res-info-wrapper">
                                 <h4 class="res-d">
-                                    ${res_date}
+                                    ${moment(res_date).format("DD MMMM YYYY HH:mm")}
                                     <span class="badge badge-warning" onclick="editDate('${res_date}')" style="cursor: pointer">Dəyişdir</span>
                                 </h4>
                             </div>
@@ -377,14 +385,13 @@
     }
 
     function changeTableBackgroundColor(previous_table, has_reservation){
-        debugger
         if(!has_reservation){
             $(`[data-table-id=${previous_table}]`).css('background-color', 'grey')
         }
     }
 
     function showTableInfo(table_id, showMessage = true){
-        selectTable(table_id, showMessage)
+        // selectTable(table_id, showMessage)
 
         $('.table-reservations').empty();
         $('.table-number').empty();
@@ -396,11 +403,16 @@
                     if($.trim(result.data.reservations)){
                         $.each(result.data.reservations, function (i, val) {
                             let html = `
-                                <h4><span>${i+1}. </span> ${val.datetime}</h4>
+                                <h4>${moment(val.datetime).format("DD MMMM YYYY HH:mm")}</h4>
                             `
                             $('.table-reservations').append(html);
                         })
                         $('.table-number').append('Masa #' + result.data.table.table_number)
+                    }else{
+                        $('.table-reservations').html(`<div class="alert alert-warning default-alert-message no_reservation_alert">
+                                                            Rezervasiya yoxdur
+                                                        </div>
+                                                     `);
                     }
                 }
             })
@@ -431,7 +443,7 @@
     function cancelDate(date){
         let html = `
             <h4 class="res-d">
-                ${date}
+                ${moment(date).format("DD MMMM YYYY HH:mm")}
                 <span class="badge badge-warning" onclick="editDate('${date}')" style="cursor: pointer">Edit</span>
             </h4>
         `;
