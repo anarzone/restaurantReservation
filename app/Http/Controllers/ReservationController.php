@@ -32,7 +32,7 @@ class ReservationController extends Controller
                               ->with('restaurants')
                               ->with('table')->latest()->paginate(10)->appends('status', $request->status);
 
-        $customers                 = Customer::all();
+        $customers                 = Customer::with('reservations')->get();
         $reservations_by_customers = [];
         $notes_by_customers        = [];
 
