@@ -270,7 +270,7 @@
 
             let el = $(this).parent();
 
-            deleteEl({status: 'done', reservation_id, table_id},
+            deleteEl({status: 'delete', reservation_id, table_id},
                      '/reservations/status/update',
                      'Silmək istəyirsiz?',
                      '',
