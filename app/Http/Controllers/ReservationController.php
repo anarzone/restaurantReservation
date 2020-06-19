@@ -145,8 +145,10 @@ class ReservationController extends Controller
            'reservation_id' => 'required|integer',
         ]);
 
+        if($request->has('status') && $request->status == 'done'){
+            Reservation::find($request->reservation_id)->update(['status' => Reservation::STATUS_DONE]);
+        }
 
-        Reservation::find($request->reservation_id)->update(['status' => Reservation::STATUS_DONE]);
         Reservation::find($request->reservation_id)->delete();
 
         return response()->json([
