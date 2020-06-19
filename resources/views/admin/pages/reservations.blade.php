@@ -145,7 +145,7 @@
                                                data-original-title="{{$notes_by_customers[$res->customer_id]}}"></i>
                                         @else
                                             <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title=""
-                                               data-original-title="{{trim($res->note) ? $res->note : 'Qeyd yoxdur'}}"></i>
+                                               data-original-title="{{'Qeyd yoxdur'}}"></i>
                                         @endif
                                     </td>
                                     <td>{{Carbon\Carbon::createFromDate($res->datetime)->format('F Y H:i')}}</td>

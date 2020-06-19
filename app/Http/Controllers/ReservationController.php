@@ -32,14 +32,15 @@ class ReservationController extends Controller
                               ->with('restaurants')
                               ->with('table')->latest()->paginate(10)->appends('status', $request->status);
 
-        $customers = Customer::all();
+        $customers                 = Customer::all();
         $reservations_by_customers = [];
-        $notes_by_customers     = [];
+        $notes_by_customers        = [];
 
         foreach ($customers as $customer){
             $reservations_by_customers[$customer->id] = count($customer->reservations);
             $notes_by_customers[$customer->id]        = $customer->note;
         }
+
 
         return view('admin.pages.reservations', [
             'reservations'              => $result,
