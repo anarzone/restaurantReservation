@@ -92,7 +92,7 @@
         </div>
         <div class="col-4"></div>
         <div class="col-6">
-            {{$reservations->appends(['date_from'=> request('date_from'), 'date_to' => request('date_to')])->links()}}
+            {{$reservations->appends(['archive' => 'true', 'date_from'=> request('date_from'), 'date_to' => request('date_to')])->links()}}
         </div>
     </div>
 @endsection
