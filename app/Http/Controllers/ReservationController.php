@@ -156,7 +156,13 @@ class ReservationController extends Controller
     public function showArchive(){
         $reservation = app(Reservation::class)->newQuery();
 
-        $result = $reservation->where('status', Reservation::STATUS_DONE)->with('halls')->with('restaurants')->with('table')->paginate(10);
+        $result = $reservation->where('status', Reservation::STATUS_DONE)
+                              ->withTrashed()
+                              ->with('halls')
+                              ->with('restaurants')
+                              ->with('table')
+                              ->latest()
+                              ->paginate(10);
 
         return view('admin.pages.reservations_archive', ['reservations' => $result ]);
     }
