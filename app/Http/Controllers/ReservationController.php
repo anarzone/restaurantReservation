@@ -114,10 +114,12 @@ class ReservationController extends Controller
 
         if($request->has('archive')){
             $result = Reservation::where('status', Reservation::STATUS_DONE)
+                                ->withTrashed()
                                 ->with('halls')
                                 ->with('restaurants')
                                 ->with('table')
                                 ->whereBetween('datetime', [$from->toDateTimeString(), $to->toDateTimeString()])
+                                ->latest()
                                 ->paginate(10);
             return view('admin.pages.reservations_archive', [
                 'reservations' => $result,
