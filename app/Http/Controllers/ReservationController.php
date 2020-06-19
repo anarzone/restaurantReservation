@@ -105,7 +105,7 @@ class ReservationController extends Controller
         $to = Carbon::create($request->date_to);
         $result = '';
 
-        $customers = Customer::all();
+        $customers = Customer::with('reservations')->get();
         $reservations_by_customers = [];
 
         foreach ($customers as $customer){
