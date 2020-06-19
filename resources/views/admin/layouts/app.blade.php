@@ -85,7 +85,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
         <script>
             $(document).ready(function(){
-                $('meta[name="viewport"]').prop('content', 'width=1440');
+                $('meta[name="viewport"]').prop('content', 'width=1350');
             });
         </script>
         @yield('js')
