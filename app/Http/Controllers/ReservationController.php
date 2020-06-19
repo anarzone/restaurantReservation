@@ -32,14 +32,15 @@ class ReservationController extends Controller
                               ->with('restaurants')
                               ->with('table')->latest()->paginate(10)->appends('status', $request->status);
 
-        $customers = Customer::all();
+        $customers                 = Customer::with('reservations')->get();
         $reservations_by_customers = [];
-        $notes_by_customers     = [];
+        $notes_by_customers        = [];
 
         foreach ($customers as $customer){
             $reservations_by_customers[$customer->id] = count($customer->reservations);
             $notes_by_customers[$customer->id]        = $customer->note;
         }
+
 
         return view('admin.pages.reservations', [
             'reservations'              => $result,
@@ -104,7 +105,7 @@ class ReservationController extends Controller
         $to = Carbon::create($request->date_to);
         $result = '';
 
-        $customers = Customer::all();
+        $customers = Customer::with('reservations')->get();
         $reservations_by_customers = [];
 
         foreach ($customers as $customer){
@@ -113,10 +114,12 @@ class ReservationController extends Controller
 
         if($request->has('archive')){
             $result = Reservation::where('status', Reservation::STATUS_DONE)
+                                ->withTrashed()
                                 ->with('halls')
                                 ->with('restaurants')
                                 ->with('table')
                                 ->whereBetween('datetime', [$from->toDateTimeString(), $to->toDateTimeString()])
+                                ->latest()
                                 ->paginate(10);
             return view('admin.pages.reservations_archive', [
                 'reservations' => $result,
@@ -155,7 +158,13 @@ class ReservationController extends Controller
     public function showArchive(){
         $reservation = app(Reservation::class)->newQuery();
 
-        $result = $reservation->where('status', Reservation::STATUS_DONE)->with('halls')->with('restaurants')->with('table')->paginate(10);
+        $result = $reservation->where('status', Reservation::STATUS_DONE)
+                              ->withTrashed()
+                              ->with('halls')
+                              ->with('restaurants')
+                              ->with('table')
+                              ->latest()
+                              ->paginate(10);
 
         return view('admin.pages.reservations_archive', ['reservations' => $result ]);
     }
