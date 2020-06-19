@@ -106,7 +106,7 @@
                                 let html = `
                                     <tr>
                                         <th scope="row">${val.id}</th>
-                                        <td>${val.res_firstname} ${val.res_lastname}</td>
+                                        <td>${val.res_firstname} ${val.res_lastname ?? ''}</td>
                                         <td>${val.res_phone}</td>
                                         <td>${val.res_people}</td>
                                         <td>${val.restaurant_name}</td>
