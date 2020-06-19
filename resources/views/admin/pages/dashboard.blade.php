@@ -383,6 +383,8 @@
                                         </h4>
                                     `
                         $('.table-reservations').prepend(html);
+
+                        $('#quickReservationModal').modal('toggle')
                     }
 
                     $.trim(response.message) ? toastr.success(response.data) : toastr.error(response.data);
