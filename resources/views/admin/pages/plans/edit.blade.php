@@ -15,6 +15,10 @@
             background: black;
             overflow: hidden;
         }
+
+        .imagemaps-wrapper{
+            width: 900px;
+        }
     </style>
 @endsection
 @section('content')
