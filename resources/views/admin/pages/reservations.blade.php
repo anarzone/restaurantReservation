@@ -32,6 +32,10 @@
             -ms-user-select: none;
             user-select: none;
         }
+
+        .imagemaps-wrapper{
+            width: 900px;
+        }
     </style>
 @endsection
 @section('page-title', 'Rezervasiyalar')
