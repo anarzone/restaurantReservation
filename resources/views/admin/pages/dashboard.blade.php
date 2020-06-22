@@ -209,7 +209,7 @@
 
                                 let backgroundColor = 'grey'
 
-                                if(val.table.status){
+                                if(parseInt(val.table.status)){
                                     backgroundColor = '#BB69A9'
                                 }else if(table_res_amount){
                                     backgroundColor = 'green'
