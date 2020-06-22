@@ -145,6 +145,7 @@
             $('.reservation-info').empty()
             $('.hall-plan-image').attr('src', '');
             $('.imagemaps').empty();
+            $('.tableDiv').remove()
 
             rest_id = $(this).val();
             if (rest_id) {
