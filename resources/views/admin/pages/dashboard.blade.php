@@ -25,6 +25,10 @@
             -ms-user-select: none;
             user-select: none;
         }
+
+        .imagemaps-wrapper{
+            width: 950px;
+        }
     </style>
 @endsection
 
