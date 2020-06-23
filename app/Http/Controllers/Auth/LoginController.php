@@ -27,7 +27,7 @@ class LoginController extends Controller
     {
         $this->doLogout($request);
 
-        return redirect('/ambrn-admin/login');
+        return redirect('/manage/login');
     }
 
     public function showLoginForm(Request $request)

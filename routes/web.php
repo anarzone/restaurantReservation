@@ -18,7 +18,7 @@ Route::post('/send_form', 'FrontController@sendForm');
 Route::get('/getHallsByRestId/{restaurant_id}', 'FrontController@getHallsByRestId');
 
 // Admin routes
-Route::prefix('ambrn-admin')->group(function (){
+Route::prefix('manage')->group(function (){
     Auth::routes();
 });
 
