@@ -59,33 +59,33 @@
                         <th scope="col">Zal</th>
                         <th scope="col">Tarix</th>
                         <th scope="col">Masa</th>
-{{--                        <th scope="col">Əməliyyat</th>--}}
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($reservations as $res)
-                        @if($res->restaurants)
-                            <tr data-tr-id="{{$res->id}}" class="bg-danger text-light">
-                                <th scope="row">{{$res->id}}</th>
-                                <td>{{$res->res_firstname}} {{$res->res_lastname}}</td>
-                                <td>{{$res->res_phone}}</td>
-                                <td>{{$res->res_people}}</td>
-                                <td>{{$res->restaurants->name}}</td>
-                                <td>{{$res->halls->name}}</td>
-                                <td>{{date('Y/m/d -  H:m', strtotime($res->datetime)) }}</td>
-                                <td>{{ $res->table ? $res->table->table_number : "" }}</td>
-{{--                                <td>--}}
-{{--                                    <div class="row">--}}
-{{--                                        <button class="btn btn-sm btn-success text-dark" id="reservation-done"--}}
-{{--                                                data-reservation-id = "{{$res->id}}"--}}
-{{--                                                data-table-id = "{{$res->table ? $res->table->id : null}}"--}}
-{{--                                        >Aktiv et</button>--}}
-{{--                                    </div>--}}
-
-{{--                                </td>--}}
-                            </tr>
-                        @endif
-                    @endforeach
+                    @if($reservations && count($reservations) > 1)
+                        @foreach($reservations as $res)
+                            @if($res->restaurants)
+                                <tr data-tr-id="{{$res->id}}" class="bg-danger text-light">
+                                    <th scope="row">{{$res->id}}</th>
+                                    <td>{{$res->res_firstname}} {{$res->res_lastname}}</td>
+                                    <td>{{$res->res_phone}}</td>
+                                    <td>{{$res->res_people}}</td>
+                                    <td>{{$res->restaurants->name}}</td>
+                                    <td>{{$res->halls->name}}</td>
+                                    <td>{{date('Y/m/d -  H:m', strtotime($res->datetime)) }}</td>
+                                    <td>{{ $res->table ? $res->table->table_number : "" }}</td>
+                                </tr>
+                            @endif
+                        @endforeach
+                    @else
+                        <tr>
+                            <td colspan="10">
+                                <div class="alert alert-warning">
+                                    Arxiv rezervasiyalar tapılmadı
+                                </div>
+                            </td>
+                        </tr>
+                    @endif
                     </tbody>
                 </table>
             </div>
