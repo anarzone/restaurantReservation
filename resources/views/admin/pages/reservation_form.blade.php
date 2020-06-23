@@ -32,7 +32,7 @@
                         <div class="form-group row">
                             <label class="col-lg-3 col-form-label form-control-label">Telefon</label>
                             <div class="col-lg-9">
-                                <input class="form-control" name="phone" id="phone" type="text"  data-mask="(994)-(00)-000-00-00" data-mask-clearifnotmatch="true">
+                                <input class="form-control" name="phone" id="phone" type="text">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -92,7 +92,7 @@
     <<script type="text/javascript" src="{{asset('back/dist/js/moment/moment-with-locales.js')}}"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js"></script>
     <script type="text/javascript" src="{{asset('back/dist/js/tempusdominus-bootstrap-4/tempusdominus-bootstrap-5.0.1.min.js')}}"></script>
-    <script src="{{asset('back/dist/js/jquery.mask.min.js')}}"></script>
+    <script src="{{asset('back/dist/js/inputmask/jquery.inputmask.min.js')}}"></script>
     <script>
         $.ajaxSetup({
             headers: {
@@ -100,15 +100,17 @@
             }
         });
 
-        toastr.options = {
-            "preventDuplicates": true
-        }
-
         @if(count($errors) > 0)
             @foreach($errors->all() as $error)
-                toastr.error("{{ $error }}");
+                displayMessage('{{$error}}', 'danger')
             @endforeach
         @endif
+
+        $(document).ready(function () {
+            $('#phone').inputmask({
+                mask: "([0]99)-999-99-99"
+            })
+        })
 
         let fd = new FormData();
 
