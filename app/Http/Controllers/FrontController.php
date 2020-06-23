@@ -37,6 +37,7 @@ class FrontController extends Controller
         Validator::make($request->all(), $rules, $messages);
 
         $phone = preg_replace('/\D/', '', trim($request->phone));
+        $phone = '994'.preg_replace('/^(?!00[1-9])0/', '', $phone);
 
         $customer = Customer::where('phone', $phone)->first();
         if($customer){
