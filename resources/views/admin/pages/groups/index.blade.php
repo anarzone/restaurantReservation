@@ -15,3 +15,12 @@
         </div>
     </div>
 @endsection
+@section('js')
+    <script>
+        @if(session('message-success'))
+            displayMessage('{{session("message-success")}}')
+        @elseif(session('message-danger'))
+            displayMessage('{{session("message-danger")}}', 'danger')
+        @endif
+    </script>
+@endsection

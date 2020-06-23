@@ -42,11 +42,11 @@ class GroupController extends Controller
             'group_name' => $request->group_name
         ]);
 
-
+        $request->session()->flash('message-success', "Qrup yaradıldı");
 
         $group_created->restaurants()->attach($request->restaurants);
 
-        return back();
+        return redirect()->route('manage.groups.index');
     }
 
     public function edit($group_id){
@@ -78,14 +78,19 @@ class GroupController extends Controller
         $group->update(['group_name' => $request->group_name]);
 
         $group->restaurants()->sync($request->restaurants);
+
+        $request->session()->flash('message-success', "Qrup yeniləndi");
+
         return redirect()->route('manage.groups.index');
     }
 
-    public function destroy(Group $group){
+    public function destroy(Group $group, Request $request){
         $group->restaurants()->detach();
         $group->users()->detach();
 
         $group->delete();
+
+        $request->session()->flash('message-danger', "Qrup silindi");
 
         return response()->json([
            'message' => 'Success',
