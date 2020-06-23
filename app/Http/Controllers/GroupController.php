@@ -78,7 +78,7 @@ class GroupController extends Controller
         $group->update(['group_name' => $request->group_name]);
 
         $group->restaurants()->sync($request->restaurants);
-        return redirect()->route('admin.groups.index');
+        return redirect()->route('manage.groups.index');
     }
 
     public function destroy(Group $group){

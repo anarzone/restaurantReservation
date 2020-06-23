@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Validator;
 class CustomerController extends Controller
 {
     public function index(){
-
         return view('admin.pages.customers.index', [
            'customers' => Customer::latest()->paginate(10),
         ]);
@@ -55,7 +54,7 @@ class CustomerController extends Controller
 
         $customer->update($request->all());
 
-        return redirect()->route('admin.customers.index')->with('message', 'Müştəri məlumatları yeniləndi');
+        return redirect()->route('manage.customers.index')->with('message', 'Müştəri məlumatları yeniləndi');
     }
 
     public function destroy(Request $request, Customer $customer){

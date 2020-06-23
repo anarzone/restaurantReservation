@@ -12,9 +12,9 @@
                         </div>
                         <div class="col-sm-6 text-right">
                             @if(request()->has('restaurant'))
-                                <a href="{{route('admin.halls.create', ['restaurant' => request('restaurant')])}}" class="btn btn-sm btn-success">Yeni zal</a>
+                                <a href="{{route('manage.halls.create', ['restaurant' => request('restaurant')])}}" class="btn btn-sm btn-success">Yeni zal</a>
                             @else
-                                <a href="{{route('admin.halls.create')}}" class="btn btn-sm btn-success">Yeni zal</a>
+                                <a href="{{route('manage.halls.create')}}" class="btn btn-sm btn-success">Yeni zal</a>
                             @endif
                         </div>
                     </div>
@@ -38,7 +38,7 @@
                                     {{$hall->restaurant->name}}
                                 </td>
                                 <td>
-                                    <a href="{{route('admin.restaurants.index', [
+                                    <a href="{{route('manage.restaurants.index', [
                                                     'hall' => $hall->id,
                                                     'restaurant' => $hall->restaurant->id
 ]                                               )}}" class="btn btn-sm btn-info">
@@ -46,7 +46,7 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <a class="btn btn-sm btn-warning" href="{{route('admin.halls.edit', [
+                                    <a class="btn btn-sm btn-warning" href="{{route('manage.halls.edit', [
                                                 'hall' => $hall->id,
                                                 'has_reservation' => isset($hall->reservations[0]) ? 1:0
                                             ])}}

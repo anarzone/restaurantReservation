@@ -22,7 +22,7 @@ Route::prefix('manage')->group(function (){
     Auth::routes();
 });
 
-Route::prefix('admin')->middleware('auth')->name('admin.')->group(function (){
+Route::prefix('manage')->middleware('auth')->name('manage.')->group(function (){
     Route::get('/', 'AdminController@dashboard')->name('dashboard');
 
     // Reservations
@@ -105,7 +105,7 @@ Route::middleware('auth')->group(function (){
 
     // Admin routes
     Route::get('/roles/all', 'AdminController@getRoles');
-    Route::get('/admin/getRolesAndGroups', 'AdminController@getRolesAndGroups');
+    Route::get('/manage/getRolesAndGroups', 'AdminController@getRolesAndGroups');
 
     // Users
     Route::post('/users/update', 'UserController@update');

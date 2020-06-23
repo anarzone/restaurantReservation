@@ -9,7 +9,7 @@
         <div class="col-sm-12 col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{route('admin.groups.store')}}" method="POST">
+                    <form action="{{route('manage.groups.store')}}" method="POST">
                         @csrf
                         <div class="form-group row">
                             <label for="group-name" class="col-sm-3 col-form-label">Qrup adı</label>

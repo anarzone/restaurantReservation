@@ -5,7 +5,7 @@
         <div class="col-sm-12 col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{route('admin.restaurants.update', $restaurant->id)}}" method="POST">
+                    <form action="{{route('manage.restaurants.update', $restaurant->id)}}" method="POST">
                         @csrf
                         @method('PUT')
                         <div class="form-group row">
@@ -60,7 +60,7 @@
             e.preventDefault();
             let rest_id = $(this).data('rest-id');
             let status = $(this).data('rest-status');
-            deleteEl({status}, '/admin/restaurants/destroy/' + rest_id, 'Silmək istədiyinizdən əminsiniz?', '/admin/restaurants/all')
+            deleteEl({status}, '/manage/restaurants/destroy/' + rest_id, 'Silmək istədiyinizdən əminsiniz?', '/manage/restaurants/all')
         })
     </script>
 @endsection

@@ -23,7 +23,7 @@
                     <button class="btn btn-sm btn-danger m-1 delete_customer">Sil</button>
                 </div>
                 <div class="card-body">
-                    <form class="form-reservation" action="{{route('admin.customer.update', $customer->id)}}" role="form"
+                    <form class="form-reservation" action="{{route('manage.customer.update', $customer->id)}}" role="form"
                           autocomplete="off" method="POST">
                         @csrf
                         @method('PUT')
@@ -103,8 +103,8 @@
         });
 
         $('.delete_customer').on('click', function () {
-            deleteEl({}, '{{route('admin.customer.destroy', $customer->id)}}', 'Silmək istədiyinizdən əminsiniz?',
-                         '/admin/customers')
+            deleteEl({}, '{{route('manage.customer.destroy', $customer->id)}}', 'Silmək istədiyinizdən əminsiniz?',
+                         '/manage/customers')
         })
     </script>
 @endsection

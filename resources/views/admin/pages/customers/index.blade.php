@@ -22,7 +22,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                    @if($customers && count($customers) > 1)
+                    @if(isset($customers) && count($customers) > 0)
                         @foreach($customers as $customer)
                         <tr>
                             <th scope="row">{{$customer->id}}</th>
@@ -36,7 +36,7 @@
                                 >Göstər</button>
                             </td>
                             <td>
-                                <a class="btn btn-sm btn-warning" href="{{route('admin.customer.edit',$customer->id)}}"
+                                <a class="btn btn-sm btn-warning" href="{{route('manage.customer.edit',$customer->id)}}"
                                 >Redaktə et</a>
                             </td>
                         </tr>
@@ -109,7 +109,7 @@
             if(customer_id){
                 $.ajax({
                     type: 'GET',
-                    url:  '/admin/customers/'+ customer_id +'/reservations',
+                    url:  '/manage/customers/'+ customer_id +'/reservations',
                     success: function (result) {
                         if($.trim(result.data)){
                             $.each(result.data, function (i, val) {

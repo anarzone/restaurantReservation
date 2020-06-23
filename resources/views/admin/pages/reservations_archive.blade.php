@@ -28,7 +28,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-8">
-                            <form class="form-inline row" action="{{route('admin.filter.date')}}" method="GET">
+                            <form class="form-inline row" action="{{route('manage.filter.date')}}" method="GET">
 {{--                                @csrf--}}
                                 <input type="hidden" name="archive" value="true">
                                 <div class="mb-2 mr-sm-2 input-group date col-xs-4" id="datetimepicker" data-target-input="nearest">
@@ -62,7 +62,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @if($reservations && count($reservations) > 1)
+                    @if($reservations && count($reservations) > 0)
                         @foreach($reservations as $res)
                             @if($res->restaurants)
                                 <tr data-tr-id="{{$res->id}}" class="bg-danger text-light">

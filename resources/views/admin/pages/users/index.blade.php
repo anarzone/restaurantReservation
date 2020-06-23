@@ -146,7 +146,7 @@
 
             $.ajax({
                 type: 'GET',
-                url: "/admin/getRolesAndGroups",
+                url: "/manage/getRolesAndGroups",
                 success: function (result) {
                     if($.trim(result.data)){
                         $.each(result.data.roles, function(key, val){
@@ -219,7 +219,7 @@
                 {},
                 '/users/destroy/' + user_id,
                 'Silmək istədiyinizdən əminsiniz?',
-                '/admin/users/index'
+                '/manage/users/index'
             )
         })
 

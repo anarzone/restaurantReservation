@@ -126,12 +126,12 @@
             console.log(end_table_ids)
             if($('[name=imagemaps-area]').length){
                 $.ajax({
-                    url: '{{route('admin.plans.update', $plan->id)}}',
+                    url: '{{route('manage.plans.update', $plan->id)}}',
                     type: 'PUT',
                     data: {plan_details, 'deletable_tables': initial_table_ids},
                     success: function (result) {
                         if ($.trim(result.message) === 'success'){
-                            // location.href = '/admin/restaurants'
+                            // location.href = '/manage/restaurants'
                             location.reload()
                         }
                     }

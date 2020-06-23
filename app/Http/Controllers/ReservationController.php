@@ -107,9 +107,11 @@ class ReservationController extends Controller
 
         $customers = Customer::with('reservations')->get();
         $reservations_by_customers = [];
+        $notes_by_customers        = [];
 
         foreach ($customers as $customer){
             $reservations_by_customers[$customer->id] = count($customer->reservations);
+            $notes_by_customers[$customer->id]        = $customer->note;
         }
 
         if($request->has('archive')){
@@ -133,7 +135,8 @@ class ReservationController extends Controller
                                 ->where('status', '!=', Reservation::STATUS_DONE)
                                 ->paginate(10);
             return view('admin.pages.reservations', [
-                'reservations' => $result,
+                'reservations'              => $result,
+                'notes_by_customers'        => $notes_by_customers,
                 'reservations_by_customers' => $reservations_by_customers
             ]);
         }

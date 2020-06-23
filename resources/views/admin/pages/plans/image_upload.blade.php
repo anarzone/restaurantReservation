@@ -78,7 +78,7 @@
             $('.dropzone').show()
 
             let myDropzone = new Dropzone(".dropzone", {
-                url: '{{route('admin.plan.images.upload')}}',
+                url: '{{route('manage.plan.images.upload')}}',
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': "{{ csrf_token() }}"
@@ -98,7 +98,7 @@
                         formData.append("hall_id", hall_id);
                     });
 
-                    $.get('/admin/plans/getByHallId/' + hall_id, function (response) {
+                    $.get('/manage/plans/getByHallId/' + hall_id, function (response) {
                         if ($.trim(response.plan)){
                             let plan = response.plan
                             plan_id = plan.id
@@ -136,9 +136,9 @@
 
         $('#next-page').on('click', function () {
             if(hall_plans[hall_id]){
-                location.href = '/admin/plans/' + plan_id + '/edit';
+                location.href = '/manage/plans/' + plan_id + '/edit';
             }else if (current_hall_id) {
-                location.href = '/admin/halls/' + current_hall_id + '/plan/create';
+                location.href = '/manage/halls/' + current_hall_id + '/plan/create';
             }
         })
 

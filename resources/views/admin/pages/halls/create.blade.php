@@ -112,7 +112,7 @@
                     data: {rest_id: rest_id, hall_name: hall_name, tables: hall_tables},
                     success: function(result){
                         if($.trim(result.data)){
-                            window.location.href = '{{ route("admin.halls.index") }}';
+                            window.location.href = '{{ route("manage.halls.index") }}';
                         }
                     }
                 })
