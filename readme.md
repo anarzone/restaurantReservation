@@ -1,6 +1,6 @@
 ### Amburan Reservation
 ***Configuration steps***
- - Install related packages:  composer install
+ - Install related packages:
  ```sh
 $ composer install
  ```
