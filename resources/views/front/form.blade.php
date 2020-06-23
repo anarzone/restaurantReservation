@@ -21,6 +21,77 @@
         <link rel="stylesheet" href="https:////cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     </head>
 
+    <style>
+        /* The container */
+        .custom-radio-button {
+            display: block;
+            position: relative;
+            padding-left: 28px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+
+            font-style: normal;
+            font-weight: 800;
+            font-size: 16px;
+            color: #313131;
+            font-family: 'Libre Franklin', sans-serif;
+        }
+
+        /* Hide the browser's default radio button */
+        .custom-radio-button input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* Create a custom radio button */
+        .checkmark {
+            position: absolute;
+            top: 3px;
+            left: 0;
+            height: 20px;
+            width: 20px;
+            background-color: #eee;
+            border-radius: 50%;
+        }
+
+        /* On mouse-over, add a grey background color */
+        .custom-radio-button:hover input ~ .checkmark {
+            background-color: #ccc;
+        }
+
+        /* When the radio button is checked, add a blue background */
+        .custom-radio-button input:checked ~ .checkmark {
+            background-color: #efb20e;
+        }
+
+        /* Create the indicator (the dot/circle - hidden when not checked) */
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        /* Show the indicator (dot/circle) when checked */
+        .custom-radio-button input:checked ~ .checkmark:after {
+            display: block;
+        }
+
+        /* Style the indicator (dot/circle) */
+        .custom-radio-button .checkmark:after {
+            top: 6px;
+            left: 6px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: white;
+        }
+    </style>
+
 <body>
     <section class="reservation_box">
     <div class="bg-image">
@@ -64,10 +135,7 @@
                     <p class="half-label">PHONE</p>
 
                     <div class="flex-input-box">
-                        <div class="country-box">
-                            <span>+994 </span>
-                        </div>
-                        <input type="text" onpaste="event.preventDefault()" max="12" id="ssn" name="phone" class="number-input form-inp" onblur="validationForm(this,3)">
+                        <input type="text" onpaste="event.preventDefault()" id="phone" name="phone" class="form-inp" onblur="validationForm(this,3)">
                     </div>
 
                     <div class="info-validation">
@@ -85,15 +153,17 @@
                 <div class="row">
                     @foreach($restaurants as $res)
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xl-6">
-                            <div class="custom-radio">
-                                <label class="" for="amburan_beach_club">
-                                    <input type="radio" name="radio_inp" value="{{$res->id}}" hidden id="">
-                                </label>
-                                <p class="title-custom-radio">
-                                    {{ $res->name }}
-                                </p>
-                            </div>
+
+{{--                            <label class="" for="amburan_beach_club">{{$res->name}}--}}
+{{--                            </label>--}}
+{{--                            <input type="radio" name="radio_inp" value="{{$res->id}}"  id="amburan_beach_club">--}}
+
+                            <label class="custom-radio-button" for="{{$res->name}}">{{$res->name}}
+                                <input type="radio" name="radio_inp" value="{{$res->id}}"  id="{{$res->name}}">
+                                <span class="checkmark"></span>
+                            </label>
                         </div>
+
                     @endforeach
                 </div>
             </div>
@@ -222,9 +292,8 @@
     <script src="{{asset('js/moment.min.js')}}"></script>
     <script src="{{asset('js/t-datepicker.min.js')}}"></script>
     <script src="{{asset('js/main.js')}}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
-
+    <script src="{{asset('back/dist/js/inputmask/jquery.inputmask.min.js')}}"></script>
     <script>
         $.ajaxSetup({
             headers: {
@@ -232,6 +301,11 @@
             }
         });
 
+        $(document).ready(function () {
+            $('#phone').inputmask({
+                mask: "([0]99)-999-99-99"
+            })
+        })
     </script>
 </html>
 <!-- end document-->

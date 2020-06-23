@@ -3,10 +3,8 @@ let hall_id = null;
 $(document).ready(function(){
     $('input[type=radio][name=radio_inp]').on('change', function () {
         console.log($(this).val())
-    })
+        let rest_id = $(this).val()
 
-    $('.custom-radio label').click(function(){
-        let rest_id = $(this).find('input').val()
         $.ajax({
             type: 'GET',
             url: '/getHallsByRestId/' + rest_id,
@@ -175,12 +173,13 @@ function validationForm(thisIs, payload){
         }
     }
     else if(payload == 3){
-        let length = $(thisIs).val().toString().length;
-        if(length != 12){
-            $(thisIs).parent().addClass('validation_error');
+        let length = parseInt($(thisIs).val().toString().length);
+        console.log(length)
+        if(length === 14 || length === 15){
+            $(thisIs).parent().removeClass('validation_error');
         }
         else{
-            $(thisIs).parent().removeClass('validation_error');
+            $(thisIs).parent().addClass('validation_error');
         }
     }
     else if(payload === 4){
