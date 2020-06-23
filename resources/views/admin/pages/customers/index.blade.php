@@ -22,7 +22,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                    @foreach($customers as $customer)
+                    @if($customers && count($customers) > 1)
+                        @foreach($customers as $customer)
                         <tr>
                             <th scope="row">{{$customer->id}}</th>
                             <td>{{$customer->firstname}} {{$customer->lastname}}</td>
@@ -40,6 +41,15 @@
                             </td>
                         </tr>
                     @endforeach
+                    @else
+                        <tr>
+                            <td colspan="10">
+                                <div class="alert alert-warning">
+                                    Müştərilər tapılmadı
+                                </div>
+                            </td>
+                        </tr>
+                    @endif
                     </tbody>
                 </table>
             </div>
