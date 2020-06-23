@@ -61,13 +61,13 @@
                     <div class="row">
                         <div class="col-4">
                             <div class="btn-group" role="group" aria-label="Basic example">
-                                <a href="/admin/reservations/?status=1" class="btn btn-rounded btn-success btn-sm">Aktiv</a>
-                                <a href="/admin/reservations/?status=0" class="btn btn-rounded btn-light btn-sm">Yeni</a>
-                                <a href="/admin/reservations" class="btn btn-rounded btn-info btn-sm">Hamısı</a>
+                                <a href="/manage/reservations/?status=1" class="btn btn-rounded btn-success btn-sm">Aktiv</a>
+                                <a href="/manage/reservations/?status=0" class="btn btn-rounded btn-light btn-sm">Yeni</a>
+                                <a href="/manage/reservations" class="btn btn-rounded btn-info btn-sm">Hamısı</a>
                             </div>
                         </div>
                         <div class="col-8">
-                            <form class="form-inline row" action="{{route('admin.filter.date')}}">
+                            <form class="form-inline row" action="{{route('manage.filter.date')}}">
                                 <div class="mb-2 mr-sm-2 input-group date col-xs-4" id="datetimepicker" data-target-input="nearest">
                                     <input type="text" name="date_from" value="{{request('date_from')}}" class="form-control datetimepicker-input" data-target="#datetimepicker"/>
                                     <div class="input-group-append" data-target="#datetimepicker" data-toggle="datetimepicker">
@@ -152,7 +152,7 @@
                                                data-original-title="{{'Qeyd yoxdur'}}"></i>
                                         @endif
                                     </td>
-                                    <td>{{Carbon\Carbon::createFromDate($res->datetime)->format('F Y H:i')}}</td>
+                                    <td>{{Carbon\Carbon::createFromDate($res->datetime)->format('Y/F/j - H:i')}}</td>
                                     <td id="{{$res->id}}">{{ $res->table ? $res->table->table_number : "" }}</td>
                                     <td>
                                         <div class="row">

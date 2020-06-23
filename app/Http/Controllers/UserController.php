@@ -40,7 +40,7 @@ class UserController extends Controller
 
         $request->session()->flash('message-success', "Yeni istifadəçi yaradıldı");
 
-        return redirect()->route('admin.users.index');
+        return redirect()->route('manage.users.index');
     }
 
     public function update(StuffStoreRequest $request){

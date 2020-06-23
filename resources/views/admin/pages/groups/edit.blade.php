@@ -9,7 +9,7 @@
         <div class="col-sm-12 col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{route('admin.groups.update', $group->id)}}" method="POST">
+                    <form action="{{route('manage.groups.update', $group->id)}}" method="POST">
                         @csrf
                         @method('PUT')
                         <div class="form-group row">
@@ -101,17 +101,7 @@
         $('.delete-group').on('click', function (e) {
             e.preventDefault();
             let group_id = $(this).data('group-id')
-            let ok = confirm('Silmək istədiyinizdən əminsiniz?')
-
-            if(ok && group_id){
-                $.ajax({
-                    type: 'DELETE',
-                    url: '/admin/groups/destroy/' + group_id,
-                    success: function () {
-                        window.location.href = '/admin/groups/index';
-                    }
-                })
-            }
+            deleteEl({},'/manage/groups/destroy/'+group_id, 'Silmək istədiyinizdən əminsiniz?', '/manage/groups/index')
         })
     </script>
 @endsection

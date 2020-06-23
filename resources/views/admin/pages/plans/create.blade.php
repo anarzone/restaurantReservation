@@ -102,12 +102,12 @@
             if($('[name=imagemaps-area]').length){
                 console.log(plan_details)
                 $.ajax({
-                    url: '{{route('admin.plans.store')}}',
+                    url: '{{route('manage.plans.store')}}',
                     type: 'POST',
                     data: {plan_details, plan_id: '{{$hall->plan->id}}', hall_id: '{{$hall->id}}' },
                     success: function (result) {
                         if ($.trim(result.message) === 'success'){
-                            location.href = '/admin'
+                            location.href = '/manage'
                         }
                     }
                 })

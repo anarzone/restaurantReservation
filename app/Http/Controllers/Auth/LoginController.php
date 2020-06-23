@@ -27,7 +27,7 @@ class LoginController extends Controller
     {
         $this->doLogout($request);
 
-        return redirect('/ambrn-admin/login');
+        return redirect('/manage/login');
     }
 
     public function showLoginForm(Request $request)
@@ -40,7 +40,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/admin/reservations';
+    protected $redirectTo = '/manage/reservations';
 
     /**
      * Create a new controller instance.

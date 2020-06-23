@@ -109,7 +109,7 @@ class HallController extends Controller
         ]);
 
         $hall->update($request->all());
-        return redirect()->route('admin.halls.index')->with('message', 'Zal yeniləndi');
+        return redirect()->route('manage.halls.index')->with('message', 'Zal yeniləndi');
     }
 
     public function destroy(Hall $hall){

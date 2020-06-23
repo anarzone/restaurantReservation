@@ -7,7 +7,7 @@
         <div class="col-sm-12 col-md-10">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{route('admin.users.profile.update')}}" method="POST">
+                    <form action="{{route('manage.users.profile.update')}}" method="POST">
                         @csrf
                         <div class="form-group row">
                             <label for="name" class="col-sm-2 col-form-label">Ad<code>*</code></label>

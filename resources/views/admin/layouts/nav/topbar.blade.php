@@ -11,7 +11,7 @@
         <!-- ============================================================== -->
         <div class="navbar-brand justify-content-center">
           <!-- Logo icon -->
-          <a href="/admin">
+          <a href="/manage">
               <img width="150" src="{{asset('back/assets/images/logo.png')}}" alt="">
           </a>
         </div>
@@ -170,7 +170,7 @@
             class="svg-icon"></i></span>
           </a>
           <div class="dropdown-menu dropdown-menu-right user-dd animated flipInY">
-            <a class="dropdown-item" href="{{route('admin.users.profile')}}"><i data-feather="user"
+            <a class="dropdown-item" href="{{route('manage.users.profile')}}"><i data-feather="user"
               class="svg-icon mr-2 ml-1"></i>
               Profil</a>
               {{--                        <a class="dropdown-item" href="javascript:void(0)"><i data-feather="credit-card"--}}

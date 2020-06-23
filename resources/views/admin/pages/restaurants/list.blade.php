@@ -11,7 +11,7 @@
                             <span class="badge list-group-item-secondary">Rezervasiya yoxdur</span>
                         </div>
                         <div class="col-sm-6 text-right">
-                            <a href="{{route('admin.restaurants.create')}}" class="btn btn-sm btn-success">Yeni restoran</a>
+                            <a href="{{route('manage.restaurants.create')}}" class="btn btn-sm btn-success">Yeni restoran</a>
                         </div>
                     </div>
 
@@ -31,12 +31,12 @@
                                 <th scope="row">{{ $rest->id }}</th>
                                 <td>{{ $rest->name }}</td>
                                 <td>
-                                    <a href="{{url("/admin/halls/")}}/?restaurant={{$rest->id}}" class="btn btn-sm btn-info">
+                                    <a href="{{url("/manage/halls/")}}/?restaurant={{$rest->id}}" class="btn btn-sm btn-info">
                                         Zallar <i class="fas fa-external-link-square-alt"></i>
                                     </a>
                                 </td>
                                 <td>
-                                    <a class="btn btn-sm btn-warning" href="{{route('admin.restaurants.edit', $rest->id)}}">
+                                    <a class="btn btn-sm btn-warning" href="{{route('manage.restaurants.edit', $rest->id)}}">
                                         Redaktə et  <i class="far fa-edit"></i>
                                     </a>
                                 </td>

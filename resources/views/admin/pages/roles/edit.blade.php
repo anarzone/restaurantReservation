@@ -9,7 +9,7 @@
         <div class="col-sm-12 col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{route('admin.groups.update', $role->id)}}" method="POST">
+                    <form action="{{route('manage.groups.update', $role->id)}}" method="POST">
                         @csrf
                         @method('PUT')
                         <div class="form-group row">

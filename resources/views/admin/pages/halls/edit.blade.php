@@ -5,7 +5,7 @@
         <div class="col-sm-12 col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{route('admin.halls.update', $hall->id)}}" method="POST">
+                    <form action="{{route('manage.halls.update', $hall->id)}}" method="POST">
                         @csrf
                         @method('PUT')
                         <div class="form-group row">
@@ -50,7 +50,7 @@
         $('.hall-delete').on('click', function (e) {
             e.preventDefault();
             let hall_id = $(this).data('hall-id');
-            deleteEl({}, '/admin/halls/destroy/' + hall_id, 'Silmək istədiyinizdən əminsiniz?', '/admin/halls')
+            deleteEl({}, '/manage/halls/destroy/' + hall_id, 'Silmək istədiyinizdən əminsiniz?', '/manage/halls')
         })
     </script>
 @endsection
