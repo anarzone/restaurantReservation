@@ -66,13 +66,14 @@
                     <div class="form-group row">
                         <label for="name" class="col-sm-2 col-form-label">Ad</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="name" placeholder="istifadəçi adı">
+                            <input type="text" class="form-control" id="name" placeholder="istifadəçi adı" required>
+                            <div class="invalid-feedback" id="name-error" hidden></div>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="email" class="col-sm-2 col-form-label">Email</label>
                         <div class="col-sm-10">
-                            <input type="email" class="form-control" id="email" placeholder="aktiv email olmalıdır">
+                            <input type="email" class="form-control" id="email" placeholder="aktiv email olmalıdır" required>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -204,11 +205,12 @@
                             location.reload();
                         }
                     },
-                    error: function (data) {
-                        let response = data.responseText
-                        $.each(response.errors, function (key, val) {
-
-                        })
+                    error: function (Xhr, json) {
+                        if(Xhr.status === 422){
+                            $.each(Xhr.responseJSON.errors, function (key, val) {
+                                $('#name-error').removeAttr('hidden').show().html(val[0])
+                            })
+                        }
                     }
                 })
             }

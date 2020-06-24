@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Group;
 use App\Http\Requests\StuffStoreRequest;
+use App\Plan;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -27,8 +28,6 @@ class UserController extends Controller
     }
 
     public function store(StuffStoreRequest $request){
-        $request->validated();
-
         $user = User::create([
             'name'      => $request->name,
             'email'     => $request->email,
