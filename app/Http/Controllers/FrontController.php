@@ -87,7 +87,7 @@ class FrontController extends Controller
 
         Validator::make($request->all(), $rules, $messages);
 
-        $country_code = preg_replace('/\+/', '', trim($request->country_code));
+        $country_code = '994';
         $phone = preg_replace('/\D/', '', trim($request->phone));
         $phone = preg_replace('/^0/', '', $phone);
 
