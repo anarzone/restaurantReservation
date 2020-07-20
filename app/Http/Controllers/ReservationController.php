@@ -10,9 +10,17 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Netgroup\AtaTechSms\BroadcastController;
 
 class ReservationController extends Controller
 {
+    private $broadcast;
+
+    public function __construct()
+    {
+        $this->broadcast = new BroadcastController();
+    }
+
     /**
      * Display a listing of the resource.
      */

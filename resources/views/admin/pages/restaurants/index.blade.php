@@ -298,7 +298,7 @@
         let plan_id = $(this).data('plan-id');
 
         if(plan_id){
-            location.href = '/admin/plans/'+ plan_id +'/edit'
+            location.href = '/manage/plans/'+ plan_id +'/edit'
         }
     })
 
