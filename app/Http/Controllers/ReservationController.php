@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Customer;
+use App\Jobs\SendReservationSms;
 use App\Reservation;
 use App\Table as HallTable;
 use Carbon\Carbon;
@@ -156,11 +157,18 @@ class ReservationController extends Controller
            'reservation_id' => 'required|integer',
         ]);
 
-        if($request->has('status') && $request->status == 'done'){
-            Reservation::find($request->reservation_id)->update(['status' => Reservation::STATUS_DONE]);
+        $reservation = Reservation::find($request->reservation_id);
+
+        if($reservation->status == Reservation::STATUS_PENDING){
+            dispatch(new SendReservationSms('Amburan',
+                [$reservation->res_phone => 'Rezervasiyaniz legv edildi.']));
         }
 
-        Reservation::find($request->reservation_id)->delete();
+        if($request->has('status') && $request->status == 'done'){
+            $reservation->update(['status' => Reservation::STATUS_DONE]);
+        }
+
+        $reservation->delete();
 
         return response()->json([
             'message' => 'Success',
@@ -232,6 +240,9 @@ class ReservationController extends Controller
 
             $message = 'Success';
             $data = $table->table_number . ' nömrəli masa  seçildi.';
+
+            dispatch(new SendReservationSms('Amburan',
+                [Reservation::find($res_id)->res_phone => 'Rezervasiyaniz qebul olundu.']));
         }
 
 
