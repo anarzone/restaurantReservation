@@ -13,7 +13,7 @@
         "guzzlehttp/guzzle": "^7.0",
         "laravel/framework": "^6.0",
         "laravel/tinker": "^1.0",
-        "netgroupteam/laravel-atatechsms": "1.0.1",
+        "netgroupteam/laravel-atatechsms": "^1.0",
         "spatie/laravel-permission": "^3.11"
     },
     "require-dev": {
