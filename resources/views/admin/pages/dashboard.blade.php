@@ -74,6 +74,17 @@
                     <div class="col-md-2 right-option">
                         <div class="res-table-info text-center unselectable">
                             <h4 class="bg-danger text-light">Rezervasiyalar</h4>
+                            <img src="{{asset('images/loader.gif')}}" alt="loader" class="loader-res"
+                             style="
+                                position:absolute;
+                                left:0;
+                                right:0;
+                                top:0;
+                                bottom:0;
+                                margin:auto;
+                                display: none;
+                            ">
+
                             <span class="table-number"></span>
                             <hr>
                             <div class="table-reservations">
@@ -181,10 +192,12 @@
         }
 
         $('#halls').on('change', function () {
+            $('.loader').show()
             $('#map_card').fadeIn();
             $('.reservation-info').empty()
             $('.hall-plan-image').attr('src', '');
             $('.imagemaps').empty();
+            $('.tableDiv').remove()
 
             hall_id = $(this).val();
             if (hall_id) {
@@ -193,6 +206,7 @@
                     url: '/tables/getPlanByHallId/' + hall_id,
                     dataType: 'json',
                     success: function (result) {
+                        $('.loader').hide()
                         if ($.trim(result.data.tables)) {
 
                             $('.plan-alert').remove();
@@ -300,6 +314,7 @@
 
         //fix it
         function showTableInfo(table_id) {
+            $(".loader-res").show()
             table_with_date = {table_id, date: $('[name="res_date_info"]').val()}
 
             $('.table-reservations').empty();
@@ -310,6 +325,7 @@
                     type: 'GET',
                     url: '/reservations/table/' + table_id + '/all',
                     success: function (result) {
+                        $(".loader-res").hide()
                         let bookTableBtn = $(`<button class="btn btn-sm btn-secondary waves-effect waves-light book-table" type="button"
                                                       data-table-id="${table_id}"
                                                       data-table-booked="${result.data.table.status}"

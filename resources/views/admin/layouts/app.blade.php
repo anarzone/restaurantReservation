@@ -2,6 +2,17 @@
 <html dir="ltr" lang="en">
     @include('admin.layouts.partials.header')
     <body>
+    <style>
+        .loader{
+            position:absolute;
+            left:0;
+            right:0;
+            top:0;
+            bottom:0;
+            margin:auto;
+            display: none;
+        }
+    </style>
         <!-- ============================================================== -->
         <!-- Preloader - style you can find in spinners.css -->
         <!-- ============================================================== -->
@@ -52,6 +63,7 @@
                     <!-- ============================================================== -->
                     <div class="container-fluid">
                         @yield('content')
+                        <img src="{{asset('images/loader.gif')}}" alt="loader" class="loader">
                     </div>
                     <!-- ============================================================== -->
                     <!-- End Container fluid  -->

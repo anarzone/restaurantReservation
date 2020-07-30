@@ -87,6 +87,7 @@
     })
 
     $('#halls').on('change', function () {
+        $('.loader').show()
         $('#tables').empty()
         $('#resultCard').hide()
 
@@ -308,6 +309,7 @@
             url:  '/tables/get_by_hall_id/' + hall_id,
             dataType: 'json',
             success: function (result) {
+                $('.loader').hide()
                 if($.trim(result.data)){
                     $("#resultCard").fadeIn();
                     if(result.data.has_plan){
