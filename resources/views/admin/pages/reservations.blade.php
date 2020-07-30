@@ -36,6 +36,7 @@
         .imagemaps-wrapper{
             width: 915px;
         }
+
     </style>
 @endsection
 @section('page-title', 'Rezervasiyalar')
@@ -213,6 +214,16 @@
                             <div class="col-md-2">
                                 <div class="res-table-info text-center unselectable">
                                     <h4 class="bg-danger text-light">Rezervasiyalar</h4>
+                                    <img src="{{asset('images/loader.gif')}}" alt="loader" class="loader-res"
+                                         style="
+                                            position:absolute;
+                                            left:0;
+                                            right:0;
+                                            top:0;
+                                            bottom:0;
+                                            margin:auto;
+                                            display: none;
+                                    ">
                                     <span class="table-number"></span>
                                     <hr>
                                     <div class="table-reservations">
@@ -255,6 +266,7 @@
     let previous_table    = null;
 
     $('.choose-table').on('click', function () {
+        $('.loader').show()
         // make empty before initialized
         $('.plan-alert').remove()
         $('.hall-plan-image').attr('src', '')
@@ -282,6 +294,7 @@
                 url:  '/tables/getPlanByHallId/' + hall_id,
                 dataType: 'json',
                 success: function (result) {
+                    $('.loader').hide()
                     if($.trim(result.data.tables)){
                         let src = "{{url('storage/back/images')}}/" + result.data.plan_image
                         $('.hall-plan-image').attr('src', src)
@@ -396,7 +409,7 @@
 
     function showTableInfo(table_id, showMessage = true){
         // selectTable(table_id, showMessage)
-
+        $('.loader-res').show()
         $('.table-reservations').empty();
         $('.table-number').empty();
         if(table_id){
@@ -404,6 +417,7 @@
                 type: 'GET',
                 url:  '/reservations/table/'+ table_id +'/all',
                 success: function (result) {
+                    $('.loader-res').hide()
                     if($.trim(result.data.reservations)){
                         $.each(result.data.reservations, function (i, val) {
                             let html = `

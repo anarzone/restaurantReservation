@@ -72,9 +72,11 @@
         })
 
         $('#halls').on('change', function () {
+            $('.loader').show()
             hall_id = $(this).val()
             $('.dropzone').detach()
             $('.dropzone-wrapper').append(`<div class="dropzone" style="display: none" id="myDropZone"></div>`)
+            $('.loader').hide()
             $('.dropzone').show()
 
             let myDropzone = new Dropzone(".dropzone", {
