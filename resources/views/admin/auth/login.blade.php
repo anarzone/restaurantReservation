@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon.png">
     <title>Amburan Reservation</title>
     <!-- Custom CSS -->
     <link href="{{asset('back/dist/css/style.min.css')}}" rel="stylesheet">
