@@ -12,6 +12,7 @@ use Netgroup\AtaTechSms\BroadcastController;
 class SendReservationSms implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
     protected $title;
     protected $phoneNumbers;
 
