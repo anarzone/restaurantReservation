@@ -70,13 +70,13 @@
                         <div class="col-8">
                             <form class="form-inline row" action="{{route('manage.filter.date')}}">
                                 <div class="mb-2 mr-sm-2 input-group date col-xs-4" id="datetimepicker" data-target-input="nearest">
-                                    <input type="text" name="date_from" value="{{request('date_from')}}" class="form-control datetimepicker-input" data-target="#datetimepicker"/>
+                                    <input autocomplete="off" type="text" name="date_from" value="{{request('date_from')}}" class="form-control datetimepicker-input" data-target="#datetimepicker"/>
                                     <div class="input-group-append" data-target="#datetimepicker" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                     </div>
                                 </div>
                                 <div class="mb-2 mr-sm-2 input-group date col-xs-4" id="datetimepicker2" data-target-input="nearest">
-                                    <input type="text" name="date_to" value="{{request('date_to')}}" class="form-control datetimepicker-input" data-target="#datetimepicker2"/>
+                                    <input autocomplete="off" type="text" name="date_to" value="{{request('date_to')}}" class="form-control datetimepicker-input" data-target="#datetimepicker2"/>
                                     <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                     </div>
@@ -153,7 +153,7 @@
                                                data-original-title="{{'Qeyd yoxdur'}}"></i>
                                         @endif
                                     </td>
-                                    <td>{{Carbon\Carbon::createFromDate($res->datetime)->format('Y/F/j - H:i')}}</td>
+                                    <td>{{Carbon\Carbon::createFromDate($res->datetime)->translatedFormat('j-F-Y - H:i')}}</td>
                                     <td id="{{$res->id}}">{{ $res->table ? $res->table->table_number : "" }}</td>
                                     <td>
                                         <div class="row">

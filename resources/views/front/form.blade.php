@@ -8,7 +8,7 @@
         <meta name="author" content="NetGroup">
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <!-- Title Page-->
-        <title>Restoran Rezervasiya</title>
+        <title>Amburan Rezervasiya</title>
 
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="{{asset('css/bootstrap.css')}}">
