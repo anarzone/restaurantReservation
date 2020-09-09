@@ -10,7 +10,8 @@
   <link href="{{asset('back/assets/extra-libs/c3/c3.min.css')}}" rel="stylesheet">
   <!-- Custom CSS -->
   <link href="{{asset('back/dist/css/style.min.css')}}?v=1.2" rel="stylesheet">
-  <link rel="stylesheet" href="https:////cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+  <link href="{{asset('back/dist/css/main.css')}}?v=1.2" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
   <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
   crossorigin="anonymous">
 

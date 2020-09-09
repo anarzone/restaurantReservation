@@ -16,7 +16,7 @@
         }
 
         .imagemaps-wrapper{
-            width: 915px;
+            width: 1000px;
         }
 
     </style>

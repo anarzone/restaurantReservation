@@ -254,7 +254,9 @@ class ReservationController extends Controller
 
   public function getTableReservations($table_id){
 
-    $related_reservations = Reservation::where('table_id', $table_id)->get();
+    $related_reservations = Reservation::where('table_id', $table_id)
+    ->with('halls')
+    ->get();
     $table = HallTable::find($table_id);
     return response()->json([
       'message' => 'Success',
@@ -319,4 +321,64 @@ class ReservationController extends Controller
     ], Response::HTTP_CREATED);
 
   }
+
+
+
+  /**
+   * getReserve
+   */
+  public function getNewReservation(){
+
+    $reservation = Reservation::where('reservations.status', Reservation::STATUS_PENDING);
+
+    $user_restaurants = array_column(Auth::user()->groups[0]->restaurants->toArray(), 'id');
+
+    $result = $reservation->where('status', '!=', Reservation::STATUS_DONE)
+    ->whereIn('res_restaurant_id', $user_restaurants)
+    ->with('halls')
+    ->with('restaurants')
+    ->with('table')
+    ->get();
+
+    return response()->json($result);
+
+    // $customers                 = Customer::with('reservations')->get();
+    // $reservations_by_customers = [];
+    // $notes_by_customers        = [];
+
+    // foreach ($customers as $customer){
+    //   $reservations_by_customers[$customer->id] = count($customer->reservations);
+    //   $notes_by_customers[$customer->id]        = $customer->note;
+    // }
+  }
+
+  /**
+   * getReserve
+   */
+  public function getReserve($id){
+
+    $reservation = app(Reservation::class)->newQuery();
+    $reservation->where('reservations.id', $id);
+
+    $user_restaurants = array_column(Auth::user()->groups[0]->restaurants->toArray(), 'id');
+
+    $result = $reservation->where('status', '!=', Reservation::STATUS_DONE)
+    ->whereIn('res_restaurant_id', $user_restaurants)
+    ->with('halls')
+    ->with('restaurants')
+    ->with('table')
+    ->get();
+
+    return response()->json($result);
+
+    // $customers                 = Customer::with('reservations')->get();
+    // $reservations_by_customers = [];
+    // $notes_by_customers        = [];
+
+    // foreach ($customers as $customer){
+    //   $reservations_by_customers[$customer->id] = count($customer->reservations);
+    //   $notes_by_customers[$customer->id]        = $customer->note;
+    // }
+  }
+
 }

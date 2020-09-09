@@ -9,7 +9,7 @@
         <!-- ============================================================== -->
         <!-- Logo -->
         <!-- ============================================================== -->
-        <div class="navbar-brand justify-content-center">
+        <div class="navbar-brand">
           <!-- Logo icon -->
           <a href="/manage">
               <img width="150" src="{{asset('back/assets/images/logo.png')}}" alt="">
