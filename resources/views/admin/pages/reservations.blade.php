@@ -205,11 +205,11 @@ style="display: none;">
 
     $(function () {
         $('#datetimepicker').datetimepicker({
-            format: 'MMMM Do YYYY, HH:mm'
+            format: 'YYYY-MM-DD HH:mm'
         });
 
         $('#datetimepicker2').datetimepicker({
-            format: 'MMMM Do YYYY, HH:mm',
+            format: 'YYYY-MM-DD HH:mm',
             useCurrent: false
         });
 
@@ -287,6 +287,13 @@ style="display: none;">
                         </tr>
                     </table>
                     <div class="row">
+                            <div class="col-md-6">
+                                <input id="sendSMS" type="checkbox" name="sendSMS" value="1" ${(data.status === 0) ? 'checked':''}/>
+                                <label for="sendSMS">SMS bildiriş göndər</label>
+                            </div>
+                        </div>
+
+                    <div class="row">
                         <div class="col-md-12">
                             <button type="button" onClick="reservationDone(${id})" class="btn btn-danger btn-block">Sonlandır</button>
                             </div>
@@ -347,6 +354,7 @@ style="display: none;">
 
     function reservationDone(reservation_id){
         $("#openReserve").modal('hide');
+        var send_sms = $("#sendSMS").is(":checked") ? '1' : '0';
         Swal.fire({
                 title: "Rezervasiya sonlandırılasın?",
                 showCancelButton: true,
@@ -358,7 +366,7 @@ style="display: none;">
             $.ajax({
                 type: 'POST',
                 url:  '/reservations/status/update',
-                data: {status: 'done', reservation_id},
+                data: {status: 'done', reservation_id, send_sms},
                 success: function (result) {
                     if($.trim(result.data)){
                         location.reload();

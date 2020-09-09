@@ -159,14 +159,18 @@ class ReservationController extends Controller
 
     $reservation = Reservation::find($request->reservation_id);
 
-    if($reservation->status == Reservation::STATUS_PENDING){
-      dispatch(new SendReservationSms('Amburan',
-      [$reservation->res_phone => 'Rezervasiyaniz legv edildi.']));
+
+    if($request->has('send_sms') && $request->send_sms == '1'){
+        if($reservation->status == Reservation::STATUS_PENDING){
+            dispatch(new SendReservationSms('Amburan',
+            [$reservation->res_phone => 'Rezervasiyaniz legv edildi.']));
+          }
     }
 
     if($request->has('status') && $request->status == 'done'){
-      $reservation->update(['status' => Reservation::STATUS_DONE]);
-    }
+        $reservation->update(['status' => Reservation::STATUS_DONE]);
+      }
+
 
     $reservation->delete();
 
@@ -210,13 +214,14 @@ class ReservationController extends Controller
   }
 
   public function updateTable($res_id, Request $request){
+
     $rules = [
       'table_id' => 'required|numeric',
       'date'     => 'required|date'
     ];
 
     $messages = [
-      'required.table_id'  => 'Stol seçilməyib',
+      'required.table_id'  => 'Masa seçilməyib',
       'date'               => 'Yalnış format'
     ];
 
@@ -226,10 +231,14 @@ class ReservationController extends Controller
     ->where('table_id', $request->table_id)
     ->where('status', '!=', Reservation::STATUS_DONE)
     ->first();
+
     if($reserved){
+
       $message = '';
       $data = 'Masa bu tarixdə artıq tutulmuşdur';
+
     }else{
+
       Reservation::where('id', $res_id)
       ->update([
         'table_id' => $request->table_id,
@@ -239,17 +248,20 @@ class ReservationController extends Controller
       $table = HallTable::find($request->table_id);
 
       $message = 'Success';
-      $data = $table->table_number . ' nömrəli masa  seçildi.';
+      $data = $table->table_number . ' nömrəli masa seçildi.';
 
-      dispatch(new SendReservationSms('Amburan',
-      [Reservation::find($res_id)->res_phone => 'Rezervasiyaniz qebul olundu.']));
+      if($request->has('send_sms') && $request->send_sms == '1'){
+        dispatch(new SendReservationSms('Amburan',
+        [Reservation::find($res_id)->res_phone => 'Rezervasiyaniz qebul olundu.']));
+      }
+
     }
-
 
     return response()->json([
       'message' => $message,
       'data'    => $data,
     ], Response::HTTP_CREATED);
+
   }
 
   public function getTableReservations($table_id){

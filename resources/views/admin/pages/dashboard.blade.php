@@ -253,10 +253,12 @@
     $('.table-number').empty();
     $('#selectedReservation').val(0);
     $('#selectedReservationDate').val(0);
+    //hall deyishende masa secilmeyib yazilmir
     $('#selectedTable').val(0);
     $('.table-reservations').html(`<div class="alert alert-warning default-alert-message">
                                         Masa seçilməyib
                                     </div>`);
+
 
     if (hall_id) {
       $.ajax({
@@ -327,6 +329,8 @@
     function reservationDone(reservation_id){
         $("#openReserve").modal('hide');
         var selected_table = $('#selectedTable').val();
+        var send_sms = $("#sendSMS").is(":checked") ? '1' : '0';
+
         Swal.fire({
                 title: "Rezervasiya sonlandırılasın?",
                 showCancelButton: true,
@@ -338,7 +342,11 @@
             $.ajax({
                 type: 'POST',
                 url:  '/reservations/status/update',
-                data: {status: 'done', reservation_id},
+                data: {
+                    status: 'done',
+                    reservation_id,
+                    send_sms
+                },
                 success: function (result) {
                     if($.trim(result.data)){
                         getHalls(selected_rest_id);
@@ -367,14 +375,14 @@
     $('.imagemaps-tables').empty();
 
         if(table_id){
-
+            var send_sms = $("#sendSMS").is(":checked") ? '1' : '0';
             var reservation_id = $('#selectedReservation').val();
             var res_date = $('#selectedReservationDate').val();
 
             $.ajax({
                 type: 'PUT',
                 url:  '/reservations/'+ reservation_id +'/update/table',
-                data: {table_id, 'date': res_date},
+                data: {table_id, 'date': res_date, send_sms},
                 success: function (result) {
 
                     $(`.tableDiv[data-table-id="${table_id}"]`).css('background-color', 'green')
@@ -636,6 +644,13 @@
                             <td>Yaranma Tarixi</td> <td>${data.created_at}</td>
                         </tr>
                     </table>
+                    <div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input id="sendSMS" type="checkbox" name="sendSMS" value="1" ${(data.status === 0) ? 'checked':''}/>
+                                <label for="sendSMS">SMS bildiriş göndər</label>
+                            </div>
+                        </div>
                     <div class="row">
                         <div class="col-md-6">
                             <button type="button" onClick="reservationDone(${id})" class="btn btn-danger btn-block">Sonlandır</button>
