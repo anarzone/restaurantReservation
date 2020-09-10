@@ -110,16 +110,16 @@ $(function () {
     };
     handlethemeview();
 
-    var setsidebartype = function () {
-        var width = (window.innerWidth > 0) ? window.innerWidth : this.screen.width;
-        if (width < 1170) {
-            $("#main-wrapper").attr("data-sidebartype", "mini-sidebar");
-            $("#main-wrapper").addClass("mini-sidebar");
-        } else {
-            $("#main-wrapper").attr("data-sidebartype", "full");
-            $("#main-wrapper").removeClass("mini-sidebar");
-        }
-    };
-    $(window).ready(setsidebartype);
-    $(window).on("resize", setsidebartype);
+    // var setsidebartype = function () {
+    //     var width = (window.innerWidth > 0) ? window.innerWidth : this.screen.width;
+    //     if (width < 1170) {
+    //         $("#main-wrapper").attr("data-sidebartype", "mini-sidebar");
+    //         $("#main-wrapper").addClass("mini-sidebar");
+    //     } else {
+    //         $("#main-wrapper").attr("data-sidebartype", "full");
+    //         $("#main-wrapper").removeClass("mini-sidebar");
+    //     }
+    // };
+    // $(window).ready(setsidebartype);
+    // $(window).on("resize", setsidebartype);
 });

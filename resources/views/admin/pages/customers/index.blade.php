@@ -6,68 +6,64 @@
 @endsection
 
 @section('content')
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                </div>
-                <table class="table mb-0">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Ad Soyad</th>
-                            <th scope="col">Telefon</th>
-                            <th scope="col">Rezervasiyalar</th>
-                            <th scope="col">Əməliyyatlar</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+<div class="row">
+    <div class="col-4">
+        <div class="card">
+            <table class="table mb-0 customer-table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Ad Soyad</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
                     @if(isset($customers) && count($customers) > 0)
-                        @foreach($customers as $customer)
-                        <tr>
-                            <th scope="row">{{$customer->id}}</th>
-                            <td>{{$customer->firstname}} {{$customer->lastname}}</td>
-                            <td>{{$customer->phone}}</td>
-                            <td>
-                                <button class="btn btn-sm btn-info show-reservations"
-                                        data-customer-id="{{$customer->id}}"
-                                        data-toggle="modal"
-                                        data-target="#full-width-modal"
-                                >Göstər</button>
-                            </td>
-                            <td>
-                                <a class="btn btn-sm btn-warning" href="{{route('manage.customer.edit',$customer->id)}}"
-                                >Redaktə et</a>
-                            </td>
-                        </tr>
+                    @foreach($customers as $customer)
+                    <tr onclick="getCustomer(this,{{$customer->id}})" style="cursor: pointer">
+                        <th scope="row">{{$customer->id}}</th>
+                        <td>
+                            {{$customer->firstname}} {{$customer->lastname}}
+                        </td>
+                        <td>
+                            <a class="btn btn-sm btn-warning" href="{{route('manage.customer.edit',$customer->id)}}"><i
+                                    class="fa fa-edit"></i></a>
+                        </td>
+                    </tr>
                     @endforeach
                     @else
-                        <tr>
-                            <td colspan="10">
-                                <div class="alert alert-warning">
-                                    Müştərilər tapılmadı
-                                </div>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td colspan="10">
+                            <div class="alert alert-warning">
+                                Müştərilər tapılmadı
+                            </div>
+                        </td>
+                    </tr>
                     @endif
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="col-4"></div>
-        <div class="col-6">
-            {{$customers->links()}}
+                </tbody>
+            </table>
         </div>
     </div>
+    <div class="col-8">
+        <div class="card customer-detail" style="display: none">
 
-    <div class="modal fade" id="full-width-modal" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true" style="display: none;">
-        <div class="modal-dialog modal-full-width">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="title">Rezervasiyalar</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="customer-info" data-toggle="tab" href="#customerInfo"
+                        role="tab">Müştəri məlumatları</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="customer-reservations" data-toggle="tab" href="#customerReservations" role="tab">Rezervasiyalar</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <!--currentReserve-->
+                <div class="tab-pane fade show active" id="customerInfo" role="tabpanel">
+                    <table class="table customer-info">
+                    </table>
                 </div>
-                <div class="modal-body">
+
+                <div class="tab-pane fade" id="customerReservations" role="tabpanel">
                     <table class="table mb-0">
                         <thead>
                             <tr>
@@ -87,33 +83,67 @@
                         </tbody>
                     </table>
                 </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
+
+            </div>
+
+        </div>
     </div>
+
+</div>
+
+{{$customers->links()}}
+<input type="hidden" id="selectedCustomer" value="0"/>
 @endsection
 
 @section('js')
-    <script>
+<script>
 
-        @if(session('message'))
-            displayMessage('{{session("message")}}')
-        @elseif(session('message-danger'))
-            displayMessage('{{session("message-danger")}}', 'danger')
-        @endif
+    function getCustomer(obj, customer_id){
+        $('.customer-table tr').removeClass('active-tr');
+        $(obj).addClass('active-tr');
+        $('.customer-detail').show();
+        $('.customer-info').empty();
+        $('.reservations').empty();
 
-        $('.show-reservations').on('click', function () {
-            $('.reservations').empty()
+        if(customer_id){
 
-            let customer_id = $(this).data('customer-id');
+        $.ajax({
+                    type: 'GET',
+                    url:  '/manage/customers/'+ customer_id +'/show',
+                    success: function (result) {
+                        if($.trim(result.data)){
+                            $('.customer-info').append(`
+                                    <tr>
+                                        <td>Adı</td><td>${result.data.firstname}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Soyadı</td><td>${result.data.lastname}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Telefon</td><td>${result.data.phone}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Doğum tarixi</td><td>${result.data.birthdate}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Qeyd</td><td>${result.data.note}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Əlavə olunma tarixi</td><td>${result.data.created_at}</td>
+                                    </tr>
+                                `)
+                        }
+                    }
+                })
 
-            if(customer_id){
+                //get reservations
                 $.ajax({
                     type: 'GET',
                     url:  '/manage/customers/'+ customer_id +'/reservations',
                     success: function (result) {
                         if($.trim(result.data)){
                             $.each(result.data, function (i, val) {
-                                let html = `
+                                $('.reservations').append(`
                                     <tr>
                                         <th scope="row">${val.id}</th>
                                         <td>${val.res_firstname} ${val.res_lastname ?? ''}</td>
@@ -131,15 +161,21 @@
                                         </td>
                                         <td>${val.datetime}</td>
                                     </tr>
-                                `
-                                $('.reservations').append(html)
+                                `)
                             })
                         }
                     }
                 })
             }
-        })
+    }
 
-    </script>
+    @if(session('message'))
+            displayMessage('{{session("message")}}')
+        @elseif(session('message-danger'))
+            displayMessage('{{session("message-danger")}}', 'danger')
+        @endif
+
+
+
+</script>
 @endsection
-

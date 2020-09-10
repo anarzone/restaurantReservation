@@ -159,14 +159,20 @@ class ReservationController extends Controller
 
     $reservation = Reservation::find($request->reservation_id);
 
-    if($reservation->status == Reservation::STATUS_PENDING){
-      dispatch(new SendReservationSms('Amburan',
-      [$reservation->res_phone => 'Rezervasiyaniz legv edildi.']));
-    }
 
-    if($request->has('status') && $request->status == 'done'){
-      $reservation->update(['status' => Reservation::STATUS_DONE]);
-    }
+
+    if($request->has('status')){
+        if($request->status == 'done'){
+            $reservation->update(['status' => Reservation::STATUS_DONE]);
+
+            if($request->has('send_sms') && $request->send_sms == '1'){
+                dispatch(new SendReservationSms('Amburan',
+                [$reservation->res_phone => 'Rezervasiyaniz legv edildi.']));
+            }
+
+        }
+      }
+
 
     $reservation->delete();
 
@@ -210,13 +216,14 @@ class ReservationController extends Controller
   }
 
   public function updateTable($res_id, Request $request){
+
     $rules = [
       'table_id' => 'required|numeric',
       'date'     => 'required|date'
     ];
 
     $messages = [
-      'required.table_id'  => 'Stol seçilməyib',
+      'required.table_id'  => 'Masa seçilməyib',
       'date'               => 'Yalnış format'
     ];
 
@@ -226,10 +233,14 @@ class ReservationController extends Controller
     ->where('table_id', $request->table_id)
     ->where('status', '!=', Reservation::STATUS_DONE)
     ->first();
+
     if($reserved){
+
       $message = '';
       $data = 'Masa bu tarixdə artıq tutulmuşdur';
+
     }else{
+
       Reservation::where('id', $res_id)
       ->update([
         'table_id' => $request->table_id,
@@ -239,22 +250,27 @@ class ReservationController extends Controller
       $table = HallTable::find($request->table_id);
 
       $message = 'Success';
-      $data = $table->table_number . ' nömrəli masa  seçildi.';
+      $data = $table->table_number . ' nömrəli masa seçildi.';
 
-      dispatch(new SendReservationSms('Amburan',
-      [Reservation::find($res_id)->res_phone => 'Rezervasiyaniz qebul olundu.']));
+      if($request->has('send_sms') && $request->send_sms == '1'){
+        dispatch(new SendReservationSms('Amburan',
+        [Reservation::find($res_id)->res_phone => 'Rezervasiyaniz qebul olundu.']));
+      }
+
     }
-
 
     return response()->json([
       'message' => $message,
       'data'    => $data,
     ], Response::HTTP_CREATED);
+
   }
 
   public function getTableReservations($table_id){
 
-    $related_reservations = Reservation::where('table_id', $table_id)->get();
+    $related_reservations = Reservation::where('table_id', $table_id)
+    ->with('halls')
+    ->get();
     $table = HallTable::find($table_id);
     return response()->json([
       'message' => 'Success',
@@ -319,4 +335,64 @@ class ReservationController extends Controller
     ], Response::HTTP_CREATED);
 
   }
+
+
+
+  /**
+   * getReserve
+   */
+  public function getNewReservation(){
+
+    $reservation = Reservation::where('reservations.status', Reservation::STATUS_PENDING);
+
+    $user_restaurants = array_column(Auth::user()->groups[0]->restaurants->toArray(), 'id');
+
+    $result = $reservation->where('status', '!=', Reservation::STATUS_DONE)
+    ->whereIn('res_restaurant_id', $user_restaurants)
+    ->with('halls')
+    ->with('restaurants')
+    ->with('table')
+    ->get();
+
+    return response()->json($result);
+
+    // $customers                 = Customer::with('reservations')->get();
+    // $reservations_by_customers = [];
+    // $notes_by_customers        = [];
+
+    // foreach ($customers as $customer){
+    //   $reservations_by_customers[$customer->id] = count($customer->reservations);
+    //   $notes_by_customers[$customer->id]        = $customer->note;
+    // }
+  }
+
+  /**
+   * getReserve
+   */
+  public function getReserve($id){
+
+    $reservation = app(Reservation::class)->newQuery();
+    $reservation->where('reservations.id', $id);
+
+    $user_restaurants = array_column(Auth::user()->groups[0]->restaurants->toArray(), 'id');
+
+    $result = $reservation->where('status', '!=', Reservation::STATUS_DONE)
+    ->whereIn('res_restaurant_id', $user_restaurants)
+    ->with('halls')
+    ->with('restaurants')
+    ->with('table')
+    ->get();
+
+    return response()->json($result);
+
+    // $customers                 = Customer::with('reservations')->get();
+    // $reservations_by_customers = [];
+    // $notes_by_customers        = [];
+
+    // foreach ($customers as $customer){
+    //   $reservations_by_customers[$customer->id] = count($customer->reservations);
+    //   $notes_by_customers[$customer->id]        = $customer->note;
+    // }
+  }
+
 }

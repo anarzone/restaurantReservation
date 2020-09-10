@@ -95,4 +95,13 @@ class CustomerController extends Controller
     ], Response::HTTP_OK);
   }
 
+  /**
+  * show
+  */
+  public function show(Customer $customer){
+    return response()->json([
+      'data' => $customer,
+    ], Response::HTTP_OK);
+  }
+
 }

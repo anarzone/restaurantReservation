@@ -1,0 +1,93 @@
+.imagemaps-wrapper .badge-pill {
+    top: -15px;
+    position: relative;
+    right: -10px;
+}
+
+.nav-pills .nav-link {
+    text-align: center;
+    border-radius: 2px;
+    border: 1px solid;
+    width: 150px;
+}
+.right-option{
+    padding-left: 0;
+    box-shadow: -5px 0 20px 0 #4b4b4b24;
+    overflow: auto;
+    height: 100vh;
+}
+.reserve-box{
+    width: 100%;
+    height: 80px;
+    display: flex;
+    border: 1px solid #cacaca;
+    border-bottom: none;
+}
+.reserve-box:last-child{
+    border-bottom: 1px solid #cacaca;
+}
+.reserve-box:hover{
+    cursor: pointer;
+    box-shadow: inset -6px 0px 3px 0px #0a8652d1;
+}
+.reserve-box-time{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 70px;
+    font-weight: 700;
+    font-size: 18px;
+    height: 100%;
+    border-right: 2px solid #cacaca;
+}
+.reserve-box-description {
+    width: 100%;
+    text-align: left;
+    font-weight: 500;
+    padding: 5px;
+}
+
+.reserveDetailBody .table{
+    margin-top: 10px;
+}
+.table-number {
+    margin: 10px;
+}
+#newReserve > div:nth-child(1){
+    margin-top: 10px;
+}
+.reserveDetailBody .table td, .table th{
+    padding: 0.5rem;
+    vertical-align: top;
+    border-top: 1px solid #e8eef3;
+}
+
+.reserve-detail-title {
+    font-weight: 700;
+    font-size: 18px;
+}
+.reserve-detail-title span{
+    font-size:13px;
+    margin-left:5px;
+}
+.reserve-detail-status {
+    right: 0px;
+    position: absolute;
+}
+.reserve-detail-phone {
+    color: #0b5cab;
+    font-size: 16px;
+    font-weight: 600;
+}
+.table-select-view{
+    width: 1030px!important;
+    z-index: 9999999;
+    position: relative;
+}
+.active-tr{
+    background-color: #dadada;
+}
+.dashboard-card{
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
