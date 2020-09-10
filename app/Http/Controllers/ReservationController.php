@@ -160,15 +160,17 @@ class ReservationController extends Controller
     $reservation = Reservation::find($request->reservation_id);
 
 
-    if($request->has('send_sms') && $request->send_sms == '1'){
-        if($reservation->status == Reservation::STATUS_PENDING){
-            dispatch(new SendReservationSms('Amburan',
-            [$reservation->res_phone => 'Rezervasiyaniz legv edildi.']));
-          }
-    }
 
-    if($request->has('status') && $request->status == 'done'){
-        $reservation->update(['status' => Reservation::STATUS_DONE]);
+    if($request->has('status')){
+        if($request->status == 'done'){
+            $reservation->update(['status' => Reservation::STATUS_DONE]);
+
+            if($request->has('send_sms') && $request->send_sms == '1'){
+                dispatch(new SendReservationSms('Amburan',
+                [$reservation->res_phone => 'Rezervasiyaniz legv edildi.']));
+            }
+
+        }
       }
 
 
