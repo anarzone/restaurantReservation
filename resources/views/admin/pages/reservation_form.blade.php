@@ -192,8 +192,8 @@
                         phone: {
                             required: "Telefon nömrəsi daxil edilməyib"
                         },
-                        restaurants: "Restoran seçiləməyib",
-                        halls: "Zal seçiləməyib",
+                        restaurants: "Restoran seçilməyib",
+                        halls: "Zal seçilməyib",
                         people: "Qonaq sayı yazılmayıb"
                     },
                     submitHandler: function(form){

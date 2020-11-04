@@ -23,6 +23,7 @@ Route::prefix('manage')->group(function (){
 });
 
 Route::prefix('manage')->middleware('auth')->name('manage.')->group(function (){
+
     Route::get('/', 'AdminController@dashboard')->name('dashboard');
 
     // Reservations
@@ -78,6 +79,7 @@ Route::prefix('manage')->middleware('auth')->name('manage.')->group(function (){
     // Customers
     Route::get('customers', 'CustomerController@index')->name('customers.index');
     Route::get('customers/{customer}/reservations', 'CustomerController@getReservationsByCustomer')->name('customer.reservations');
+    Route::get('customers/{customer}/show', 'CustomerController@show')->name('customer.show');
     Route::get('customers/{customer}/edit', 'CustomerController@edit')->name('customer.edit');
     Route::put('customers/{customer}/update', 'CustomerController@update')->name('customer.update');
     Route::delete('customers/{customer}/destroy', 'CustomerController@destroy')->name('customer.destroy');
@@ -99,6 +101,10 @@ Route::middleware('auth')->group(function (){
     Route::get('/tables/getPlanByHallId/{hall}', 'TableController@get_plan_tables_by_hall_id')->name('plan.tables');
     Route::get('/tables/hasReservations/{table}', 'TableController@has_reservations')->name('plan.tables.has.reservations');
     Route::post('/tables/changeStatus', 'TableController@change_status')->name('table.change.status');
+
+    // Reserve
+    Route::get('reservations/getReserve/{id}', 'ReservationController@getReserve')->name('reservations.getReserve');
+    Route::get('reservations/getNewReservation', 'ReservationController@getNewReservation')->name('reservations.getNewReservation');
 
     // Restaurants routes
     Route::post('/restaurants/store', 'RestaurantController@store')->name('restaurants.store');

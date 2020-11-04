@@ -14,78 +14,90 @@ use Spatie\Permission\Models\Permission;
 
 class AdminController extends Controller
 {
-    /**
-     * Displaying dashboard page
-     */
 
-    public function dashboard(){
-        $restaurants = Restaurant::whereNull('deleted_at')
-            ->whereIn('id', Auth::user()->inGroupRestaurants())
-            ->where('status', '=', Restaurant::AVAILABLE)
-            ->with('halls')->get();
-        return view('admin.pages.dashboard', ['restaurants' => $restaurants]);
-    }
+  /**
+  * Displaying dashboard page
+  */
+  public function dashboard(){
 
-    public function getRoles(){
-        $roles = Role::all();
-        return response()->json([
-            'message' => 'Success',
-            'data'    => $roles
-        ]);
-    }
+    $restaurants = Restaurant::whereNull('deleted_at')
+    ->whereIn('id', Auth::user()->inGroupRestaurants())
+    ->where('status', '=', Restaurant::AVAILABLE)
+    ->with('halls')->get();
 
-    public function getRolesAndGroups(){
-        $roles = Role::all();
-        $groups = Group::whereNull('deleted_at')->where('status', 1)->get();
+    return view('admin.pages.dashboard', ['restaurants' => $restaurants]);
+  }
 
-        return response()->json([
-            'message' => 'Success',
-            'data'    => ['groups' => $groups, 'roles' => $roles]
-        ]);
-    }
+  /**
+  * getRoles
+  */
+  public function getRoles(){
+    $roles = Role::all();
+    return response()->json([
+      'message' => 'Success',
+      'data'    => $roles
+    ]);
+  }
 
-    public function showRoles(){
-        $roles = Role::all();
-        return view('admin.pages.roles.index', ['roles' => $roles]);
-    }
+  /**
+  * getRolesAndGroups
+  */
+  public function getRolesAndGroups(){
+    $roles = Role::all();
+    $groups = Group::whereNull('deleted_at')->where('status', 1)->get();
 
-    public function createRoles(){
-        $permissions = Permission::all();
-        return view('admin.pages.roles.create', ['permissions' => $permissions]);
-    }
+    return response()->json([
+      'message' => 'Success',
+      'data'    => ['groups' => $groups, 'roles' => $roles]
+    ]);
+  }
 
-    public function showProfile(){
-        return view('admin.pages.users.profile', ['userdata' => Auth::user()]);
-    }
+  /**
+  * showRoles
+  */
+  public function showRoles(){
+    $roles = Role::all();
+    return view('admin.pages.roles.index', ['roles' => $roles]);
+  }
 
-    public function updateProfile(ProfileUpdateRequest $request){
-        $user = Auth::user();
+  /**
+  * createRoles
+  */
+  public function createRoles(){
+    $permissions = Permission::all();
+    return view('admin.pages.roles.create', ['permissions' => $permissions]);
+  }
 
-        $request->validated();
+  /**
+  * showProfile
+  */
+  public function showProfile(){
+    return view('admin.pages.users.profile', ['userdata' => Auth::user()]);
+  }
 
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-        ]);
+  /**
+  * updateProfile
+  */
+  public function updateProfile(ProfileUpdateRequest $request){
+    $user = Auth::user();
 
-        return redirect()->back()->with('msg', 'Məlumatlarınız uğurla yeniləndi');
+    $request->validated();
 
-    }
+    $user->update([
+      'name' => $request->name,
+      'email' => $request->email,
+    ]);
 
-    public function getForm(){
-        $data = Restaurant::select('id','name')->whereNull('deleted_at')->where('status', '=', '1')->get();
-        return view('admin.pages.reservation_form', ['restaurants' => $data]);
-    }
+    return redirect()->back()->with('msg', 'Məlumatlarınız uğurla yeniləndi');
 
-    // will return to this function when role editing activated
-//    public function editRoles($id){
-//        $rol_permission_ids = [];
-//        $role = Role::where('id', $id)->with('permissions')->first();
-//        foreach ($role->permissions as $rol){
-//            $rol_permission_ids[] = $rol->id;
-//        }
-//        $unassosiated_permissions = Permission::whereNotIn('id', $rol_permission_ids)->get();
-//        return view('admin.pages.roles.edit', ['role' => $role, 'unassosiated_permissions' => $unassosiated_permissions]);
-//    }
+  }
+
+  /**
+  * getForm
+  */
+  public function getForm(){
+    $data = Restaurant::select('id','name')->whereNull('deleted_at')->where('status', '=', '1')->get();
+    return view('admin.pages.reservation_form', ['restaurants' => $data]);
+  }
 
 }

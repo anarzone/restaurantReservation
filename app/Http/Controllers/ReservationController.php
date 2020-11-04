@@ -15,308 +15,384 @@ use Netgroup\AtaTechSms\BroadcastController;
 
 class ReservationController extends Controller
 {
-    private $broadcast;
+  private $broadcast;
 
-    public function __construct()
-    {
-        $this->broadcast = new BroadcastController();
+  public function __construct()
+  {
+    $this->broadcast = new BroadcastController();
+  }
+
+  /**
+  * Display a listing of the resource.
+  */
+  public function index(Request $request)
+  {
+    $reservation = app(Reservation::class)->newQuery();
+    if ($request->has('status')){
+      $request->validate(['status' => 'integer']);
+      $reservation->where('reservations.status', $request->status);
     }
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
-    {
-        $reservation = app(Reservation::class)->newQuery();
-        if ($request->has('status')){
-            $request->validate(['status' => 'integer']);
-            $reservation->where('reservations.status', $request->status);
-        }
+    $user_restaurants = array_column(Auth::user()->groups[0]->restaurants->toArray(), 'id');
 
-        $user_restaurants = array_column(Auth::user()->groups[0]->restaurants->toArray(), 'id');
+    $result = $reservation->where('status', '!=', Reservation::STATUS_DONE)
+    ->whereIn('res_restaurant_id', $user_restaurants)
+    ->with('halls')
+    ->with('restaurants')
+    ->with('table')->latest()->paginate(10)->appends('status', $request->status);
 
-        $result = $reservation->where('status', '!=', Reservation::STATUS_DONE)
-                              ->whereIn('res_restaurant_id', $user_restaurants)
-                              ->with('halls')
-                              ->with('restaurants')
-                              ->with('table')->latest()->paginate(10)->appends('status', $request->status);
+    $customers                 = Customer::with('reservations')->get();
+    $reservations_by_customers = [];
+    $notes_by_customers        = [];
 
-        $customers                 = Customer::with('reservations')->get();
-        $reservations_by_customers = [];
-        $notes_by_customers        = [];
-
-        foreach ($customers as $customer){
-            $reservations_by_customers[$customer->id] = count($customer->reservations);
-            $notes_by_customers[$customer->id]        = $customer->note;
-        }
-
-
-        return view('admin.pages.reservations', [
-            'reservations'              => $result,
-            'notes_by_customers'                 => $notes_by_customers,
-            'reservations_by_customers' => $reservations_by_customers
-        ]);
+    foreach ($customers as $customer){
+      $reservations_by_customers[$customer->id] = count($customer->reservations);
+      $notes_by_customers[$customer->id]        = $customer->note;
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  Request  $request
-     */
-    public function update(Request $request)
-    {
-        $request->validate([
-            'table_id' => 'required|integer',
-            'reservation_id' => 'required|integer',
-            'reserved_table_id' => 'nullable|integer'
-        ]);
-        $reserved_table_id = $request->reserved_table_id;
-        $table_id = $request->table_id;
-        $reservation_id = $request->reservation_id;
 
-        if($reserved_table_id == null){
-            Reservation::where('id', $reservation_id)
-                ->update(['table_id' => $table_id, 'status' => Reservation::STATUS_ACCEPTED]);
+    return view('admin.pages.reservations', [
+      'reservations'              => $result,
+      'notes_by_customers'                 => $notes_by_customers,
+      'reservations_by_customers' => $reservations_by_customers
+    ]);
+  }
 
-            HallTable::where('id', $request->table_id)->update(['status' => HallTable::TABLE_BOOKED]);
+  /**
+  * Update the specified resource in storage.
+  *
+  * @param  Request  $request
+  */
+  public function update(Request $request)
+  {
+    $request->validate([
+      'table_id' => 'required|integer',
+      'reservation_id' => 'required|integer',
+      'reserved_table_id' => 'nullable|integer'
+    ]);
+    $reserved_table_id = $request->reserved_table_id;
+    $table_id = $request->table_id;
+    $reservation_id = $request->reservation_id;
 
-        }elseif ($reserved_table_id && $reserved_table_id != $table_id){
-            Reservation::where('id', $reservation_id)
-                ->update(['table_id' => $table_id]);
-            HallTable::where('id', $reserved_table_id)->update(['status' => HallTable::TABLE_AVAILABLE]);
-            HallTable::where('id', $table_id)->update(['status' => HallTable::TABLE_BOOKED]);
-        }
+    if($reserved_table_id == null){
+      Reservation::where('id', $reservation_id)
+      ->update(['table_id' => $table_id, 'status' => Reservation::STATUS_ACCEPTED]);
 
-        $reservation_affected = Reservation::find($request->reservation_id);
+      HallTable::where('id', $request->table_id)->update(['status' => HallTable::TABLE_BOOKED]);
 
-        return response()->json([
-            'message' => 'Success',
-            'data' =>  $reservation_affected
-        ]);
+    }elseif ($reserved_table_id && $reserved_table_id != $table_id){
+      Reservation::where('id', $reservation_id)
+      ->update(['table_id' => $table_id]);
+      HallTable::where('id', $reserved_table_id)->update(['status' => HallTable::TABLE_AVAILABLE]);
+      HallTable::where('id', $table_id)->update(['status' => HallTable::TABLE_BOOKED]);
     }
 
-    public function filterByDate(Request $request){
-        $rules = [
-            'date_from' => 'required|string',
-            'date_to' => 'required|string',
-        ];
+    $reservation_affected = Reservation::find($request->reservation_id);
 
-        $messages = [
-            'required' => 'Tarixi daxil etməmisiniz',
-            'date' => 'Doğru parametrləri daxil etməmisiniz',
-        ];
+    return response()->json([
+      'message' => 'Success',
+      'data' =>  $reservation_affected
+    ]);
+  }
 
-        $validator = Validator::make($request->all(), $rules, $messages);
+  public function filterByDate(Request $request){
+    $rules = [
+      'date_from' => 'required|string',
+      'date_to' => 'required|string',
+    ];
 
-        $validator->validate();
+    $messages = [
+      'required' => 'Tarixi daxil etməmisiniz',
+      'date' => 'Doğru parametrləri daxil etməmisiniz',
+    ];
 
-        $from = Carbon::create($request->date_from);
-        $to = Carbon::create($request->date_to);
-        $result = '';
+    $validator = Validator::make($request->all(), $rules, $messages);
 
-        $customers = Customer::with('reservations')->get();
-        $reservations_by_customers = [];
-        $notes_by_customers        = [];
+    $validator->validate();
 
-        foreach ($customers as $customer){
-            $reservations_by_customers[$customer->id] = count($customer->reservations);
-            $notes_by_customers[$customer->id]        = $customer->note;
-        }
+    $from = Carbon::create($request->date_from);
+    $to = Carbon::create($request->date_to);
+    $result = '';
 
-        if($request->has('archive')){
-            $result = Reservation::where('status', Reservation::STATUS_DONE)
-                                ->withTrashed()
-                                ->with('halls')
-                                ->with('restaurants')
-                                ->with('table')
-                                ->whereBetween('datetime', [$from->toDateTimeString(), $to->toDateTimeString()])
-                                ->latest()
-                                ->paginate(10);
-            return view('admin.pages.reservations_archive', [
-                'reservations' => $result,
-                'reservations_by_customers' => $reservations_by_customers
-            ]);
-        }else{
-            $result = Reservation::with('halls')
-                                ->with('restaurants')
-                                ->with('table')
-                                ->whereBetween('datetime', [$from->toDateTimeString(), $to->toDateTimeString()])
-                                ->where('status', '!=', Reservation::STATUS_DONE)
-                                ->paginate(10);
-            return view('admin.pages.reservations', [
-                'reservations'              => $result,
-                'notes_by_customers'        => $notes_by_customers,
-                'reservations_by_customers' => $reservations_by_customers
-            ]);
-        }
+    $customers = Customer::with('reservations')->get();
+    $reservations_by_customers = [];
+    $notes_by_customers        = [];
+
+    foreach ($customers as $customer){
+      $reservations_by_customers[$customer->id] = count($customer->reservations);
+      $notes_by_customers[$customer->id]        = $customer->note;
     }
 
-    public function updateStatus(Request $request){
+    if($request->has('archive')){
+      $result = Reservation::where('status', Reservation::STATUS_DONE)
+      ->withTrashed()
+      ->with('halls')
+      ->with('restaurants')
+      ->with('table')
+      ->whereBetween('datetime', [$from->toDateTimeString(), $to->toDateTimeString()])
+      ->latest()
+      ->paginate(10);
+      return view('admin.pages.reservations_archive', [
+        'reservations' => $result,
+        'reservations_by_customers' => $reservations_by_customers
+      ]);
+    }else{
+      $result = Reservation::with('halls')
+      ->with('restaurants')
+      ->with('table')
+      ->whereBetween('datetime', [$from->toDateTimeString(), $to->toDateTimeString()])
+      ->where('status', '!=', Reservation::STATUS_DONE)
+      ->paginate(10);
+      return view('admin.pages.reservations', [
+        'reservations'              => $result,
+        'notes_by_customers'        => $notes_by_customers,
+        'reservations_by_customers' => $reservations_by_customers
+      ]);
+    }
+  }
 
-        $request->validate([
-           'reservation_id' => 'required|integer',
-        ]);
+  public function updateStatus(Request $request){
 
-        $reservation = Reservation::find($request->reservation_id);
+    $request->validate([
+      'reservation_id' => 'required|integer',
+    ]);
 
-        if($reservation->status == Reservation::STATUS_PENDING){
-            dispatch(new SendReservationSms('Amburan',
-                [$reservation->res_phone => 'Rezervasiyaniz legv edildi.']));
-        }
+    $reservation = Reservation::find($request->reservation_id);
 
-        if($request->has('status') && $request->status == 'done'){
+
+
+    if($request->has('status')){
+        if($request->status == 'done'){
             $reservation->update(['status' => Reservation::STATUS_DONE]);
+
+            if($request->has('send_sms') && $request->send_sms == '1'){
+                dispatch(new SendReservationSms('Amburan',
+                [$reservation->res_phone => 'Rezervasiyaniz legv edildi.']));
+            }
+
         }
-
-        $reservation->delete();
-
-        return response()->json([
-            'message' => 'Success',
-            'data'    =>  1
-        ], Response::HTTP_CREATED);
-    }
-
-    public function showArchive(){
-        $reservation = app(Reservation::class)->newQuery();
-
-        $result = $reservation->where('status', Reservation::STATUS_DONE)
-                              ->withTrashed()
-                              ->with('halls')
-                              ->with('restaurants')
-                              ->with('table')
-                              ->latest()
-                              ->paginate(10);
-
-        return view('admin.pages.reservations_archive', ['reservations' => $result ]);
-    }
-
-    public function updateDate($res_id, Request $request){
-        $rules = [
-            'date' => 'required|date'
-        ];
-
-        $messages = [
-            'date'      => 'Doğru formatda daxil etməmisiniz',
-            'required'  => 'Tarix boş ola bilməz'
-        ];
-
-        Validator::make($request->all(), $rules, $messages);
-
-        Reservation::where('id', $res_id)->update(['datetime' => $request->date]);
-
-        return response()->json([
-            'message' => 'Tarix uğurla yeniləndi.'
-        ], Response::HTTP_CREATED);
-    }
-
-    public function updateTable($res_id, Request $request){
-        $rules = [
-            'table_id' => 'required|numeric',
-            'date'     => 'required|date'
-        ];
-
-        $messages = [
-            'required.table_id'  => 'Stol seçilməyib',
-            'date'               => 'Yalnış format'
-        ];
-
-        Validator::make($request->all(), $rules, $messages);
-
-        $reserved = Reservation::where('datetime', $request->date)
-                                ->where('table_id', $request->table_id)
-                                ->where('status', '!=', Reservation::STATUS_DONE)
-                                ->first();
-        if($reserved){
-            $message = '';
-            $data = 'Masa bu tarixdə artıq tutulmuşdur';
-        }else{
-            Reservation::where('id', $res_id)
-                        ->update([
-                                    'table_id' => $request->table_id,
-                                    'status' => Reservation::STATUS_ACCEPTED
-                                ]);
-
-            $table = HallTable::find($request->table_id);
-
-            $message = 'Success';
-            $data = $table->table_number . ' nömrəli masa  seçildi.';
-
-            dispatch(new SendReservationSms('Amburan',
-                [Reservation::find($res_id)->res_phone => 'Rezervasiyaniz qebul olundu.']));
-        }
+      }
 
 
-        return response()->json([
-            'message' => $message,
-            'data'    => $data,
-        ], Response::HTTP_CREATED);
-    }
+    $reservation->delete();
 
-    public function getTableReservations($table_id){
+    return response()->json([
+      'message' => 'Success',
+      'data'    =>  1
+    ], Response::HTTP_CREATED);
+  }
 
-        $related_reservations = Reservation::where('table_id', $table_id)->get();
-        $table = HallTable::find($table_id);
-        return response()->json([
-            'message' => 'Success',
-            'data' => [
-                'reservations' => $related_reservations,
-                'table' => $table
-            ],
-        ], Response::HTTP_OK);
-    }
+  public function showArchive(){
+    $reservation = app(Reservation::class)->newQuery();
 
-    public function makeQuickReservation(Request $request){
-        $rules = [
-            'table_id'      => 'required',
-            'rest_id'      => 'required',
-            'hall_id'      => 'required',
-        ];
+    $result = $reservation->where('status', Reservation::STATUS_DONE)
+    ->withTrashed()
+    ->with('halls')
+    ->with('restaurants')
+    ->with('table')
+    ->latest()
+    ->paginate(10);
 
-        $messages = [
-            'table_id.required'      => 'Stol id-si yoxdur',
-            'rest_id.required'       => 'Restoran id-si yoxdur',
-            'hall_id.required'       => 'Zal id-si yoxdur',
-        ];
+    return view('admin.pages.reservations_archive', ['reservations' => $result ]);
+  }
 
-        $validator = Validator::make($request->all(), $rules, $messages);
+  public function updateDate($res_id, Request $request){
+    $rules = [
+      'date' => 'required|date'
+    ];
 
-        if($validator->fails()){
-            return response()->json([
-               'data'  => $validator->errors(),
-            ]);
-        }
+    $messages = [
+      'date'      => 'Doğru formatda daxil etməmisiniz',
+      'required'  => 'Tarix boş ola bilməz'
+    ];
 
-        $date = Carbon::parse($request->date);
+    Validator::make($request->all(), $rules, $messages);
 
-        $reserved = Reservation::where('datetime', $date)
-            ->where('table_id', $request->table_id)
-            ->where('status', '!=', Reservation::STATUS_DONE)
-            ->first();
+    Reservation::where('id', $res_id)->update(['datetime' => $request->date]);
 
-        $reservation = [];
-        if($reserved){
-            $message = '';
-            $data = 'Masa bu tarixdə artıq tutulmuşdur';
-        }else{
-            $reservation = Reservation::create([
-                'res_firstname'     => '',
-                'datetime'          => $date,
-                'res_restaurant_id' => $request->rest_id,
-                'res_hall_id'       => $request->hall_id,
-                'table_id'          => $request->table_id,
-                'status'            => Reservation::STATUS_ACCEPTED,
-            ]);
+    return response()->json([
+      'message' => 'Tarix uğurla yeniləndi.'
+    ], Response::HTTP_CREATED);
+  }
 
-            $table = HallTable::find($request->table_id);
+  public function updateTable($res_id, Request $request){
 
-            $message = 'Success';
-            $data = $table->table_number . ' nömrəli masa rezerv edildi.';
-        }
-        return response()->json([
-            'message'     => $message,
-            'data'        => $data,
-            'reservation' => $reservation,
-        ], Response::HTTP_CREATED);
+    $rules = [
+      'table_id' => 'required|numeric',
+      'date'     => 'required|date'
+    ];
+
+    $messages = [
+      'required.table_id'  => 'Masa seçilməyib',
+      'date'               => 'Yalnış format'
+    ];
+
+    Validator::make($request->all(), $rules, $messages);
+
+    $reserved = Reservation::where('datetime', $request->date)
+    ->where('table_id', $request->table_id)
+    ->where('status', '!=', Reservation::STATUS_DONE)
+    ->first();
+
+    if($reserved){
+
+      $message = '';
+      $data = 'Masa bu tarixdə artıq tutulmuşdur';
+
+    }else{
+
+      Reservation::where('id', $res_id)
+      ->update([
+        'table_id' => $request->table_id,
+        'status' => Reservation::STATUS_ACCEPTED
+      ]);
+
+      $table = HallTable::find($request->table_id);
+
+      $message = 'Success';
+      $data = $table->table_number . ' nömrəli masa seçildi.';
+
+      if($request->has('send_sms') && $request->send_sms == '1'){
+        dispatch(new SendReservationSms('Amburan',
+        [Reservation::find($res_id)->res_phone => 'Rezervasiyaniz qebul olundu.']));
+      }
 
     }
+
+    return response()->json([
+      'message' => $message,
+      'data'    => $data,
+    ], Response::HTTP_CREATED);
+
+  }
+
+  public function getTableReservations($table_id){
+
+    $related_reservations = Reservation::where('table_id', $table_id)
+    ->with('halls')
+    ->get();
+    $table = HallTable::find($table_id);
+    return response()->json([
+      'message' => 'Success',
+      'data' => [
+        'reservations' => $related_reservations,
+        'table' => $table
+      ],
+    ], Response::HTTP_OK);
+  }
+
+  public function makeQuickReservation(Request $request){
+    $rules = [
+      'table_id'      => 'required',
+      'rest_id'      => 'required',
+      'hall_id'      => 'required',
+    ];
+
+    $messages = [
+      'table_id.required'      => 'Stol id-si yoxdur',
+      'rest_id.required'       => 'Restoran id-si yoxdur',
+      'hall_id.required'       => 'Zal id-si yoxdur',
+    ];
+
+    $validator = Validator::make($request->all(), $rules, $messages);
+
+    if($validator->fails()){
+      return response()->json([
+        'data'  => $validator->errors(),
+      ]);
+    }
+
+    $date = Carbon::parse($request->date);
+
+    $reserved = Reservation::where('datetime', $date)
+    ->where('table_id', $request->table_id)
+    ->where('status', '!=', Reservation::STATUS_DONE)
+    ->first();
+
+    $reservation = [];
+    if($reserved){
+      $message = '';
+      $data = 'Masa bu tarixdə artıq tutulmuşdur';
+    }else{
+      $reservation = Reservation::create([
+        'res_firstname'     => '',
+        'datetime'          => $date,
+        'res_restaurant_id' => $request->rest_id,
+        'res_hall_id'       => $request->hall_id,
+        'table_id'          => $request->table_id,
+        'status'            => Reservation::STATUS_ACCEPTED,
+      ]);
+
+      $table = HallTable::find($request->table_id);
+
+      $message = 'Success';
+      $data = $table->table_number . ' nömrəli masa rezerv edildi.';
+    }
+    return response()->json([
+      'message'     => $message,
+      'data'        => $data,
+      'reservation' => $reservation,
+    ], Response::HTTP_CREATED);
+
+  }
+
+
+
+  /**
+   * getReserve
+   */
+  public function getNewReservation(){
+
+    $reservation = Reservation::where('reservations.status', Reservation::STATUS_PENDING);
+
+    $user_restaurants = array_column(Auth::user()->groups[0]->restaurants->toArray(), 'id');
+
+    $result = $reservation->where('status', '!=', Reservation::STATUS_DONE)
+    ->whereIn('res_restaurant_id', $user_restaurants)
+    ->with('halls')
+    ->with('restaurants')
+    ->with('table')
+    ->get();
+
+    return response()->json($result);
+
+    // $customers                 = Customer::with('reservations')->get();
+    // $reservations_by_customers = [];
+    // $notes_by_customers        = [];
+
+    // foreach ($customers as $customer){
+    //   $reservations_by_customers[$customer->id] = count($customer->reservations);
+    //   $notes_by_customers[$customer->id]        = $customer->note;
+    // }
+  }
+
+  /**
+   * getReserve
+   */
+  public function getReserve($id){
+
+    $reservation = app(Reservation::class)->newQuery();
+    $reservation->where('reservations.id', $id);
+
+    $user_restaurants = array_column(Auth::user()->groups[0]->restaurants->toArray(), 'id');
+
+    $result = $reservation->where('status', '!=', Reservation::STATUS_DONE)
+    ->whereIn('res_restaurant_id', $user_restaurants)
+    ->with('halls')
+    ->with('restaurants')
+    ->with('table')
+    ->get();
+
+    return response()->json($result);
+
+    // $customers                 = Customer::with('reservations')->get();
+    // $reservations_by_customers = [];
+    // $notes_by_customers        = [];
+
+    // foreach ($customers as $customer){
+    //   $reservations_by_customers[$customer->id] = count($customer->reservations);
+    //   $notes_by_customers[$customer->id]        = $customer->note;
+    // }
+  }
+
 }

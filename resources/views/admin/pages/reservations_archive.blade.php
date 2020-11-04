@@ -32,13 +32,13 @@
 {{--                                @csrf--}}
                                 <input type="hidden" name="archive" value="true">
                                 <div class="mb-2 mr-sm-2 input-group date col-xs-4" id="datetimepicker" data-target-input="nearest">
-                                    <input type="text" name="date_from" value="{{request('date_from')}}" class="form-control datetimepicker-input" data-target="#datetimepicker"/>
+                                    <input autocomplete="off" type="text" name="date_from" value="{{request('date_from')}}" class="form-control datetimepicker-input" data-target="#datetimepicker"/>
                                     <div class="input-group-append" data-target="#datetimepicker" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                     </div>
                                 </div>
                                 <div class="mb-2 mr-sm-2 input-group date col-xs-4" id="datetimepicker2" data-target-input="nearest">
-                                    <input type="text" name="date_to" value="{{request('date_to')}}" class="form-control datetimepicker-input" data-target="#datetimepicker2"/>
+                                    <input autocomplete="off" type="text" name="date_to" value="{{request('date_to')}}" class="form-control datetimepicker-input" data-target="#datetimepicker2"/>
                                     <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                     </div>
@@ -65,7 +65,7 @@
                     @if($reservations && count($reservations) > 0)
                         @foreach($reservations as $res)
                             @if($res->restaurants)
-                                <tr data-tr-id="{{$res->id}}" class="bg-danger text-light">
+                                <tr data-tr-id="{{$res->id}}">
                                     <th scope="row">{{$res->id}}</th>
                                     <td>{{$res->res_firstname}} {{$res->res_lastname}}</td>
                                     <td>{{$res->res_phone}}</td>
@@ -125,22 +125,6 @@
             });
         });
 
-        // $('#reservation-done').on('click', function () {
-        //     let reservation_id = $(this).data('reservation-id')
-        //     let table_id = $(this).data('table-id')
-        //
-        //     if(reservation_id && table_id){
-        //         $.ajax({
-        //             type: 'POST',
-        //             url:  '/reservations/status/update',
-        //             data: {status: 'active', reservation_id, table_id},
-        //             success: function (result) {
-        //                 if($.trim(result.data)){
-        //                     location.reload()
-        //                 }
-        //             }
-        //         })
-        //     }
-        // })
+
     </script>
 @endsection

@@ -8,3 +8,7 @@ $ composer install
  ```sh
 $ php artisan migrate:fresh --seed
  ```
+
+ ```sh
+ nohup php artisan queue:work --daemon > app/storage/logs/laravel.log &
+ ```
