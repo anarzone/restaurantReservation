@@ -11,10 +11,13 @@ class Restaurant extends Model
 
     public const AVAILABLE = 1;
     public const NOT_AVAILABLE = 0;
+
+    protected $table = 'restaurants';
+
     protected $fillable = ['name', 'address', 'status'];
 
     public function halls(){
-        return $this->hasMany(Hall::class);
+        return $this->hasMany(Hall::class, 'restaurant_id');
     }
 
     public function reservations(){

@@ -20,8 +20,9 @@ class FormController extends Controller
         ]);
     }
 
-    public function getHallsByRestaurantId(Restaurant $restaurant){
-        $halls = $restaurant->halls();
+    public function getHallsByRestaurantId($restaurant_id){
+        $halls = Hall::where('restaurant_id', $restaurant_id)->get();
+
         return response()->json(['message'=> 'success', 'data' => $halls], Response::HTTP_OK);
     }
 }
