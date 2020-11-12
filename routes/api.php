@@ -18,7 +18,7 @@ use Illuminate\Http\Request;
 // });
 
 Route::prefix('v1')->namespace('Api\V1')->group(function (){
-    Route::get('getRestaurants', 'FormController@getRestaurants')->name('getRestaurants');
+    Route::get('getRestaurants', 'FormController@getRestaurants')->name('getRestaurants')->middleware('cors');
     Route::get('getHallsByRestaurantId/{restaurant}', 'FormController@getHallsByRestaurantId')->name('getHallHallByRestaurantId')->middleware('cors');
 });
 Route::post('/v1/sendForm', 'FrontController@sendForm')->middleware('cors');
